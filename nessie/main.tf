@@ -85,14 +85,6 @@ resource "helm_release" "nessie" {
         value = local.s3_secret_name
     },
     {
-        name = "storage.s3.defaultOptions.accessKeySecret.awsAccessKeyId"
-        value = "id"
-    },
-    {
-        name = "storage.s3.defaultOptions.secretKeySecret.awsSecretAccessKey"
-        value = "secret"
-    },
-    {
         name = "metrics.enabled"
         value = "false"
     },
@@ -129,7 +121,7 @@ resource "helm_release" "nessie" {
   set_sensitive = [
     {
         name = "jdbc.jdbcUrl"
-        value = "jdbc:postgresql://${var.nessie_jdbc_url}:${var.nessie_jdbc_port}/${var.nessie_database_name}currentSchema=public"
+        value = "jdbc:postgresql://${var.nessie_jdbc_url}:${var.nessie_jdbc_port}/${var.nessie_database_name}?currentSchema=public"
     },
     {
         name = "jdbc.secret.name"
@@ -142,6 +134,14 @@ resource "helm_release" "nessie" {
     {
         name = "jdbc.secret.password"
         value = "password"
+    },
+    {
+        name = "storage.s3.defaultOptions.accessKeySecret.awsAccessKeyId"
+        value = "id"
+    },
+    {
+        name = "storage.s3.defaultOptions.secretKeySecret.awsSecretAccessKey"
+        value = "secret"
     }
   ]
 }
