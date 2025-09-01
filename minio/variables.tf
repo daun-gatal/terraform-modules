@@ -13,13 +13,13 @@ variable "prefix" {
 variable "image_tag" {
   description = "The tag of the PostgreSQL image to use"
   type        = string
-  default     = "RELEASE.2025-07-23T15-54-02Z" 
+  default     = "2025.7.23" 
 }
 
 variable "image" {
   description = "The PostgreSQL image to use"
   type        = string
-  default     = "minio/minio"
+  default     = "bitnami/minio"
 }
 
 variable "minio_root_user" {
@@ -38,7 +38,7 @@ variable "minio_root_password" {
 variable "minio_console_port" {
   description = "The port for MinIO console"
   type        = number
-  default     = 9090
+  default     = 9001
 }
 
 variable "minio_api_port" {
