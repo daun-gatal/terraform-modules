@@ -89,7 +89,14 @@ resource "kubernetes_deployment" "minio" {
             value = var.minio_root_password
           }
 
-          args = ["server", "/data", "--console-address", ":9090"]
+          args = [
+            "server", "/data", "--console-address", ":9090 &",
+            "sleep 5 && ",
+            "/usr/bin/mc alias set myminio http://localhost:9000 ${var.minio_root_user} ${var.minio_root_password} && ",
+            "/usr/bin/mc mb myminio/${var.mini_bucket_name} && ",
+            "/usr/bin/mc anonymous set public myminio/${var.mini_bucket_name} && ",
+            "wait"
+            ]
 
           port {
             container_port = 9000
