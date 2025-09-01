@@ -52,3 +52,9 @@ variable "storage_size" {
   type        = string
   default     = "5Gi"
 }
+
+variable "tailscale_expose" {
+  description = "Whether to expose the PostgreSQL service via Tailscale"
+  type        = bool
+  default     = false
+}

@@ -50,7 +50,7 @@ resource "helm_release" "nessie" {
   values = [<<EOF
   service:
     annotations:
-      tailscale.com/expose: "true"
+      tailscale.com/expose: "${var.tailscale_expose}"
   EOF
   ]
 

@@ -127,6 +127,9 @@ resource "kubernetes_service" "postgres" {
   metadata {
     name      = local.service_name
     namespace = var.namespace
+    annotations = {
+      "tailscale.com/expose" = "${var.tailscale_expose}"
+    }
   }
 
   spec {

@@ -82,3 +82,9 @@ variable "nessie_s3_access_key_secret" {
   type        = string
   sensitive = true
 }
+
+variable "tailscale_expose" {
+  description = "Whether to expose the Nessie service via Tailscale"
+  type        = bool
+  default     = true
+}
