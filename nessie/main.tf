@@ -140,7 +140,7 @@ resource "helm_release" "nessie" {
         value = "id"
     },
     {
-        name = "storage.s3.defaultOptions.secretKeySecret.awsSecretAccessKey"
+        name = "storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
         value = "secret"
     }
   ]
