@@ -47,6 +47,13 @@ resource "helm_release" "nessie" {
   chart      = var.chart_name
   version    = var.chart_version
 
+  values = [<<EOF
+  service:
+    annotations:
+      tailscale.com/expose: "true"
+  EOF
+  ]
+
   set = [
     {
       name  = "versionStoreType"
@@ -118,10 +125,6 @@ resource "helm_release" "nessie" {
     {
         name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
         value = "secret"
-    },
-    {
-      name = "service.annotations.tailscale\\.com/expose"
-      value = "true"
     }
   ]
 }
