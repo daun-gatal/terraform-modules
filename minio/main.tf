@@ -92,11 +92,11 @@ resource "kubernetes_deployment" "minio" {
           args = ["server", "/data", "--console-address", ":9090"]
 
           port {
-            container_port = 9000
+            container_port = var.minio_api_port
           }
 
           port {
-            container_port = 9090
+            container_port = var.minio_console_port
           }
 
           volume_mount {
