@@ -138,6 +138,9 @@ resource "kubernetes_service" "minio" {
   metadata {
     name      = local.service_name
     namespace = kubernetes_namespace.minio.metadata[0].name
+    annotations = {
+      "tailscale.com/expose" = "${var.tailscale_expose}"
+    }
   }
 
   spec {
@@ -155,7 +158,6 @@ resource "kubernetes_service" "minio" {
       target_port = var.minio_console_port
     }
 
-    type                 = "LoadBalancer"
-    load_balancer_class  = "tailscale"
+    type                 = "ClusterIP"
   }
 }
