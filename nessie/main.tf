@@ -93,28 +93,9 @@ resource "helm_release" "nessie" {
         value = "false"
     },
     {
-        name = "ingress.enabled"
-        value = "true"
-    },
-    {
-        name = "ingress.className"
-        value = "tailscale"
-    },
-    {
-        name = "ingress.pathType"
-        value = "Prefix"
-    },
-    {
-        name = "ingress.hosts[0].host"
-        value = "${local.prefix}.local"
-    },
-    {
-        name = "ingress.hosts[0].paths[0]"
-        value = "/"
-    },
-    {
-        name = "ingress.tls[0].hosts[0]"
-        value = "${local.prefix}.local"
+      name = "service.annotations.tailscale\\.com/expose"
+      value = "true"
+      type = string
     }
   ]
 
