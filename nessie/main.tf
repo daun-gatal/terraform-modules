@@ -91,10 +91,6 @@ resource "helm_release" "nessie" {
     {
         name = "serviceMonitor.enabled"
         value = "false"
-    },
-    {
-      name = "service.annotations.tailscale\\.com/expose"
-      value = "\"true\""
     }
   ]
 
@@ -122,6 +118,10 @@ resource "helm_release" "nessie" {
     {
         name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
         value = "secret"
+    },
+    {
+      name = "service.annotations.tailscale\\.com/expose"
+      value = "true"
     }
   ]
 }
