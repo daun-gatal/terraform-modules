@@ -61,11 +61,11 @@ resource "helm_release" "nessie" {
         value = var.nessie_default_warehouse
     },
     {
-        name = "catalog.warehouses[0].name"
+        name = "catalog.iceberg.warehouses[0].name"
         value = var.nessie_default_warehouse
     },
     {
-        name = "catalog.warehouses[0].location"
+        name = "catalog.iceberg.warehouses[0].location"
         value = local.s3_warehouse_location
     },
     {
