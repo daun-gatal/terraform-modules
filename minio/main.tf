@@ -94,6 +94,21 @@ resource "kubernetes_deployment" "minio" {
             value = var.minio_bucket_name
           }
 
+          env {
+            name  = "MINIO_BROWSER"
+            value = "on"
+          }
+
+          env {
+            name  = "MINIO_CONSOLE_PORT_NUMBER"
+            value = var.minio_console_port
+          }
+
+          env {
+            name  = "MINIO_API_PORT_NUMBER"
+            value = var.minio_api_port
+          }
+
           port {
             container_port = var.minio_api_port
           }

@@ -38,7 +38,7 @@ variable "minio_root_password" {
 variable "minio_console_port" {
   description = "The port for MinIO console"
   type        = number
-  default     = 9001
+  default     = 9090
 }
 
 variable "minio_api_port" {
