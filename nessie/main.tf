@@ -73,15 +73,15 @@ resource "helm_release" "nessie" {
         value = var.nessie_s3_region
     },
     {
-        name = "storage.s3.defaultOptions.endpoint"
+        name = "catalog.storage.s3.defaultOptions.endpoint"
         value = var.nessie_s3_endpoint
     },
     {
-        name = "storage.s3.defaultOptions.pathStyleAccess"
+        name = "catalog.storage.s3.defaultOptions.pathStyleAccess"
         value = "true"
     },
     {
-        name = "storage.s3.defaultOptions.accessKeySecret.name"
+        name = "catalog.storage.s3.defaultOptions.accessKeySecret.name"
         value = local.s3_secret_name
     },
     {
@@ -136,11 +136,11 @@ resource "helm_release" "nessie" {
         value = "password"
     },
     {
-        name = "storage.s3.defaultOptions.accessKeySecret.awsAccessKeyId"
+        name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsAccessKeyId"
         value = "id"
     },
     {
-        name = "storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
+        name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
         value = "secret"
     }
   ]
