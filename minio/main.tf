@@ -75,6 +75,28 @@ resource "kubernetes_deployment" "minio" {
         labels = { app = local.app_label }
       }
       spec {
+        # Init container for bucket setup
+        init_container {
+          name  = "${local.container_name}-init"
+          image = local.minio_image
+
+          command = ["/bin/sh", "-c"]
+          args = [
+            <<EOT
+            minio server /data --console-address ":${var.minio_console_port}" &
+            sleep 5
+            /usr/bin/mc alias set myminio http://localhost:${var.minio_api_port} ${var.minio_root_user} ${var.minio_root_password}
+            /usr/bin/mc mb myminio/${var.mini_bucket_name}
+            /usr/bin/mc anonymous set public myminio/${var.mini_bucket_name}
+            wait
+            EOT
+          ]
+
+          volume_mount {
+            name       = local.storage_name
+            mount_path = "/data"
+          }
+        }
         container {
           name  = local.container_name
           image = local.minio_image

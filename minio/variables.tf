@@ -52,3 +52,9 @@ variable "storage_size" {
   type        = string
   default     = "10Gi"
 }
+
+variable "mini_bucket_name" {
+  description = "The name of the MinIO bucket to create"
+  type        = string
+  default     = "default"
+}
