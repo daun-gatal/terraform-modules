@@ -19,8 +19,8 @@ resource "kubernetes_secret" "nessie_jdbc" {
   }
 
   data = {
-    username = base64encode(var.nessie_jdbc_username)
-    password = base64encode(var.nessie_jdbc_password)
+    username = var.nessie_jdbc_username
+    password = var.nessie_jdbc_password
   }
 
   type = "Opaque"
@@ -33,8 +33,8 @@ resource "kubernetes_secret" "nessie_s3" {
   }
 
   data = {
-    id = base64encode(var.nessie_s3_access_key_name)
-    secret = base64encode(var.nessie_s3_access_key_secret)
+    id = var.nessie_s3_access_key_name
+    secret = var.nessie_s3_access_key_secret
   }
 
   type = "Opaque"
