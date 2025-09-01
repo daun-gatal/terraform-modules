@@ -112,8 +112,8 @@ resource "kubernetes_deployment" "minio" {
                   "-c",
                   <<EOT
                     /usr/bin/mc alias set myminio http://localhost:${var.minio_api_port} ${var.minio_root_user} ${var.minio_root_password}
-                    /usr/bin/mc mb myminio/${var.mini_bucket_name}
-                    /usr/bin/mc anonymous set public myminio/${var.mini_bucket_name}
+                    /usr/bin/mc mb myminio/${var.minio_bucket_name}
+                    /usr/bin/mc anonymous set public myminio/${var.minio_bucket_name}
                   EOT
                 ]
               }
