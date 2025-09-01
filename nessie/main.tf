@@ -94,7 +94,7 @@ resource "helm_release" "nessie" {
     },
     {
       name = "service.annotations.tailscale\\.com/expose"
-      value = "true"
+      value = "\"true\""
     }
   ]
 
