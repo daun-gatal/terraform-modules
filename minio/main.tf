@@ -103,6 +103,22 @@ resource "kubernetes_deployment" "minio" {
             name       = local.storage_name
             mount_path = "/data"
           }
+
+          lifecycle {
+            post_start {
+              exec {
+                command = [
+                  "/bin/sh",
+                  "-c",
+                  <<EOT
+                    /usr/bin/mc alias set myminio http://localhost:${var.minio_api_port} ${var.minio_root_user} ${var.minio_root_password}
+                    /usr/bin/mc mb myminio/${var.mini_bucket_name}
+                    /usr/bin/mc anonymous set public myminio/${var.mini_bucket_name}
+                  EOT
+                ]
+              }
+            }
+          }
         }
 
         volume {
