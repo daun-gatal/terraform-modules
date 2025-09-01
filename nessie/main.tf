@@ -69,7 +69,7 @@ resource "helm_release" "nessie" {
         value = local.s3_warehouse_location
     },
     {
-        name = "storage.s3.defaultOptions.region"
+        name = "catalog.storage.s3.defaultOptions.region"
         value = var.nessie_s3_region
     },
     {
