@@ -52,6 +52,10 @@ resource "helm_release" "trino" {
         value = local.worker_name
     },
     {
+        name = "server.worker"
+        value = var.worker_count
+    },
+    {
         name = "server.config.authenticationType"
         value = "PASSWORD"
     },
