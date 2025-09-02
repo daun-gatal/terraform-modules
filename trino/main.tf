@@ -52,7 +52,7 @@ resource "helm_release" "trino" {
         value = local.worker_name
     },
     {
-        name = "server.worker"
+        name = "server.workers"
         value = var.worker_count
     },
     {
