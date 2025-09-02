@@ -37,7 +37,7 @@ variable "metabase_db_port" {
 
 variable "metabase_db_host" {
   description = "The host for the Metabase database"
-  type        = number
+  type        = string
 }
 
 variable "image_tag" {
