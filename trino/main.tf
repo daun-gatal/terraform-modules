@@ -10,8 +10,6 @@ terraform {
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
-  coordinator_name = "${local.prefix}-coordinator"
-  worker_name = "${local.prefix}-worker"
 }
 
 resource "kubernetes_namespace" "trino" {
@@ -39,18 +37,6 @@ resource "helm_release" "trino" {
   ]
 
   set = [
-    {
-        name  = "nameOverride"
-        value = local.release_name
-    },
-    {
-        name = "coordinatorNameOverride"
-        value = local.coordinator_name
-    },
-    {
-        name = "workerNameOverride"
-        value = local.worker_name
-    },
     {
         name = "server.workers"
         value = var.worker_count
