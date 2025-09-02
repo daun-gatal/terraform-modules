@@ -86,5 +86,5 @@ variable "nessie_s3_access_key_secret" {
 variable "tailscale_expose" {
   description = "Whether to expose the Nessie service via Tailscale"
   type        = bool
-  default     = true
+  default     = false
 }
