@@ -82,6 +82,10 @@ resource "helm_release" "trino" {
     {
         name = "coordinator.config.nodeScheduler.includeCoordinator"
         value = var.coordinator_as_worker 
+    },
+    {
+        name = "server.config.https.enabled"
+        value = var.enable_https
     }
   ]
 

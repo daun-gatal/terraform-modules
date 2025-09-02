@@ -146,3 +146,9 @@ variable "coordinator_as_worker" {
   type        = bool
   default     = false
 }
+
+variable "enable_https" {
+  description = "Whether to enable HTTPS for Trino"
+  type        = bool
+  default     = false
+}
