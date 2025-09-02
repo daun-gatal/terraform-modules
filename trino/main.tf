@@ -74,6 +74,14 @@ resource "helm_release" "trino" {
     {
         name = "worker.config.query.maxMemoryPerNode"
         value = var.trino_worker_query_max_memory
+    },
+    {
+        name = "persistence.enabled"
+        value = "true"
+    },
+    {
+        name = "coordinator.config.nodeScheduler.includeCoordinator"
+        value = var.coordinator_as_worker 
     }
   ]
 

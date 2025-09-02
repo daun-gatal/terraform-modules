@@ -140,3 +140,9 @@ variable "trino_shared_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "coordinator_as_worker" {
+  description = "Whether the coordinator should also act as a worker"
+  type        = bool
+  default     = false
+}
