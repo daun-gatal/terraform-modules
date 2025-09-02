@@ -134,3 +134,9 @@ variable "trino_worker_query_max_memory" {
   type        = string
   default     = "1GB"
 }
+
+variable "trino_shared_secret" {
+  description = "Shared secret for internal Trino communication"
+  type        = string
+  sensitive   = true
+}

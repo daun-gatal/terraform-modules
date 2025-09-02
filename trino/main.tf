@@ -97,6 +97,10 @@ resource "helm_release" "trino" {
     {
         name = "auth.passwordAuth"
         value = "${var.trino_admin_user}:${htpasswd_password.trino.bcrypt}"
+    },
+    {
+      name  = "additionalConfigProperties[0]"
+      value = "internal-communication.shared-secret=${var.trino_shared_secret}"
     }
   ]
 }
