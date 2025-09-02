@@ -62,5 +62,5 @@ variable "minio_bucket_name" {
 variable "tailscale_expose" {
   description = "Whether to expose the MinIO service via Tailscale"
   type        = bool
-  default     = true
+  default     = false
 }
