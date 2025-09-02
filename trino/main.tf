@@ -20,8 +20,7 @@ resource "kubernetes_namespace" "trino" {
   }
 }
 
-resource "htpasswd_entry" "trino" {
-  username = var.trino_admin_user
+resource "htpasswd_password" "trino" {
   password = var.trino_admin_password
 }
 
@@ -93,7 +92,7 @@ resource "helm_release" "trino" {
     },
     {
         name = "auth.passwordAuth"
-        value = htpasswd_entry.trino.result
+        value = "${var.trino_admin_user}:${htpasswd_password.trino.bcrypt}"
     }
   ]
 }
