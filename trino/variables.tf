@@ -95,7 +95,7 @@ variable "nessie_s3_path_style_access" {
 variable "tailscale_expose" {
   description = "Whether to expose Trino via Tailscale"
   type        = bool
-  default     = true
+  default     = false
   
 }
 
