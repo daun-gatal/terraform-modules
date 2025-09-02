@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    htpasswd = {
+      source  = "loafoe/htpasswd"
+      version = "1.2.1"
+    }
+  }
+}
+
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
