@@ -109,7 +109,7 @@ resource "kubernetes_ingress_v1" "metabase" {
     namespace = var.namespace
 
     annotations = {
-      "tailscale.com/funnel" = "true"
+      "tailscale.com/funnel" = "${var.tailscale_funnel}"
     }
   }
 
@@ -121,13 +121,13 @@ resource "kubernetes_ingress_v1" "metabase" {
         name = local.service_name
 
         port {
-          number = 3000
+          number = kubernetes_deployment.metabase.spec[0].template[0].spec[0].container[0].port[0].container_port
         }
       }
     }
 
     tls {
-      hosts = ["metabase.kitty-barb.ts.net"]
+      hosts = ["metabase.${var.tailscale_domain}"]
     }
   }
 }

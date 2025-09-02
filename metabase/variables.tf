@@ -55,5 +55,17 @@ variable "image" {
 variable "tailscale_expose" {
   description = "Whether to expose the Metabase service via Tailscale"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "tailscale_domain" {
+  description = "The domain to use for Tailscale exposure"
+  type        = string
+  default     = "kitty-barb.ts.net"
+}
+
+variable "tailscale_funnel" {
+  description = "Whether to enable Tailscale funnel"
+  type        = bool
+  default     = false
 }
