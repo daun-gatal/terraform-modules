@@ -72,6 +72,10 @@ resource "helm_release" "trino" {
     {
         name = "server.config.https.enabled"
         value = var.enable_https
+    },
+    {
+        name = "fullnameOverride"
+        value = "${local.release_name}"
     }
   ]
 

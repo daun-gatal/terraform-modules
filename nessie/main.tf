@@ -98,6 +98,10 @@ resource "helm_release" "nessie" {
     {
         name = "serviceMonitor.enabled"
         value = "false"
+    },
+    {
+        name = "fullnameOverride"
+        value = "${local.release_name}"
     }
   ]
 
