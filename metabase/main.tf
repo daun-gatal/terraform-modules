@@ -52,7 +52,7 @@ resource "kubernetes_deployment" "metabase" {
 
           env {
             name  = "MB_DB_PORT"
-            value = var.metabase_db_port
+            value = "${var.metabase_db_port}"
           }
 
           env {
