@@ -127,7 +127,7 @@ resource "kubernetes_ingress_v1" "metabase" {
     }
 
     tls {
-      hosts = ["metabase.${var.tailscale_domain}"]
+      hosts = ["${var.prefix}.${var.tailscale_domain}"]
     }
   }
 }
