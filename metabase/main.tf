@@ -5,6 +5,7 @@ locals {
   container_name = "${local.prefix}-container"
   service_name = "${local.prefix}-service"
   metabase_image = "${var.image}:${var.image_tag}"
+  ingress_name = "${local.prefix}-ingress"
 }
 
 resource "kubernetes_namespace" "metabase" {
@@ -101,3 +102,33 @@ resource "kubernetes_service" "metabase" {
     type                 = "ClusterIP"
   }
 }
+
+resource "kubernetes_ingress_v1" "metabase" {
+  metadata {
+    name = local.ingress_name
+    namespace = var.namespace
+
+    annotations = {
+      "tailscale.com/funnel" = "true"
+    }
+  }
+
+  spec {
+    ingress_class_name = "tailscale"
+
+    default_backend {
+      service {
+        name = local.service_name
+
+        port {
+          number = 3000
+        }
+      }
+    }
+
+    tls {
+      hosts = ["metabase.kitty-barb.ts.net"]
+    }
+  }
+}
+
