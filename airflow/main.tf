@@ -250,6 +250,10 @@ resource "helm_release" "airflow" {
     {
       name = "dagProcessor.logGroomerSidecar.enabled"
       value = var.enable_log_groomer_sidecar
+    },
+    {
+      name = "statsd.enabled"
+      value = var.enable_statsd
     }
   ]
 

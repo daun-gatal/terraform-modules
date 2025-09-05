@@ -200,3 +200,9 @@ variable "enable_log_groomer_sidecar" {
   type = bool
   default = false
 }
+
+variable "enable_statsd" {
+  description = "Enable statsd"
+  type = bool
+  default = false
+}
