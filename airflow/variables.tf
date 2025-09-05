@@ -177,13 +177,13 @@ variable "airflow_web_default_password" {
   sensitive   = true
 }
 
-variable "worker_image_repository" {
+variable "image_repository" {
   description = "Container image repository for Airflow worker"
   type        = string
   default     = "apache/airflow"
 }
 
-variable "worker_image_tag" {
+variable "image_tag" {
   description = "Container image tag for Airflow worker"
   type        = string
   default     = "3.0.6"

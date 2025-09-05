@@ -88,11 +88,15 @@ resource "helm_release" "airflow" {
     },
     {
         name = "defaultAirflowTag"
-        value = "3.0.6"
+        value = var.image_tag
+    },
+    {
+        name = "defaultAirflowRepository"
+        value = var.image_repository
     },
     {
         name = "airflowVersion"
-        value = "3.0.6"
+        value = var.image_tag
     },
     {
         name = "executor"
@@ -176,11 +180,11 @@ resource "helm_release" "airflow" {
     },
     {
         name = "config.kubernetes_executor.worker_container_repository"
-        value = var.worker_image_repository
+        value = var.image_repository
     },
     {
         name = "config.kubernetes_executor.worker_container_tag"
-        value = var.worker_image_tag
+        value = var.image_tag
     },
     {
         name = "dags.gitSync.repo"
