@@ -34,6 +34,22 @@ resource "kubernetes_secret" "airflow_secret" {
   type = "Opaque"
 }
 
+resource "kubernetes_secret" "airflow_worker_secret" {
+  metadata {
+    name      = local.worker_secret_name
+    namespace = kubernetes_namespace.airflow_worker.metadata[0].name
+  }
+
+  data = {
+    connection = "postgresql://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
+    fernet-key = var.airflow_fernet_key
+    api-secret-key = var.airflow_api_secret_key
+    gitSshKey = file("${var.git_ssh_key_path}")
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_job" "airflow_migrate" {
   metadata {
     name      = "airflow-db-migrate"
@@ -69,23 +85,6 @@ resource "kubernetes_job" "airflow_migrate" {
       }
     }
   }
-}
-
-
-resource "kubernetes_secret" "airflow_worker_secret" {
-  metadata {
-    name      = local.worker_secret_name
-    namespace = kubernetes_namespace.airflow_worker.metadata[0].name
-  }
-
-  data = {
-    connection = "postgresql://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
-    fernet-key = var.airflow_fernet_key
-    api-secret-key = var.airflow_api_secret_key
-    gitSshKey = file("${var.git_ssh_key_path}")
-  }
-
-  type = "Opaque"
 }
 
 resource "helm_release" "airflow" {
