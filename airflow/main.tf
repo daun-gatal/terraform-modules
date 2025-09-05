@@ -4,6 +4,7 @@ locals {
   worker_ns = "${var.namespace}-worker"
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
+  migrate_job_name = "${local.prefix}-migrate-job"
 }
 
 resource "kubernetes_namespace" "airflow" {
@@ -52,21 +53,21 @@ resource "kubernetes_secret" "airflow_worker_secret" {
 
 resource "kubernetes_job" "airflow_migrate" {
   metadata {
-    name      = "airflow-db-migrate"
+    name      = local.migrate_job_name
     namespace = kubernetes_namespace.airflow.metadata[0].name
   }
 
   spec {
     template {
       metadata {
-        name = "airflow-db-migrate-pod"
+        name = local.migrate_job_name
       }
 
       spec {
         restart_policy = "OnFailure"
 
         container {
-          name  = "migrate"
+          name  = local.migrate_job_name
           image = "${var.image_repository}:${var.image_tag}"
 
           command = ["bash", "-c"]
