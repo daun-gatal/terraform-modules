@@ -65,12 +65,6 @@ variable "git_ssh_key_path" {
   type        = string
 }
 
-variable "enable_web_ingress" {
-  description = "Enable web ingress for Airflow"
-  type        = bool
-  default     = false
-}
-
 variable "tailscale_funnel" {
   description = "Enable Tailscale Funnel for ingress"
   type        = bool
