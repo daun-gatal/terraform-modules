@@ -1,7 +1,6 @@
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
-  worker_ns = "${var.namespace}-worker"
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
 }
@@ -14,7 +13,7 @@ resource "kubernetes_namespace" "airflow" {
 
 resource "kubernetes_namespace" "airflow_worker" {
   metadata {
-    name = local.worker_ns
+    name = var.namespace
   }
 }
 
@@ -71,23 +70,6 @@ resource "kubernetes_job" "airflow_migrate" {
   }
 }
 
-
-resource "kubernetes_secret" "airflow_worker_secret" {
-  metadata {
-    name      = local.worker_secret_name
-    namespace = kubernetes_namespace.airflow_worker.metadata[0].name
-  }
-
-  data = {
-    connection = "postgresql://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
-    fernet-key = var.airflow_fernet_key
-    api-secret-key = var.airflow_api_secret_key
-    gitSshKey = file("${var.git_ssh_key_path}")
-  }
-
-  type = "Opaque"
-}
-
 resource "helm_release" "airflow" {
   name       = local.release_name
   namespace  = kubernetes_namespace.airflow.metadata[0].name
@@ -115,7 +97,7 @@ resource "helm_release" "airflow" {
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"
-    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
+    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"]
   EOF
   ]
 
@@ -210,7 +192,7 @@ resource "helm_release" "airflow" {
     },
     {
         name = "config.kubernetes_executor.namespace"
-        value = local.worker_ns
+        value = var.namespace
     },
     {
         name = "dags.gitSync.enabled"
