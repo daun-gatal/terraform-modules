@@ -2,6 +2,7 @@ locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
+  conn_secret_name = "${local.prefix}-conn-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
   migrate_job_name = "${local.prefix}-migrate-job"
   airflow_host = "airflow"
@@ -24,9 +25,19 @@ resource "kubernetes_secret" "airflow_secret" {
     fernet-key       = var.airflow_fernet_key
     api-secret-key   = var.airflow_api_secret_key
     gitSshKey        = file("${var.git_ssh_key_path}")
+  }
 
-    # New: Airflow AWS connection
-    minio_conn = jsonencode({
+  type = "Opaque"
+}
+
+resource "kubernetes_secret" "airflow_conn_secret" {
+  metadata {
+    name      = local.conn_secret_name
+    namespace = kubernetes_namespace.airflow.metadata[0].name
+  }
+
+  data = {
+    AIRFLOW_CONN_MINIO_CONN = jsonencode({
       conn_type = "aws"
       extra = {
         aws_access_key_id     = var.aws_access_key_id
@@ -39,7 +50,6 @@ resource "kubernetes_secret" "airflow_secret" {
 
   type = "Opaque"
 }
-
 
 resource "kubernetes_job" "airflow_migrate" {
   metadata {
@@ -106,6 +116,9 @@ resource "helm_release" "airflow" {
   version    = var.chart_version
 
   values = [<<EOF
+  extraEnvFrom: |
+    - secretRef:
+        name: "${local.conn_secret_name}"
   env:
     - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
       value: "True"
@@ -294,4 +307,33 @@ resource "helm_release" "airflow" {
   depends_on = [
     kubernetes_job.airflow_migrate
   ]
+}
+
+resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
+  metadata {
+    name = "${local.release_name}-funnel-service"
+    namespace = var.namespace
+
+    annotations = {
+      "tailscale.com/funnel" = "${var.tailscale_funnel}"
+    }
+  }
+
+  spec {
+    ingress_class_name = "tailscale"
+
+    default_backend {
+      service {
+        name = "${local.release_name}-api-server"
+
+        port {
+          number = 8080
+        }
+      }
+    }
+
+    tls {
+      hosts = ["${var.prefix}.${var.tailscale_domain}"]
+    }
+  }
 }
