@@ -74,6 +74,10 @@ resource "helm_release" "airflow" {
       value: "minio_conn"
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
+  cleanup:
+    enabled: true
+    schedule: "*/15 * * * *"
+    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
   EOF
   ]
 
