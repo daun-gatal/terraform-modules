@@ -95,24 +95,6 @@ variable "airflow_triggerer_replicas" {
   default     = 1
 }
 
-variable "airflow_enable_triggerer_persistence" {
-  description = "Enable persistence for Airflow triggerer"
-  type        = bool
-  default     = false
-}
-
-variable "airflow_triggerer_persistence_size" {
-  description = "Storage size for triggerer persistence"
-  type        = string
-  default     = "1Gi"
-}
-
-variable "airflow_triggerer_persistence_fix_permissions" {
-  description = "Fix permissions on triggerer persistence"
-  type        = bool
-  default     = false
-}
-
 variable "airflow_dag_processor_replicas" {
   description = "Number of DAG processor replicas"
   type        = number
@@ -165,12 +147,6 @@ variable "airflow_dags_git_sync_subpath" {
   default     = ""
 }
 
-variable "airflow_web_default_password" {
-  description = "Default password for Airflow webserver user"
-  type        = string
-  sensitive   = true
-}
-
 variable "image_repository" {
   description = "Container image repository for Airflow worker"
   type        = string
@@ -180,13 +156,7 @@ variable "image_repository" {
 variable "image_tag" {
   description = "Container image tag for Airflow worker"
   type        = string
-  default     = "3.0.6"
-}
-
-variable "airflow_wait_for_migrations" {
-  description = "Airflow wait for migrations"
-  type = bool
-  default = false
+  default     = "3.0.2"
 }
 
 variable "enable_log_groomer_sidecar" {

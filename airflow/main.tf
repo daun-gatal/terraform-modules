@@ -121,10 +121,6 @@ resource "helm_release" "airflow" {
         value = "KubernetesExecutor"
     },
     {
-        name = "postgresql.enabled"
-        value = false
-    },
-    {
         name = "data.metadataSecretName"
         value = local.secret_name
     },
@@ -151,22 +147,6 @@ resource "helm_release" "airflow" {
     {
         name = "triggerer.replicas"
         value = var.airflow_triggerer_replicas
-    },
-    {
-        name = "triggerer.persistence.enabled"
-        value = var.airflow_enable_triggerer_persistence
-    },
-    {
-        name = "triggerer.persistence.size"
-        value = var.airflow_triggerer_persistence_size
-    },
-    {
-        name = "triggerer.persistence.storageClassName"
-        value = "standard"
-    },
-    {
-        name = "triggerer.persistence.fixPermissions"
-        value = var.airflow_triggerer_persistence_fix_permissions
     },
     {
         name = "triggerer.logGroomerSidecar.retentionDays"
@@ -229,34 +209,6 @@ resource "helm_release" "airflow" {
         value = local.secret_name
     },
     {
-      name = "migrateDatabaseJob.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "workers.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "scheduler.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "apiServer.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "webserver.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "triggerer.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
-      name = "dagProcessor.waitForMigrations.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
       name = "workers.logGroomerSidecar.enabled"
       value = var.enable_log_groomer_sidecar
     },
@@ -276,13 +228,38 @@ resource "helm_release" "airflow" {
     {
       name = "statsd.enabled"
       value = var.enable_statsd
-    }
-  ]
-
-  set_sensitive = [
+    },
     {
-        name = "webserver.defaultUser.password"
-        value = var.airflow_web_default_password
+      name = "migrateDatabaseJob.enabled"
+      value = false
+    },
+    {
+      name = "workers.waitForMigrations.enabled"
+      value = false
+    },
+    {
+      name = "scheduler.waitForMigrations.enabled"
+      value = false
+    },
+    {
+      name = "apiServer.waitForMigrations.enabled"
+      value = false
+    },
+    {
+      name = "triggerer.waitForMigrations.enabled"
+      value = false
+    },
+    {
+      name = "dagProcessor.waitForMigrations.enabled"
+      value = false
+    },
+        {
+        name = "triggerer.persistence.enabled"
+        value = false
+    },
+    {
+        name = "postgresql.enabled"
+        value = false
     }
   ]
 
