@@ -34,7 +34,7 @@ resource "kubernetes_persistent_volume" "postgres" {
 
     persistent_volume_source {
       host_path {
-        path = "/data/${local.prefix}"  # Adjust path on your machine
+        path = "/data/${var.namespace}/${local.prefix}"  # Adjust path on your machine
         type = "DirectoryOrCreate"
       }
     }
