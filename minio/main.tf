@@ -33,7 +33,7 @@ resource "kubernetes_persistent_volume" "minio" {
 
     persistent_volume_source {
       host_path {
-        path = "/data/${local.prefix}"  # folder inside Minikube VM
+        path = "/data/${var.namespace}/${local.prefix}"  # folder inside Minikube VM
         type = "DirectoryOrCreate"
       }
     }
