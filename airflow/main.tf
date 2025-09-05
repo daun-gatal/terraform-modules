@@ -78,6 +78,18 @@ resource "helm_release" "airflow" {
     enabled: true
     schedule: "*/15 * * * *"
     args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
+  migrateDatabaseJob:
+    enabled: ${var.airflow_wait_for_migrations}
+    ttlSecondsAfterFinished: 300
+    args:
+      - "bash"
+      - "-c"
+      - >-
+        exec \
+
+        airflow {{ semverCompare ">=2.7.0" .Values.airflowVersion
+        | ternary "db migrate" (semverCompare ">=2.0.0" .Values.airflowVersion
+        | ternary "db upgrade" "upgradedb") }}
   EOF
   ]
 
