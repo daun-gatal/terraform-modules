@@ -56,12 +56,32 @@ resource "kubernetes_job" "airflow_migrate" {
       spec {
         restart_policy = "OnFailure"
 
+        # Step 1: Run migration with base Airflow version
+        init_container {
+          name  = "migrate-initial"
+          image = "${var.image_repository}:${var.airflow_migration_base_tag}"
+
+          command = ["bash", "-c"]
+          args    = ["airflow db migrate"]
+
+          env {
+            name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.airflow_secret.metadata[0].name
+                key  = "connection"
+              }
+            }
+          }
+        }
+
+        # Step 2: Run migration with target Airflow version
         container {
           name  = local.migrate_job_name
           image = "${var.image_repository}:${var.image_tag}"
 
           command = ["bash", "-c"]
-          args    = ["airflow db migrate --from-revision 0fd0c178cbe8"]
+          args    = ["airflow db migrate"]
 
           env {
             name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
@@ -86,15 +106,6 @@ resource "helm_release" "airflow" {
   version    = var.chart_version
 
   values = [<<EOF
-  ingress:
-    apiServer:
-      enabled: ${var.tailscale_funnel}
-      ingressClassName: "tailscale"
-      annotations:
-        tailscale.com/funnel: "${var.tailscale_funnel}"
-      hosts:
-        - name: ${local.airflow_host}.${var.tailscale_domain}
-
   env:
     - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
       value: "True"

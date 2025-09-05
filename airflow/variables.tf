@@ -159,6 +159,12 @@ variable "image_tag" {
   default     = "3.0.2"
 }
 
+variable "airflow_migration_base_tag" {
+  description = "Airflow version tag used for the initial database migration step before upgrading to the target version (e.g. 2.10.5)."
+  type        = string
+  default     = "2.10.5"
+}
+
 variable "enable_log_groomer_sidecar" {
   description = "Airflow log groomer sidecar"
   type = bool
