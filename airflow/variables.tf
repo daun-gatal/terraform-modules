@@ -33,6 +33,11 @@ variable "airflow_db_password" {
   sensitive   = true
 }
 
+variable "airflow_db_host" {
+  description = "Database host for Airflow"
+  type = string
+}
+
 variable "airflow_db_port" {
   description = "Database port for Airflow"
   type        = number
