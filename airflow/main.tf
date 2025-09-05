@@ -88,11 +88,11 @@ resource "helm_release" "airflow" {
     },
     {
         name = "defaultAirflowTag"
-        value = "3.0.6"
+        value = "3.0.2"
     },
     {
         name = "airflowVersion"
-        value = "3.0.6"
+        value = "3.0.2"
     },
     {
         name = "executor"
