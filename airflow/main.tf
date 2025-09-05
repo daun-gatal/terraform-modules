@@ -254,10 +254,6 @@ resource "helm_release" "airflow" {
     {
       name = "statsd.enabled"
       value = var.enable_statsd
-    },
-    {
-      name = "webserver.enabled"
-      value = true
     }
   ]
 
