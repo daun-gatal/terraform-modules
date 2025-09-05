@@ -49,42 +49,42 @@ resource "kubernetes_secret" "airflow_conn_secret" {
   type = "Opaque"
 }
 
-resource "kubernetes_job" "airflow_migrate" {
-  metadata {
-    name      = local.migrate_job_name
-    namespace = kubernetes_namespace.airflow.metadata[0].name
-  }
+# resource "kubernetes_job" "airflow_migrate" {
+#   metadata {
+#     name      = local.migrate_job_name
+#     namespace = kubernetes_namespace.airflow.metadata[0].name
+#   }
 
-  spec {
-    template {
-      metadata {
-        name = local.migrate_job_name
-      }
+#   spec {
+#     template {
+#       metadata {
+#         name = local.migrate_job_name
+#       }
 
-      spec {
-        restart_policy = "OnFailure"
+#       spec {
+#         restart_policy = "OnFailure"
 
-        container {
-          name  = local.migrate_job_name
-          image = "${var.image_repository}:${var.image_tag}"
+#         container {
+#           name  = local.migrate_job_name
+#           image = "${var.image_repository}:${var.image_tag}"
 
-          command = ["bash", "-c"]
-          args    = ["airflow db migrate"]
+#           command = ["bash", "-c"]
+#           args    = ["airflow db migrate"]
 
-          env {
-            name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.airflow_secret.metadata[0].name
-                key  = "connection"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+#           env {
+#             name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
+#             value_from {
+#               secret_key_ref {
+#                 name = kubernetes_secret.airflow_secret.metadata[0].name
+#                 key  = "connection"
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
 
 resource "helm_release" "airflow" {
   name       = local.release_name
@@ -274,12 +274,16 @@ resource "helm_release" "airflow" {
     {
         name = "postgresql.enabled"
         value = false
+    },
+    {
+        name = "migrateDatabaseJob.useHelmHooks"
+        value = false
     }
   ]
 
-  depends_on = [
-    kubernetes_job.airflow_migrate
-  ]
+  # depends_on = [
+  #   kubernetes_job.airflow_migrate
+  # ]
 }
 
 resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
