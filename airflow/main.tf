@@ -34,6 +34,44 @@ resource "kubernetes_secret" "airflow_secret" {
   type = "Opaque"
 }
 
+resource "kubernetes_job" "airflow_migrate" {
+  metadata {
+    name      = "airflow-db-migrate"
+    namespace = kubernetes_namespace.airflow.metadata[0].name
+  }
+
+  spec {
+    template {
+      metadata {
+        name = "airflow-db-migrate-pod"
+      }
+
+      spec {
+        restart_policy = "OnFailure"
+
+        container {
+          name  = "migrate"
+          image = "${var.image_repository}:${var.image_tag}"
+
+          command = ["bash", "-c"]
+          args    = ["airflow db migrate"]
+
+          env {
+            name = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.airflow_secret.metadata[0].name
+                key  = "connection"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 resource "kubernetes_secret" "airflow_worker_secret" {
   metadata {
     name      = local.worker_secret_name
@@ -266,5 +304,9 @@ resource "helm_release" "airflow" {
         name = "webserver.defaultUser.password"
         value = var.airflow_web_default_password
     }
+  ]
+
+  depends_on = [
+    kubernetes_job.airflow_migrate
   ]
 }
