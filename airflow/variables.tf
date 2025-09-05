@@ -131,7 +131,7 @@ variable "airflow_dag_processor_enabled" {
   default     = true
 }
 
-variable "airflow_logs_bukcet_name" {
+variable "airflow_logs_bucket_name" {
   description = "S3/MinIO bucket name for Airflow logs"
   type        = string
 }

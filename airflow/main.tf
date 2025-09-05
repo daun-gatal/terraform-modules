@@ -174,7 +174,7 @@ resource "helm_release" "airflow" {
     },
     {
       name  = "env[1].value"
-      value = "s3://${var.airflow_logs_bukcet_name}/${var.namespace}/${local.release_name}/logs"
+      value = "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
     },
     {
       name  = "env[2].name"
