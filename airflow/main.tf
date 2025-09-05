@@ -35,14 +35,12 @@ resource "kubernetes_secret" "airflow_conn_secret" {
   }
 
   data = {
-    AIRFLOW_CONN_AWS_DEFAULT = jsonencode({
+    AIRFLOW_CONN_MINIO_CONN = jsonencode({
       conn_type = "aws"
-      login = var.aws_access_key_id
-      password = var.aws_secret_access_key
-      extra = {
-        region_name           = var.aws_region
-        endpoint_url          = var.aws_endpoint_url
-      }
+      aws_access_key_id = var.aws_access_key_id
+      aws_secret_access_key = var.aws_secret_access_key
+      region_name           = var.aws_region
+      endpoint_url          = var.aws_endpoint_url
     })
   }
 
