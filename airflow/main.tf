@@ -1,7 +1,7 @@
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
-  worker_ns = "${local.prefix}-worker"
+  worker_ns = "${var.namespace}-worker"
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
 }
@@ -74,10 +74,6 @@ resource "helm_release" "airflow" {
       value: "minio_conn"
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
-  cleanup:
-    enabled: true
-    schedule: "*/15 * * * *"
-    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
   EOF
   ]
 
@@ -205,6 +201,10 @@ resource "helm_release" "airflow" {
     {
         name = "dags.gitSync.sshKeySecret"
         value = local.secret_name
+    },
+    {
+      name = "migrateDatabaseJob.enabled"
+      value = var.airflow_wait_for_migrations
     },
     {
       name = "workers.waitForMigrations.enabled"
