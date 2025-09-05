@@ -57,7 +57,7 @@ resource "kubernetes_job" "airflow_migrate" {
           args    = ["airflow db migrate"]
 
           env {
-            name = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
+            name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
             value_from {
               secret_key_ref {
                 name = kubernetes_secret.airflow_secret.metadata[0].name
