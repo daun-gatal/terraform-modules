@@ -194,3 +194,9 @@ variable "airflow_wait_for_migrations" {
   type = bool
   default = false
 }
+
+variable "enable_log_groomer_sidecar" {
+  description = "Airflow log groomer sidecar"
+  type = bool
+  default = false
+}

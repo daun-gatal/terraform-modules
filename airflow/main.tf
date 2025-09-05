@@ -229,6 +229,27 @@ resource "helm_release" "airflow" {
     {
       name = "triggerer.waitForMigrations.enabled"
       value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "dagProcessor.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "workers.logGroomerSidecar.enabled"
+      value = var.enable_log_groomer_sidecar
+    },
+    {
+      name = "scheduler.logGroomerSidecar.enabled"
+      value = var.enable_log_groomer_sidecar
+    },
+    {
+      name = "triggerer.logGroomerSidecar.enabled"
+      value = var.enable_log_groomer_sidecar
+    }
+    ,
+    {
+      name = "dagProcessor.logGroomerSidecar.enabled"
+      value = var.enable_log_groomer_sidecar
     }
   ]
 
