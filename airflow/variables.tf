@@ -200,3 +200,9 @@ variable "enable_statsd" {
   type = bool
   default = false
 }
+
+variable "tailscale_domain" {
+  description = "The domain to use for Tailscale exposure"
+  type        = string
+  default     = "kitty-barb.ts.net"
+}

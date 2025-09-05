@@ -4,6 +4,7 @@ locals {
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
   migrate_job_name = "${local.prefix}-migrate-job"
+  airflow_host = "airflow"
 }
 
 resource "kubernetes_namespace" "airflow" {
@@ -74,11 +75,13 @@ resource "helm_release" "airflow" {
 
   values = [<<EOF
   ingress:
-    web:
+    apiServer:
       enabled: ${var.tailscale_funnel}
       ingressClassName: "tailscale"
       annotations:
         tailscale.com/funnel: "${var.tailscale_funnel}"
+      hosts:
+        - name: ${local.airflow_host}.${var.tailscale_domain}
 
   env:
     - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
