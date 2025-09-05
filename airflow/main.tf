@@ -20,14 +20,26 @@ resource "kubernetes_secret" "airflow_secret" {
   }
 
   data = {
-    connection = "postgresql://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
-    fernet-key = var.airflow_fernet_key
-    api-secret-key = var.airflow_api_secret_key
-    gitSshKey = file("${var.git_ssh_key_path}")
+    connection       = "postgresql://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
+    fernet-key       = var.airflow_fernet_key
+    api-secret-key   = var.airflow_api_secret_key
+    gitSshKey        = file("${var.git_ssh_key_path}")
+
+    # New: Airflow AWS connection
+    minio_conn = jsonencode({
+      conn_type = "aws"
+      extra = {
+        aws_access_key_id     = var.aws_access_key_id
+        aws_secret_access_key = var.aws_secret_access_key
+        region_name           = var.aws_region
+        endpoint_url          = var.aws_endpoint_url
+      }
+    })
   }
 
   type = "Opaque"
 }
+
 
 resource "kubernetes_job" "airflow_migrate" {
   metadata {
@@ -92,6 +104,11 @@ resource "helm_release" "airflow" {
       value: "minio_conn"
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
+    - name: AIRFLOW_CONN_MINIO_CONN
+      valueFrom:
+        secretKeyRef:
+          name: ${local.secret_name}
+          key: minio_conn
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"

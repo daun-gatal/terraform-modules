@@ -176,3 +176,25 @@ variable "tailscale_domain" {
   type        = string
   default     = "kitty-barb.ts.net"
 }
+
+variable "aws_access_key_id" {
+  description = "AWS access key ID used for the initial connection."
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_secret_access_key" {
+  description = "AWS secret access key used for the initial connection."
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_region" {
+  description = "AWS Region for the connection (e.g., us-east-1)."
+  type        = string
+}
+
+variable "aws_endpoint_url" {
+  description = "Custom S3 endpoint URL (useful for MinIO or local S3-compatible storage)."
+  type        = string
+}
