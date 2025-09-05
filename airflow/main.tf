@@ -3,7 +3,7 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
-  migrate_job_name = "${local.prefix}-migrate-job"
+  init_job_name = "${local.prefix}-init-job"
   airflow_host = "airflow"
 }
 
@@ -29,27 +29,39 @@ resource "kubernetes_secret" "airflow_secret" {
   type = "Opaque"
 }
 
-resource "kubernetes_job" "airflow_migrate" {
+resource "kubernetes_job" "airflow_init" {
   metadata {
-    name      = local.migrate_job_name
+    name      = local.init_job_name
     namespace = kubernetes_namespace.airflow.metadata[0].name
   }
 
   spec {
     template {
       metadata {
-        name = local.migrate_job_name
+        name = local.init_job_name
       }
 
       spec {
         restart_policy = "OnFailure"
 
         container {
-          name  = local.migrate_job_name
+          name  = local.init_job_name
           image = "${var.image_repository}:${var.image_tag}"
 
           command = ["bash", "-c"]
-          args    = ["airflow db migrate"]
+          args = [<<EOT
+            # Run database migration
+            airflow db migrate && \
+            # Create default Airflow user
+            airflow users create \
+              -r "Admin" \
+              -u "admin" \
+              -e "admin@example.com" \
+              -f "Admin" \
+              -l "User" \
+              -p "${var.airflow_web_default_password}"
+            EOT
+          ]
 
           env {
             name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
@@ -287,6 +299,6 @@ resource "helm_release" "airflow" {
   ]
 
   depends_on = [
-    kubernetes_job.airflow_migrate
+    kubernetes_job.airflow_init
   ]
 }
