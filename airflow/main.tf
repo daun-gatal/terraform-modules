@@ -128,11 +128,6 @@ resource "helm_release" "airflow" {
       value: "minio_conn"
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
-    - name: AIRFLOW_CONN_MINIO_CONN
-      valueFrom:
-        secretKeyRef:
-          name: ${local.secret_name}
-          key: minio_conn
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"
