@@ -188,3 +188,9 @@ variable "worker_image_tag" {
   type        = string
   default     = "3.0.6"
 }
+
+variable "airflow_wait_for_migrations" {
+  description = "Airflow wait for migrations"
+  type = bool
+  default = false
+}

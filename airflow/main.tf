@@ -131,10 +131,6 @@ resource "helm_release" "airflow" {
         value = var.airflow_triggerer_replicas
     },
     {
-        name = "triggerer.enabled"
-        value = var.airflow_enable_triggerer
-    },
-    {
         name = "triggerer.persistence.enabled"
         value = var.airflow_enable_triggerer_persistence
     },
@@ -212,7 +208,27 @@ resource "helm_release" "airflow" {
     },
     {
       name = "migrateDatabaseJob.enabled"
-      value = false
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "workers.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "scheduler.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "apiServer.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "webserver.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
+    },
+    {
+      name = "triggerer.waitForMigrations.enabled"
+      value = var.airflow_wait_for_migrations
     }
   ]
 
