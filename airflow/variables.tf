@@ -192,6 +192,7 @@ variable "aws_secret_access_key" {
 variable "aws_region" {
   description = "AWS Region for the connection (e.g., us-east-1)."
   type        = string
+  default     = "us-east-1"
 }
 
 variable "aws_endpoint_url" {
