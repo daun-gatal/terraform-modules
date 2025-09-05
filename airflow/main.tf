@@ -57,25 +57,25 @@ resource "helm_release" "airflow" {
   chart      = var.chart_name
   version    = var.chart_version
 
-  # values = [<<EOF
-  # ingress:
-  #   web:
-  #     enabled: ${var.enable_web_ingress}
-  #     ingressClassName: "tailscale"
-  #     annotations:
-  #       tailscale.com/funnel: "${var.tailscale_funnel}"
+  values = [<<EOF
+  ingress:
+    web:
+      enabled: ${var.enable_web_ingress}
+      ingressClassName: "tailscale"
+      annotations:
+        tailscale.com/funnel: "${var.tailscale_funnel}"
 
-  # env:
-  #   - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
-  #     value: "True"
-  #   - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
-  #     value: "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
-  #   - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
-  #     value: "minio_conn"
-  #   - name: AIRFLOW__LOGGING__REMOTE_LOGGING
-  #     value: "True"
-  # EOF
-  # ]
+  env:
+    - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
+      value: "True"
+    - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
+      value: "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
+    - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
+      value: "minio_conn"
+    - name: AIRFLOW__LOGGING__REMOTE_LOGGING
+      value: "True"
+  EOF
+  ]
 
   set = [
     {
