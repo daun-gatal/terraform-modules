@@ -50,7 +50,7 @@ resource "helm_release" "airflow" {
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
     - name: AIRFLOW_CONN_MINIO_CONN
-      value: ${local.minio_conn}
+      value: '${local.minio_conn}'
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"
