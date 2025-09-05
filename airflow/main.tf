@@ -25,7 +25,7 @@ resource "kubernetes_secret" "airflow_secret" {
   }
 
   data = {
-    connection = "postgresql+psycopg2://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_port}/${var.airflow_db_name}"
+    connection = "postgresql+psycopg2://${var.airflow_db_user}:${var.airflow_db_password}@${var.airflow_db_host}:${var.airflow_db_port}/${var.airflow_db_name}"
     fernet-key = var.airflow_fernet_key
     api-secret-key = var.airflow_api_secret_key
     gitSshKey = file("${var.git_ssh_key_path}")
