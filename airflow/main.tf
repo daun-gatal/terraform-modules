@@ -245,29 +245,29 @@ resource "helm_release" "airflow" {
     },
     {
       name = "migrateDatabaseJob.enabled"
-      value = false
+      value = true
     },
     {
       name = "workers.waitForMigrations.enabled"
-      value = false
+      value = true
     },
     {
       name = "scheduler.waitForMigrations.enabled"
-      value = false
+      value = true
     },
     {
       name = "apiServer.waitForMigrations.enabled"
-      value = false
+      value = true
     },
     {
       name = "triggerer.waitForMigrations.enabled"
-      value = false
+      value = true
     },
     {
       name = "dagProcessor.waitForMigrations.enabled"
-      value = false
+      value = true
     },
-        {
+    {
         name = "triggerer.persistence.enabled"
         value = false
     },
