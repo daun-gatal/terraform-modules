@@ -61,7 +61,7 @@ resource "helm_release" "airflow" {
   ingress:
     web:
       enabled: ${var.enable_web_ingress}
-      ingressClassName: "tailscale
+      ingressClassName: "tailscale"
       annotations:
         tailscale.com/funnel: "${var.tailscale_funnel}"
   EOF
