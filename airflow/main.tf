@@ -64,6 +64,20 @@ resource "helm_release" "airflow" {
       ingressClassName: "tailscale"
       annotations:
         tailscale.com/funnel: "${var.tailscale_funnel}"
+
+  env:
+    - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
+      value: "True"
+    - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
+      value: "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
+    - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
+      value: "minio_conn"
+    - name: AIRFLOW__LOGGING__REMOTE_LOGGING
+      value: "True"
+  cleanup:
+    enabled: true
+    schedule: "*/15 * * * *"
+    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
   EOF
   ]
 
@@ -83,14 +97,6 @@ resource "helm_release" "airflow" {
     {
         name = "executor"
         value = "KubernetesExecutor"
-    },
-    {
-        name = "cleanup.enabled"
-        value = true
-    },
-    {
-        name = "cleanup.args[2]"
-        value = "exec airflow kubernetes cleanup-pods --namespace=${kubernetes_namespace.airflow_worker.metadata[0].name}"
     },
     {
         name = "postgresql.enabled"
@@ -159,38 +165,6 @@ resource "helm_release" "airflow" {
     {
         name = "dagProcessor.enabled"
         value = var.airflow_dag_processor_enabled
-    },
-    {
-      name  = "env[0].name"
-      value = "AIRFLOW__LOGGING__DELETE_LOCAL_LOGS"
-    },
-    {
-      name  = "env[0].value"
-      value = "True"
-    },
-    {
-      name  = "env[1].name"
-      value = "AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER"
-    },
-    {
-      name  = "env[1].value"
-      value = "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
-    },
-    {
-      name  = "env[2].name"
-      value = "AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID"
-    },
-    {
-      name  = "env[2].value"
-      value = "minio_conn"
-    },
-    {
-      name  = "env[3].name"
-      value = "AIRFLOW__LOGGING__REMOTE_LOGGING"
-    },
-    {
-      name  = "env[3].value"
-      value = "True"
     },
     {
         name = "config.scheduler.standalone_dag_processor"
