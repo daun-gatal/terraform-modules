@@ -2,8 +2,12 @@ locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
-  conn_secret_name = "${local.prefix}-conn-secret"
-  migrate_job_name = "${local.prefix}-migrate-job"
+  minio_conn = jsonencode({conn_type = "aws"
+      aws_access_key_id = var.aws_access_key_id
+      aws_secret_access_key = var.aws_secret_access_key
+      region_name           = var.aws_region
+      endpoint_url          = var.aws_endpoint_url
+  })
 }
 
 resource "kubernetes_namespace" "airflow" {
@@ -28,25 +32,6 @@ resource "kubernetes_secret" "airflow_secret" {
   type = "Opaque"
 }
 
-resource "kubernetes_secret" "airflow_conn_secret" {
-  metadata {
-    name      = local.conn_secret_name
-    namespace = kubernetes_namespace.airflow.metadata[0].name
-  }
-
-  data = {
-    AIRFLOW_CONN_MINIO_CONN = jsonencode({
-      conn_type = "aws"
-      aws_access_key_id = var.aws_access_key_id
-      aws_secret_access_key = var.aws_secret_access_key
-      region_name           = var.aws_region
-      endpoint_url          = var.aws_endpoint_url
-    })
-  }
-
-  type = "Opaque"
-}
-
 resource "helm_release" "airflow" {
   name       = local.release_name
   namespace  = kubernetes_namespace.airflow.metadata[0].name
@@ -55,9 +40,6 @@ resource "helm_release" "airflow" {
   version    = var.chart_version
 
   values = [<<EOF
-  extraEnvFrom: |
-    - secretRef:
-        name: "${local.conn_secret_name}"
   env:
     - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
       value: "True"
@@ -67,6 +49,8 @@ resource "helm_release" "airflow" {
       value: "minio_conn"
     - name: AIRFLOW__LOGGING__REMOTE_LOGGING
       value: "True"
+    - name: AIRFLOW_CONN_MINIO_CONN
+      value: ${local.minio_conn}
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"
