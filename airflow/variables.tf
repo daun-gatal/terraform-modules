@@ -198,4 +198,5 @@ variable "aws_region" {
 variable "aws_endpoint_url" {
   description = "Custom S3 endpoint URL (useful for MinIO or local S3-compatible storage)."
   type        = string
+  default     = null
 }
