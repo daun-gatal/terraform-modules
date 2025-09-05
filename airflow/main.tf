@@ -209,6 +209,10 @@ resource "helm_release" "airflow" {
     {
         name = "dags.gitSync.sshKeySecret"
         value = local.secret_name
+    },
+    {
+      name = "migrateDatabaseJob.enabled"
+      value = false
     }
   ]
 
