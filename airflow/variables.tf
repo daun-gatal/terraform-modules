@@ -156,13 +156,7 @@ variable "image_repository" {
 variable "image_tag" {
   description = "Container image tag for Airflow worker"
   type        = string
-  default     = "3.0.2"
-}
-
-variable "airflow_migration_base_tag" {
-  description = "Airflow version tag used for the initial database migration step before upgrading to the target version (e.g. 2.10.5)."
-  type        = string
-  default     = "2.10.5"
+  default     = "3.0.6"
 }
 
 variable "enable_log_groomer_sidecar" {

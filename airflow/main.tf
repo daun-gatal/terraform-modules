@@ -3,9 +3,7 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
   conn_secret_name = "${local.prefix}-conn-secret"
-  worker_secret_name = "${local.prefix}-worker-secret"
   migrate_job_name = "${local.prefix}-migrate-job"
-  airflow_host = "airflow"
 }
 
 resource "kubernetes_namespace" "airflow" {
@@ -66,26 +64,6 @@ resource "kubernetes_job" "airflow_migrate" {
       spec {
         restart_policy = "OnFailure"
 
-        # Step 1: Run migration with base Airflow version
-        init_container {
-          name  = "migrate-initial"
-          image = "${var.image_repository}:${var.airflow_migration_base_tag}"
-
-          command = ["bash", "-c"]
-          args    = ["airflow db migrate"]
-
-          env {
-            name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.airflow_secret.metadata[0].name
-                key  = "connection"
-              }
-            }
-          }
-        }
-
-        # Step 2: Run migration with target Airflow version
         container {
           name  = local.migrate_job_name
           image = "${var.image_repository}:${var.image_tag}"
