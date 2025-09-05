@@ -49,7 +49,7 @@ resource "kubernetes_job" "airflow_migrate" {
           image = "${var.image_repository}:${var.image_tag}"
 
           command = ["bash", "-c"]
-          args    = ["airflow db migrate"]
+          args    = ["airflow db reset"]
 
           env {
             name = "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"
