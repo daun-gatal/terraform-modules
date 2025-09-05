@@ -1,7 +1,6 @@
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
-  worker_ns = "${var.namespace}-worker"
   secret_name = "${local.prefix}-secret"
   worker_secret_name = "${local.prefix}-worker-secret"
   migrate_job_name = "${local.prefix}-migrate-job"
@@ -10,12 +9,6 @@ locals {
 resource "kubernetes_namespace" "airflow" {
   metadata {
     name = var.namespace
-  }
-}
-
-resource "kubernetes_namespace" "airflow_worker" {
-  metadata {
-    name = local.worker_ns
   }
 }
 
@@ -115,7 +108,7 @@ resource "helm_release" "airflow" {
   cleanup:
     enabled: true
     schedule: "*/15 * * * *"
-    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${local.worker_ns}"]
+    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"]
   EOF
   ]
 
@@ -210,7 +203,7 @@ resource "helm_release" "airflow" {
     },
     {
         name = "config.kubernetes_executor.namespace"
-        value = local.worker_ns
+        value = var.namespace
     },
     {
         name = "dags.gitSync.enabled"
@@ -296,10 +289,6 @@ resource "helm_release" "airflow" {
     {
       name = "statsd.enabled"
       value = var.enable_statsd
-    },
-    {
-      name = "multiNamespaceMode"
-      value = true
     }
   ]
 
