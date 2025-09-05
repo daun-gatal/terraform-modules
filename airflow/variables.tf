@@ -200,3 +200,9 @@ variable "aws_endpoint_url" {
   type        = string
   default     = null
 }
+
+variable "airflow_default_password" {
+  description = "Default password for login to Airflow"
+  type = string
+  sensitive = true
+}
