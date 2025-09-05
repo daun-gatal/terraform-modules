@@ -207,10 +207,6 @@ resource "helm_release" "airflow" {
         value = local.secret_name
     },
     {
-      name = "migrateDatabaseJob.enabled"
-      value = var.airflow_wait_for_migrations
-    },
-    {
       name = "workers.waitForMigrations.enabled"
       value = var.airflow_wait_for_migrations
     },
