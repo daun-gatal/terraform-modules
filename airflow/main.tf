@@ -265,7 +265,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
   count = var.tailscale_funnel ? 1 : 0
 
   metadata {
-    name      = "${local.release_name}-funnel-service"
+    name      = "${local.release_name}-funnel-ingress"
     namespace = var.namespace
 
     annotations = {
@@ -276,12 +276,23 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
   spec {
     ingress_class_name = "tailscale"
 
-    default_backend {
-      service {
-        name = "${local.release_name}-api-server"
+    rule {
+      host = "${var.prefix}.${var.tailscale_domain}"
 
-        port {
-          number = 8080
+      http {
+        path {
+          path     = "/"            # your desired path
+          path_type = "ImplementationSpecific"      # can be "Prefix", "Exact", or "ImplementationSpecific"
+
+          backend {
+            service {
+              name = "${local.release_name}-api-server"
+
+              port {
+                number = 8080
+              }
+            }
+          }
         }
       }
     }
