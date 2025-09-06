@@ -262,8 +262,6 @@ resource "helm_release" "airflow" {
 }
 
 resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
-  count = var.tailscale_funnel ? 1 : 0
-
   metadata {
     name      = "${local.release_name}-funnel-ingress"
     namespace = var.namespace
