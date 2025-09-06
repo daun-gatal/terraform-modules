@@ -276,23 +276,12 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
   spec {
     ingress_class_name = "tailscale"
 
-    rule {
-      host = "${var.prefix}.${var.tailscale_domain}"
+    default_backend {
+      service {
+        name = "${local.release_name}-api-server"
 
-      http {
-        path {
-          path     = "/"            # your desired path
-          path_type = "ImplementationSpecific"      # can be "Prefix", "Exact", or "ImplementationSpecific"
-
-          backend {
-            service {
-              name = "${local.release_name}-api-server"
-
-              port {
-                number = 8080
-              }
-            }
-          }
+        port {
+          number = 8080
         }
       }
     }
@@ -301,4 +290,6 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
       hosts = ["${var.prefix}.${var.tailscale_domain}"]
     }
   }
+
+  depends_on = [ helm_release.airflow ]
 }
