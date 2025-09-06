@@ -2,12 +2,36 @@ locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
+
   minio_conn = jsonencode({conn_type = "aws"
       aws_access_key_id = var.aws_access_key_id
       aws_secret_access_key = var.aws_secret_access_key
       region_name           = var.aws_region
       endpoint_url          = var.aws_endpoint_url
   })
+
+  remote_logging_env = var.enable_remote_logging ? [
+    {
+      name  = "AIRFLOW__LOGGING__DELETE_LOCAL_LOGS"
+      value = "True"
+    },
+    {
+      name  = "AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER"
+      value = "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
+    },
+    {
+      name  = "AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID"
+      value = "minio_conn"
+    },
+    {
+      name  = "AIRFLOW__LOGGING__REMOTE_LOGGING"
+      value = "True"
+    },
+    {
+      name  = "AIRFLOW_CONN_MINIO_CONN"
+      value = local.minio_conn
+    }
+  ] : []
 }
 
 resource "kubernetes_namespace" "airflow" {
@@ -39,23 +63,19 @@ resource "helm_release" "airflow" {
   chart      = var.chart_name
   version    = var.chart_version
 
-  values = [<<EOF
-  env:
-    - name: AIRFLOW__LOGGING__DELETE_LOCAL_LOGS
-      value: "True"
-    - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
-      value: "s3://${var.airflow_logs_bucket_name}/${var.namespace}/${local.release_name}/logs"
-    - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
-      value: "minio_conn"
-    - name: AIRFLOW__LOGGING__REMOTE_LOGGING
-      value: "True"
-    - name: AIRFLOW_CONN_MINIO_CONN
-      value: '${local.minio_conn}'
-  cleanup:
-    enabled: true
-    schedule: "*/15 * * * *"
-    args: ["bash", "-c", "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"]
-  EOF
+  values = [
+    yamlencode({
+      env = local.remote_logging_env
+      cleanup = {
+        enabled  = true
+        schedule = "*/15 * * * *"
+        args     = [
+          "bash",
+          "-c",
+          "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"
+        ]
+      }
+    })
   ]
 
   set = [
@@ -187,6 +207,19 @@ resource "helm_release" "airflow" {
     {
       name = "statsd.enabled"
       value = var.enable_statsd
+    },
+    {
+      name  = "scheduler.args"
+      value = jsonencode([
+        "bash",
+        "-c",
+        <<-EOT
+          if [ "$AIRFLOW__LOGGING__REMOTE_LOGGING" = "True" ]; then
+            airflow connections add minio_conn --conn-json '${local.minio_conn}' || true
+          fi
+          exec airflow scheduler
+        EOT
+      ])
     },
     {
       name = "workers.waitForMigrations.enabled"
