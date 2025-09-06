@@ -53,8 +53,8 @@ variable "tailscale_funnel" {
 
 variable "tailscale_expose" {
   description = "Whether to expose the Airflow service via Tailscale"
-  type        = bool
-  default     = false
+  type        = string
+  default     = "false"
 }
 
 variable "airflow_scheduler_replicas" {
