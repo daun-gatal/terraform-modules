@@ -78,7 +78,7 @@ resource "helm_release" "airflow" {
         service = {
           annotations = {
             "tailscale.com/expose" = tostring(var.tailscale_expose)
-            "tailscale.com/hostname" = local.prefix
+            "tailscale.com/hostname" = "${local.prefix}-int"
           }
         }
       }
@@ -288,7 +288,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
     }
 
     tls {
-      hosts = ["${var.prefix}"]
+      hosts = ["${var.prefix}-ext"]
     }
   }
 
