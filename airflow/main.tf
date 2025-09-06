@@ -66,6 +66,7 @@ resource "helm_release" "airflow" {
   values = [
     yamlencode({
       env = local.remote_logging_env
+
       cleanup = {
         enabled  = true
         schedule = "*/15 * * * *"
@@ -75,7 +76,15 @@ resource "helm_release" "airflow" {
           "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"
         ]
       }
-    })
+
+    scheduler = {
+        args = [
+          "bash",
+          "-c",
+          "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json '${local.minio_conn}' || true; fi; exec airflow scheduler"
+        ]
+      }
+    }),
   ]
 
   set = [
@@ -252,17 +261,6 @@ resource "helm_release" "airflow" {
       name = "webserver.defaultUser.password"
       value = var.airflow_default_password
     },
-  ]
-
-  set_sensitive = [
-    {
-      name  = "scheduler.args"
-      value = jsonencode([
-        "bash",
-        "-c",
-        "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json ${local.minio_conn} || true; fi; exec airflow scheduler"
-      ])
-    }
   ]
 }
 
