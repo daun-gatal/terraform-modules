@@ -3,13 +3,6 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
 
-  minio_conn = jsonencode({conn_type = "aws"
-      aws_access_key_id = var.aws_access_key_id
-      aws_secret_access_key = var.aws_secret_access_key
-      region_name           = var.aws_region
-      endpoint_url          = var.aws_endpoint_url
-  })
-
   remote_logging_env = var.enable_remote_logging ? [
     {
       name  = "AIRFLOW__LOGGING__DELETE_LOCAL_LOGS"
@@ -26,10 +19,6 @@ locals {
     {
       name  = "AIRFLOW__LOGGING__REMOTE_LOGGING"
       value = "True"
-    },
-    {
-      name  = "AIRFLOW_CONN_MINIO_CONN"
-      value = local.minio_conn
     }
   ] : []
 }
@@ -81,7 +70,7 @@ resource "helm_release" "airflow" {
         args = [
           "bash",
           "-c",
-          "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json '${local.minio_conn}' || true; fi; exec airflow scheduler"
+          "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-type 's3' --conn-login '${var.aws_access_key_id}' --conn-password '${var.aws_secret_access_key}' --conn-extra \"{\\\"region_name\\\": \\\"${var.aws_region}\\\", \\\"endpoint_url\\\": \\\"${var.aws_endpoint_url}\\\"}\" || true; fi; exec airflow scheduler"
         ]
       }
     }),
