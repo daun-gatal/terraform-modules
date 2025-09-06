@@ -287,7 +287,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
     }
 
     tls {
-      hosts = ["${var.prefix}.${var.tailscale_domain}"]
+      hosts = [var.prefix]
     }
   }
 
