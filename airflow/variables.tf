@@ -46,7 +46,13 @@ variable "git_ssh_key_path" {
 }
 
 variable "tailscale_funnel" {
-  description = "Enable Tailscale Funnel for ingress"
+  description = "Enable Tailscale Funnel for ingress so Airflow can be accessible through internet"
+  type        = bool
+  default     = false
+}
+
+variable "tailscale_expose" {
+  description = "Whether to expose the Airflow service via Tailscale"
   type        = bool
   default     = false
 }

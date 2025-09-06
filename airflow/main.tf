@@ -66,14 +66,22 @@ resource "helm_release" "airflow" {
         ]
       }
 
-    scheduler = {
+      scheduler = {
         args = [
           "bash",
           "-c",
           "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-type 'aws' --conn-login '${var.aws_access_key_id}' --conn-password '${var.aws_secret_access_key}' --conn-extra \"{\\\"region_name\\\": \\\"${var.aws_region}\\\", \\\"endpoint_url\\\": \\\"${var.aws_endpoint_url}\\\"}\" || true; fi; exec airflow scheduler"
         ]
       }
-    }),
+
+      apiServer = {
+        service = {
+          annotations = {
+            "tailscale.com/expose" = "${var.tailscale_expose}"
+          }
+        }
+      }
+    })
   ]
 
   set = [
