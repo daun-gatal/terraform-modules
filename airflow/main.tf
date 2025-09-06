@@ -283,7 +283,6 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
 
         port {
           name = "api-server"
-          number = 8080
         }
       }
     }
