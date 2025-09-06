@@ -74,10 +74,22 @@ resource "helm_release" "airflow" {
         ]
       }
 
+      ingress = {
+        apiServer = {
+          enabled = var.tailscale_funnel
+          pathType = "Prefix"
+          annotations = {
+            "tailscale.com/funnel" = tostring(var.tailscale_funnel)
+          }
+          ingressClassName = "tailscale"
+          hosts = ["${var.prefix}.${var.tailscale_domain}"]
+        }
+      }
+
       apiServer = {
         service = {
           annotations = {
-            "tailscale.com/expose" = "${var.tailscale_expose}"
+            "tailscale.com/expose" = tostring(var.tailscale_expose)
           }
         }
       }
@@ -261,31 +273,31 @@ resource "helm_release" "airflow" {
   ]
 }
 
-resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
-  metadata {
-    name = "${local.release_name}-funnel-service"
-    namespace = var.namespace
+# resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
+#   metadata {
+#     name = "${local.release_name}-funnel-service"
+#     namespace = var.namespace
 
-    annotations = {
-      "tailscale.com/funnel" = "${var.tailscale_funnel}"
-    }
-  }
+#     annotations = {
+#       "tailscale.com/funnel" = "${var.tailscale_funnel}"
+#     }
+#   }
 
-  spec {
-    ingress_class_name = "tailscale"
+#   spec {
+#     ingress_class_name = "tailscale"
 
-    default_backend {
-      service {
-        name = "${local.release_name}-api-server"
+#     default_backend {
+#       service {
+#         name = "${local.release_name}-api-server"
 
-        port {
-          number = 8080
-        }
-      }
-    }
+#         port {
+#           number = 8080
+#         }
+#       }
+#     }
 
-    tls {
-      hosts = ["${var.prefix}.${var.tailscale_domain}"]
-    }
-  }
-}
+#     tls {
+#       hosts = ["${var.prefix}.${var.tailscale_domain}"]
+#     }
+#   }
+# }
