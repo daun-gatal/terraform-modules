@@ -33,6 +33,7 @@ resource "helm_release" "trino" {
   service:
     annotations:
       tailscale.com/expose: "${var.tailscale_expose}"
+      tailscale.com/hostname: "${var.prefix}"
   EOF
   ]
 

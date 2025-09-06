@@ -129,6 +129,7 @@ resource "kubernetes_service" "postgres" {
     namespace = var.namespace
     annotations = {
       "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${local.prefix}"
     }
   }
 

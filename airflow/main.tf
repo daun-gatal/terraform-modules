@@ -272,7 +272,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
   }
 
   spec {
-    ingress_class_name = var.tailscale_expose ? "tailscale" : ""
+    ingress_class_name = var.tailscale_expose || var.tailscale_funnel ? "tailscale" : ""
 
     default_backend {
       service {

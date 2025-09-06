@@ -86,6 +86,7 @@ resource "kubernetes_service" "metabase" {
     namespace = var.namespace
     annotations = {
       "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${local.prefix}"
     }
   }
 
