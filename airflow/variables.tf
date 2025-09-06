@@ -157,12 +157,6 @@ variable "enable_statsd" {
   default = false
 }
 
-variable "tailscale_domain" {
-  description = "The domain to use for Tailscale exposure"
-  type        = string
-  default     = "kitty-barb.ts.net"
-}
-
 variable "aws_access_key_id" {
   description = "AWS access key ID used for the initial connection."
   type        = string

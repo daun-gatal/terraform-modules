@@ -58,12 +58,6 @@ variable "tailscale_expose" {
   default     = false
 }
 
-variable "tailscale_domain" {
-  description = "The domain to use for Tailscale exposure"
-  type        = string
-  default     = "kitty-barb.ts.net"
-}
-
 variable "tailscale_funnel" {
   description = "Whether to enable Tailscale funnel"
   type        = bool
