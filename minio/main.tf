@@ -140,6 +140,7 @@ resource "kubernetes_service" "minio" {
     namespace = kubernetes_namespace.minio.metadata[0].name
     annotations = {
       "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${local.prefix}"
     }
   }
 
