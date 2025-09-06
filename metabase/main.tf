@@ -105,6 +105,8 @@ resource "kubernetes_service" "metabase" {
 }
 
 resource "kubernetes_ingress_v1" "metabase" {
+  count = var.tailscale_funnel ? 1 : 0
+
   metadata {
     name = local.ingress_name
     namespace = var.namespace
