@@ -209,19 +209,6 @@ resource "helm_release" "airflow" {
       value = var.enable_statsd
     },
     {
-      name  = "scheduler.args"
-      value = jsonencode([
-        "bash",
-        "-c",
-        <<-EOT
-          if [ "$AIRFLOW__LOGGING__REMOTE_LOGGING" = "True" ]; then
-            airflow connections add minio_conn --conn-json '${local.minio_conn}' || true
-          fi
-          exec airflow scheduler
-        EOT
-      ])
-    },
-    {
       name = "workers.waitForMigrations.enabled"
       value = true
     },
@@ -265,6 +252,22 @@ resource "helm_release" "airflow" {
       name = "webserver.defaultUser.password"
       value = var.airflow_default_password
     },
+  ]
+
+  set_sensitive = [
+    {
+      name  = "scheduler.args"
+      value = yamlencode([
+        "bash",
+        "-c",
+        <<-EOT
+          if [ "$AIRFLOW__LOGGING__REMOTE_LOGGING" = "True" ]; then
+            airflow connections add minio_conn --conn-json '${local.minio_conn}' || true
+          fi
+          exec airflow scheduler
+        EOT
+      ])
+    }
   ]
 }
 
