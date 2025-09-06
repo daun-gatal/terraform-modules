@@ -90,10 +90,6 @@ variable "airflow_dag_processor_enabled" {
 variable "airflow_logs_bucket_name" {
   type      = string
   default   = null
-  validation {
-    condition     = (!var.enable_remote_logging) || (var.airflow_logs_bucket_name != null && var.airflow_logs_bucket_name != "")
-    error_message = "airflow_logs_bucket_name must be set when enable_remote_logging = true."
-  }
 }
 
 variable "airflow_dags_git_sync_enabled" {
@@ -166,10 +162,6 @@ variable "aws_access_key_id" {
   type        = string
   default     = null
   sensitive   = true
-  validation {
-    condition     = (!var.enable_remote_logging) || (var.aws_access_key_id != null && var.aws_access_key_id != "")
-    error_message = "aws_access_key_id must be set when enable_remote_logging = true."
-  }
 }
 
 variable "aws_secret_access_key" {
@@ -177,10 +169,6 @@ variable "aws_secret_access_key" {
   type        = string
   default     = null
   sensitive   = true
-  validation {
-    condition     = (!var.enable_remote_logging) || (var.aws_access_key_id != null && var.aws_access_key_id != "")
-    error_message = "aws_access_key_id must be set when enable_remote_logging = true."
-  }
 }
 
 variable "aws_region" {
@@ -193,10 +181,6 @@ variable "aws_endpoint_url" {
   description = "Custom S3 endpoint URL (useful for MinIO or local S3-compatible storage)."
   type        = string
   default     = null
-  validation {
-    condition     = (!var.enable_remote_logging) || (var.aws_access_key_id != null && var.aws_access_key_id != "")
-    error_message = "aws_access_key_id must be set when enable_remote_logging = true."
-  }
 }
 
 variable "airflow_default_password" {
