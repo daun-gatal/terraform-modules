@@ -256,12 +256,13 @@ resource "helm_release" "airflow" {
 
   set_sensitive = [
     {
-      name  = "scheduler.args"
-      value = jsonencode([
-      "bash",
-      "-c",
-      "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json '${local.minio_conn}' || true; fi; exec airflow scheduler"
-    ])
+      name  = "scheduler.args[2]"
+      value = <<-EOT
+        if [ "$AIRFLOW__LOGGING__REMOTE_LOGGING" = "True" ]; then
+          airflow connections add minio_conn --conn-json '${local.minio_conn}' || true
+        fi
+        exec airflow scheduler
+      EOT
     }
   ]
 }
