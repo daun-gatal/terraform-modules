@@ -74,13 +74,13 @@ resource "helm_release" "airflow" {
         ]
       }
 
-      apiServer = {
-        service = {
-          annotations = {
-            "tailscale.com/expose" = tostring(var.tailscale_expose)
-          }
-        }
-      }
+      # apiServer = {
+      #   service = {
+      #     annotations = {
+      #       "tailscale.com/expose" = tostring(var.tailscale_expose)
+      #     }
+      #   }
+      # }
     })
   ]
 
@@ -274,7 +274,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
   }
 
   spec {
-    ingress_class_name = "tailscale"
+    ingress_class_name = var.tailscale_expose ? "tailscale" : ""
 
     default_backend {
       service {
@@ -287,7 +287,7 @@ resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
     }
 
     tls {
-      hosts = [var.prefix]
+      hosts = ["${var.prefix}"]
     }
   }
 
