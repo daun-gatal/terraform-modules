@@ -22,30 +22,10 @@ variable "chart_version" {
   default     = "1.18.0"
 }
 
-variable "airflow_db_user" {
-  description = "Database username for Airflow"
-  type        = string
-}
-
-variable "airflow_db_password" {
-  description = "Database password for Airflow"
-  type        = string
-  sensitive   = true
-}
-
-variable "airflow_db_host" {
-  description = "Database host for Airflow"
+variable "airflow_metadata_db_conn" {
+  description = "The SQLAlchemy connection for metadata DB with format postgresql://{username}:{password}@{host}:{port}/{db_name}"
   type = string
-}
-
-variable "airflow_db_port" {
-  description = "Database port for Airflow"
-  type        = number
-}
-
-variable "airflow_db_name" {
-  description = "Database name for Airflow"
-  type        = string
+  sensitive = true
 }
 
 variable "airflow_fernet_key" {
