@@ -260,7 +260,7 @@ resource "helm_release" "airflow" {
       value = jsonencode([
         "bash",
         "-c",
-        "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json '${local.minio_conn}' || true; fi; exec airflow scheduler"
+        "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-json ${local.minio_conn} || true; fi; exec airflow scheduler"
       ])
     }
   ]
