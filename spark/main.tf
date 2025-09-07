@@ -15,19 +15,6 @@ resource "kubernetes_manifest" "spark_cluster" {
       namespace = var.namespace
     }
     spec = {
-      masterSpec = {
-        serviceMetadata = {
-          annotations = {
-            "tailscale.com/expose" = tostring(var.tailscale_expose)
-            "tailscale.com/hostname" = "${var.prefix}-master-int"
-          }
-        }
-        serviceSpec = {
-          clusterIP = ""
-          clusterIPs = []
-        }
-      }
-
       runtimeVersions = {
         sparkVersion = var.image_tag
       }
