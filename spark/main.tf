@@ -15,6 +15,15 @@ resource "kubernetes_manifest" "spark_cluster" {
       namespace = var.namespace
     }
     spec = {
+      masterSpec = {
+        serviceMetadata = {
+          annotations = {
+            "tailscale.com/expose" = "${var.tailscale_expose}"
+            "tailscale.com/hostname" = "${var.prefix}-master-int"
+          }
+        }
+      }
+
       runtimeVersions = {
         sparkVersion = var.image_tag
       }
@@ -43,7 +52,7 @@ resource "kubernetes_service" "spark_connect" {
     labels = { app = local.spark_conn }
     annotations = {
       "tailscale.com/expose" = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${var.prefix}-int"
+      "tailscale.com/hostname" = "${var.prefix}-conn-int"
     }
   }
 
