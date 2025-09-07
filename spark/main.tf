@@ -4,6 +4,7 @@ locals {
   spark_conn_svc = "${local.spark_conn}-service"
   spark_image = "${var.image_repository}:${var.image_tag}"
   spark_cluster = "${var.prefix}-spark-cluster"
+  spark_cluster_ingress = "${local.spark_cluster}-ingress"
 }
 
 resource "kubernetes_manifest" "spark_cluster" {
@@ -106,6 +107,35 @@ resource "kubernetes_stateful_set" "spark_connect" {
           ]
         }
       }
+    }
+  }
+
+  depends_on = [ kubernetes_manifest.spark_cluster ]
+}
+
+resource "kubernetes_ingress_v1" "spark_ingress" {
+  count = var.tailscale_expose ? 1 : 0
+
+  metadata {
+    name = local.spark_cluster_ingress
+    namespace = var.namespace
+  }
+
+  spec {
+    ingress_class_name = "tailscale"
+
+    default_backend {
+      service {
+        name = "${local.spark_cluster}-master-svc"
+
+        port {
+          name = "web"
+        }
+      }
+    }
+
+    tls {
+      hosts = ["${var.prefix}-ui-int"]
     }
   }
 
