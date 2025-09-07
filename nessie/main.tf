@@ -51,7 +51,7 @@ resource "helm_release" "nessie" {
   service:
     annotations:
       tailscale.com/expose: "${var.tailscale_expose}"
-      tailscale.com/hostname: "${local.prefix}"
+      tailscale.com/hostname: "${local.prefix}-int"
   EOF
   ]
 
