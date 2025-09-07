@@ -1,4 +1,4 @@
-# Terraform Module V1
+# Terraform Module
 
 This Terraform module deploys resources to a Kubernetes cluster (i.e., Minikube).
 
