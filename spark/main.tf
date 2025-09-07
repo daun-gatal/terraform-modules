@@ -22,6 +22,10 @@ resource "kubernetes_manifest" "spark_cluster" {
             "tailscale.com/hostname" = "${var.prefix}-master-int"
           }
         }
+        serviceSpec = {
+          clusterIP = ""
+          clusterIPs = []
+        }
       }
 
       runtimeVersions = {
