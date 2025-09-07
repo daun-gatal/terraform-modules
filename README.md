@@ -16,8 +16,24 @@ Before using this module, ensure you have the following:
      ```
 
 2. **Tailscale account and Kubernetes Operator setup**
-   - Follow the Tailscale Kubernetes operator setup guide:
-     https://tailscale.com/kb/1236/kubernetes-operator#setup
+   - Add the Tailscale Helm repo and update:
+     ```bash
+     helm repo add tailscale https://pkgs.tailscale.com/helmcharts
+     helm repo update
+     ```
+   - Install or upgrade the Tailscale operator:
+     ```bash
+     helm upgrade \
+       --install \
+       tailscale-operator \
+       tailscale/tailscale-operator \
+       --namespace=tailscale \
+       --create-namespace \
+       --set-string oauth.clientId="<OAuth client ID>" \
+       --set-string oauth.clientSecret="<OAuth client secret>" \
+       --wait
+     ```
+   - Follow the full setup guide: https://tailscale.com/kb/1236/kubernetes-operator#setup
 
 3. **Apache Spark Kubernetes Operator**
    - The Spark Operator must be installed on your cluster to manage Spark applications.
