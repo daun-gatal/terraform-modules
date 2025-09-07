@@ -4,6 +4,7 @@ locals {
   spark_conn_svc = "${local.spark_conn}-service"
   spark_image = "${var.image_repository}:${var.image_tag}"
   spark_cluster = "${var.prefix}-spark-cluster"
+  spark_cluster_custom_svc = "${local.spark_cluster}-custom-service"
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
 }
 
@@ -113,31 +114,28 @@ resource "kubernetes_stateful_set" "spark_connect" {
   depends_on = [ kubernetes_manifest.spark_cluster ]
 }
 
-resource "kubernetes_ingress_v1" "spark_ingress" {
+resource "kubernetes_service" "spark_custom_service" {
   count = var.tailscale_expose ? 1 : 0
 
   metadata {
-    name = local.spark_cluster_ingress
+    name      = local.spark_cluster_custom_svc
     namespace = var.namespace
+    labels = { app = local.spark_cluster }
+    annotations = {
+      "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${var.prefix}-master-int"
+    }
   }
 
   spec {
-    ingress_class_name = "tailscale"
+    selector = { spark-role = "master" }
 
-    default_backend {
-      service {
-        name = "${local.spark_cluster}-master-svc"
-
-        port {
-          name = "web"
-        }
-      }
+    port {
+      name        = "spark-web"
+      port        = 8080
+      target_port = 8080
     }
 
-    tls {
-      hosts = ["${var.prefix}-ui-int"]
-    }
+    type = "ClusterIP"
   }
-
-  depends_on = [ kubernetes_manifest.spark_cluster ]
 }
