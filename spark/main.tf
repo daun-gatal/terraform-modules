@@ -8,7 +8,7 @@ locals {
 
 resource "kubernetes_manifest" "spark_cluster" {
   manifest = {
-    apiVersion = "spark.apache.org/v1beta1"
+    apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
     kind       = "SparkCluster"
     metadata = {
       name      =local.spark_cluster

@@ -22,6 +22,12 @@ variable "image_tag" {
   default = "4.0.0"
 }
 
+variable "spark_k8s_opt_version" {
+  description = "The api version of Spark K8s operator"
+  type = string
+  default = "v1beta1"
+}
+
 variable "cluster_worker_count" {
     description = "The total of worker that will be assigned to Spark"
     type = number
