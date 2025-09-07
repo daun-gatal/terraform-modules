@@ -18,7 +18,7 @@ resource "kubernetes_manifest" "spark_cluster" {
       masterSpec = {
         serviceMetadata = {
           annotations = {
-            "tailscale.com/expose" = "${var.tailscale_expose}"
+            "tailscale.com/expose" = tostring(var.tailscale_expose)
             "tailscale.com/hostname" = "${var.prefix}-master-int"
           }
         }
