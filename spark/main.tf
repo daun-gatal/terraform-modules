@@ -43,7 +43,7 @@ resource "kubernetes_service" "spark_connect" {
     labels = { app = local.spark_conn }
     annotations = {
       "tailscale.com/expose" = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${var.prefix}-conn-int"
+      "tailscale.com/hostname" = "${var.prefix}-connect-int"
     }
   }
 
