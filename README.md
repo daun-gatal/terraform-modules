@@ -40,11 +40,11 @@ Before using this module, ensure you have the following:
 
     | Operator          | Default Version | Default Namespace  |
     |-------------------|-----------------|--------------------|
-    | **Tailscale**     | `1.68.0`        | `tailscale`        |
-    | **Spark**         | `1.1.27`        | `spark`            |
-    | **CloudNativePG** | `0.20.0`        | `cnpg`             |
-    | **MinIO**         | `5.0.14`        | `minio-operator`   |
-    | **Strimzi Kafka** | `0.39.0`        | `kafka`            |
+    | **Tailscale**     | `1.86.5`        | `tailscale`        |
+    | **Spark**         | `1.2.0`        | `spark`            |
+    | **CloudNativePG** | `0.26.0`        | `cnpg`             |
+    | **MinIO**         | `7.1.1`        | `minio-operator`   |
+    | **Strimzi Kafka** | `0.47.0`        | `kafka`            |
 
    ### 👉 Install Operators
 
