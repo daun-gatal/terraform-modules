@@ -1,66 +1,85 @@
+# MinIO Development-Focused Configuration Variables
+# Simplified for development use with sensible defaults
+
+# Basic Configuration
 variable "namespace" {
-  description = "The namespace to deploy MinIO service into"
+  description = "The namespace to deploy MinIO into"
   type        = string
   default     = "minio"
 }
 
-variable "prefix" {
-  description = "Prefix for resource names"
+variable "tenant_name" {
+  description = "The MinIO tenant name"
   type        = string
-  default     = "minio"
+  default     = "dev-minio"
 }
 
-variable "image_tag" {
-  description = "The tag of the PostgreSQL image to use"
-  type        = string
-  default     = "2025.7.23" 
-}
-
-variable "image" {
-  description = "The PostgreSQL image to use"
-  type        = string
-  default     = "bitnami/minio"
-}
-
+# Authentication
 variable "minio_root_user" {
-  description = "The root user for MinIO"
+  description = "MinIO root username"
   type        = string
-  default     = "minioadmin"
-  sensitive = true
+  default     = "minio"
+  sensitive   = true
 }
 
 variable "minio_root_password" {
-  description = "The root password for MinIO"
+  description = "MinIO root password (minimum 8 characters)"
   type        = string
-  sensitive = true
+  default     = "minio123"
+  sensitive   = true
+
+  validation {
+    condition     = length(var.minio_root_password) >= 8
+    error_message = "MinIO root password must be at least 8 characters long."
+  }
 }
 
-variable "minio_console_port" {
-  description = "The port for MinIO console"
-  type        = number
-  default     = 9090
-}
-
-variable "minio_api_port" {
-  description = "The port for MinIO API"
-  type        = number
-  default     = 9000
-}
-
+# Storage Configuration (simplified)
 variable "storage_size" {
-  description = "The size of the persistent storage for MinIO"
+  description = "Storage size per volume"
   type        = string
-  default     = "10Gi"
+  default     = "5Gi"
 }
 
-variable "minio_bucket_name" {
-  description = "The name of the MinIO bucket to create"
+variable "storage_class_name" {
+  description = "Storage class name for persistent volumes (empty = default)"
   type        = string
-  default     = "default"
+  default     = "standard"
 }
 
-variable "tailscale_expose" {
-  description = "Whether to expose the MinIO service via Tailscale"
+variable "buckets" {
+  description = "List of buckets to create automatically with optional retention settings"
+  type = list(object({
+    name                    = string
+    service                 = optional(string, null)  # Service name for mapping (e.g., "airflow", "spark")
+    region                  = optional(string, "us-east-1")
+    expire_days             = optional(number, null)  # Delete objects after N days
+    noncurrent_expire_days  = optional(number, null)  # Delete old versions after N days
+    }))
+  default = [
+    {
+      name = "dev-data"
+    }
+  ]
+}
+
+variable "enable_tls" {
+  description = "Enable TLS certificates (disable for simple dev setup)"
   type        = bool
   default     = false
 }
+
+# Tailscale (for easy development access)
+variable "tailscale_expose" {
+  description = "Expose MinIO API via Tailscale"
+  type        = bool
+  default     = false
+}
+
+# Advanced Options (mostly disabled for development)
+variable "enable_distributed" {
+  description = "Enable distributed mode (4+ servers) vs single server"
+  type        = bool
+  default     = false
+}
+

@@ -46,6 +46,43 @@ Before using this module, ensure you have the following:
      helm install spark spark/spark-kubernetes-operator --namespace spark --create-namespace
      ```
 
+4. **CloudNativePG Operator**
+   - The CloudNativePG operator is required for PostgreSQL cluster management with high availability and automated backup capabilities.
+   - Add the CloudNativePG Helm repository and install the operator:
+     ```bash
+     helm repo add cnpg https://cloudnative-pg.github.io/charts
+     helm upgrade --install cnpg \
+       --namespace cnpg-system \
+       --create-namespace \
+       cnpg/cloudnative-pg
+     ```
+   - Documentation and setup guide: https://cloudnative-pg.io/documentation/current/
+
+5. **MinIO Operator**
+   - The MinIO Operator is required for distributed MinIO cluster deployment with enterprise features like high availability, auto-scaling, and advanced monitoring.
+   - Add the MinIO Operator Helm repository and install the operator:
+     ```bash
+     helm repo add minio-operator https://operator.min.io
+     helm install \
+       --namespace minio-operator \
+       --create-namespace \
+       operator minio-operator/operator
+     ```
+   - Documentation and setup guide: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
+
+6. **Strimzi Kafka Operator**
+   - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
+   - **Important**: Create the namespace first (must match the namespace used in your Kafka module configuration):
+     ```bash
+     kubectl create namespace kafka
+     ```
+   - Deploy the Strimzi cluster operator using installation files:
+     ```bash
+     kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+     ```
+   - **Note**: The namespace specified here (`kafka`) should match the `namespace` parameter when using the Kafka module.
+   - Documentation and setup guide: https://strimzi.io/docs/operators/latest/overview
+
 ---
 
 ## **Modules Overview**
@@ -106,29 +143,80 @@ Metabase is an open-source business intelligence and data visualization platform
 
 ### 🪣 **MinIO Module** (`minio/`)
 
-MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files.
+MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files. This module uses the MinIO Operator for enterprise-grade deployment with high availability, auto-scaling, and advanced monitoring capabilities.
 
-**Purpose:** Deploy MinIO object storage with persistent volumes, providing S3-compatible API for data storage and retrieval.
+**Purpose:** Deploy MinIO object storage cluster using the MinIO Operator with automatic bucket creation, lifecycle management, and optional Tailscale networking integration.
 
 **Key Parameters:**
 - `namespace` (default: "minio") - Kubernetes namespace for deployment
-- `prefix` (default: "minio") - Resource naming prefix
-- `minio_root_user` (default: "minioadmin", sensitive) - Root username
-- `minio_root_password` (required, sensitive) - Root password
-- `minio_bucket_name` (default: "default") - Default bucket to create
-- `minio_api_port` (default: 9000) - API service port
-- `minio_console_port` (default: 9090) - Web console port
-- `storage_size` (default: "10Gi") - Persistent volume size
-- `image` (default: "bitnami/minio") - Container image
-- `image_tag` (default: "2025.7.23") - Container image tag
-- `tailscale_expose` (default: false) - Expose via Tailscale network
+- `tenant_name` (default: "dev-minio") - MinIO tenant name
+- `minio_root_user` (default: "minio", sensitive) - Root username
+- `minio_root_password` (default: "minio123", sensitive) - Root password (minimum 8 characters)
+- `storage_size` (default: "5Gi") - Storage size per volume
+- `storage_class_name` (default: "standard") - Storage class for persistent volumes
+- `buckets` - List of buckets with lifecycle configuration:
+  - `name` - Bucket name
+  - `service` (optional) - Service name for mapping (e.g., "airflow", "spark")
+  - `region` (default: "us-east-1") - AWS region for bucket
+  - `expire_days` (optional) - Auto-delete objects after N days
+  - `noncurrent_expire_days` (optional) - Auto-delete old versions after N days
+- `enable_tls` (default: false) - Enable TLS certificates
+- `enable_distributed` (default: false) - Enable distributed mode (4+ servers)
+- `tailscale_expose` (default: false) - Expose MinIO API via Tailscale network
 
 **Outputs:**
 - `minio_service_dns` - Internal DNS name for API access
-- `minio_service_port` - API service port
+- `minio_service_port` - API service port (9000)
 - `minio_root_user` - Root username (sensitive)
 - `minio_root_password` - Root password (sensitive)
-- `minio_bucket_name` - Default bucket name
+- `minio_bucket_name` - Name of the first bucket
+- `minio_buckets_map` - Map of service names to bucket names (e.g., {"airflow": "bucket-name"})
+
+---
+
+### 🌊 **Kafka Module** (`kafka/`)
+
+Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming. This module uses the Strimzi operator to deploy Kafka with KRaft mode (no Zookeeper dependency) and includes declarative topic management through Entity Operators.
+
+**Purpose:** Deploy Apache Kafka cluster using Strimzi operator with KRaft mode for event streaming, message queuing, and real-time data pipelines. Includes Entity Operators for declarative topic/user management and optional Kafka UI for web-based cluster administration.
+
+**Prerequisites:** Strimzi Kafka Operator must be installed (see Prerequisites section above).
+
+**Key Parameters:**
+- `namespace` (default: "kafka") - Kubernetes namespace for deployment (must match Strimzi installation namespace)
+- `prefix` (default: "kafka") - Resource naming prefix
+- `kafka_version` (default: "4.0.0") - Kafka version to deploy
+- `kafka_metadata_version` (default: "4.0-IV3") - Kafka metadata version (KRaft)
+- `kafka_replicas` (default: 3) - Number of Kafka broker replicas
+- `kafka_roles` (default: ["controller", "broker"]) - Roles for Kafka nodes
+- `storage_type` (default: "persistent-claim") - Storage type (persistent-claim, ephemeral)
+- `storage_size` (default: "10Gi") - Persistent volume size for Kafka logs
+- `storage_class` (default: "standard") - Storage class for persistent volumes
+- `storage_delete_claim` (default: false) - Whether to delete PVCs when scaling down
+- `kafka_port` (default: 9092) - Kafka broker port
+- `kafka_tls_enabled` (default: false) - Enable TLS for Kafka listeners
+- `kafka_listener_type` (default: "internal") - Listener type (internal, nodeport, loadbalancer)
+- `offsets_topic_replication_factor` (default: 3) - Replication factor for offsets topic
+- `transaction_state_log_replication_factor` (default: 3) - Replication factor for transaction state log
+- `transaction_state_log_min_isr` (default: 2) - Minimum in-sync replicas for transaction state log
+- `default_replication_factor` (default: 3) - Default replication factor for new topics
+- `min_insync_replicas` (default: 2) - Minimum number of in-sync replicas
+- `pod_run_as_user` (default: 1000001) - User ID to run Kafka pods as
+- `pod_run_as_group` (default: 1000001) - Group ID to run Kafka pods as
+- `pod_fs_group` (default: 0) - File system group ID for Kafka pods
+- `enable_kafka_ui` (default: false) - Enable Kafka UI for web-based management
+- `kafka_ui_image` (default: "ghcr.io/kafbat/kafka-ui") - Kafka UI container image
+- `kafka_ui_image_tag` (default: "e3ba25f") - Kafka UI image tag
+- `kafka_ui_port` (default: 8080) - Kafka UI service port
+- `kafka_ui_auth_enabled` (default: false) - Enable basic authentication for UI
+- `kafka_ui_auth_username` (default: "admin", sensitive) - UI authentication username
+- `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password (min 8 chars)
+- `kafka_ui_tailscale_expose` (default: false) - Expose UI via Tailscale network
+- `kafka_ui_tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
+- `tailscale_expose` (default: false) - Expose Kafka brokers via Tailscale network
+
+**Outputs:**
+- `kafka_bootstrap_servers` - Kafka bootstrap servers connection string for client applications
 
 ---
 
@@ -166,9 +254,9 @@ Nessie is a Git-like data catalog that provides versioning, branching, and taggi
 
 ### 🐘 **PostgreSQL Module** (`postgres/`)
 
-PostgreSQL is a powerful, open-source relational database system commonly used as the backend for other services in the data stack.
+PostgreSQL is a powerful, open-source relational database system managed by the CloudNativePG operator for production-ready deployment with high availability, automated backups, and self-healing capabilities.
 
-**Purpose:** Deploy PostgreSQL database with persistent storage for use by other services like Airflow, Metabase, and Nessie.
+**Purpose:** Deploy PostgreSQL cluster using CloudNativePG operator with support for multiple instances, automated failover, read/write separation, and production-grade features for use by other services like Airflow, Metabase, and Nessie.
 
 **Key Parameters:**
 - `namespace` (default: "database") - Kubernetes namespace for deployment
@@ -177,18 +265,21 @@ PostgreSQL is a powerful, open-source relational database system commonly used a
 - `db_password` (required, sensitive) - Database password
 - `db_name` (default: "postgres") - Database name
 - `db_port` (default: 5432) - Database port
-- `storage_size` (default: "5Gi") - Persistent volume size
-- `image` (default: "postgres") - Container image
-- `image_tag` (default: "15") - Container image tag
+- `postgres_replicas` (default: 1) - Number of PostgreSQL instances (1 for single, 3+ for HA)
+- `storage_size` (default: "10Gi") - Persistent volume size per instance
+- `storage_class_name` (default: "standard") - Storage class for persistent volumes
+- `memory_request` (default: "256Mi") - Memory request per pod
+- `memory_limit` (default: "512Mi") - Memory limit per pod
+- `cpu_request` (default: "100m") - CPU request per pod
+- `cpu_limit` (default: "500m") - CPU limit per pod
+- `monitoring_enabled` (default: false) - Enable monitoring and metrics
+- `backup_enabled` (default: false) - Enable automated backups
+- `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
 - `tailscale_expose` (default: false) - Expose via Tailscale network
 
 **Outputs:**
-- `postgres_service_dns` - Internal DNS name for database access
-- `postgres_service_port` - Database port
-- `postgres_database_name` - Database name
-- `postgres_username` - Database username (sensitive)
-- `postgres_password` - Database password (sensitive)
-- `postgres_service_cluster_ip` - Internal cluster IP
+- `postgres_rw_dns` - Read-write DNS endpoint (primary instance)
+- `postgres_r_dns` - Read-only DNS endpoint (replicas only)
 
 ---
 
@@ -256,11 +347,12 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 This terraform module collection creates a modern data platform with the following typical data flow:
 
 1. **Data Ingestion**: Use Airflow to orchestrate data pipelines
-2. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
-3. **Data Cataloging**: Use Nessie to version and manage table metadata
-4. **Data Processing**: Process data using Apache Spark
-5. **Data Querying**: Query data using Trino with Iceberg tables
-6. **Data Visualization**: Create dashboards and insights with Metabase
-7. **Metadata Storage**: PostgreSQL serves as the backend database for metadata
+2. **Real-time Streaming**: Stream real-time data through Apache Kafka for event-driven architectures
+3. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
+4. **Data Cataloging**: Use Nessie to version and manage table metadata
+5. **Data Processing**: Process batch and streaming data using Apache Spark
+6. **Data Querying**: Query data using Trino with Iceberg tables
+7. **Data Visualization**: Create dashboards and insights with Metabase
+8. **Metadata Storage**: PostgreSQL serves as the backend database for metadata and application state
 
 All services can be integrated with Tailscale for secure networking and optionally exposed to the internet via Tailscale Funnel.

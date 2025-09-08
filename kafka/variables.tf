@@ -10,40 +10,29 @@ variable "prefix" {
   default     = "kafka"
 }
 
-variable "kafka_image" {
-  description = "Kafka container image"
+# Kafka Cluster Configuration
+variable "kafka_version" {
+  description = "Kafka version to deploy"
   type        = string
-  default     = "confluentinc/confluent-local"
+  default     = "4.0.0"
 }
 
-variable "kafka_image_tag" {
-  description = "Kafka image tag"
+variable "kafka_metadata_version" {
+  description = "Kafka metadata version (KRaft)"
   type        = string
-  default     = "7.8.0"
+  default     = "4.0-IV3"
 }
 
-variable "kafka_heap_size" {
-  description = "Kafka JVM heap size"
-  type        = string
-  default     = "1G"
-}
-
-variable "kafka_log_retention_hours" {
-  description = "Kafka log retention in hours"
+variable "kafka_replicas" {
+  description = "Number of Kafka broker replicas"
   type        = number
-  default     = 168  # 7 days
+  default     = 3
 }
 
-variable "kafka_port" {
-  description = "Kafka broker port"
-  type        = number
-  default     = 9092
-}
-
-variable "kafka_controller_port" {
-  description = "Kafka KRaft controller port"
-  type        = number
-  default     = 9093
+variable "kafka_roles" {
+  description = "Roles for Kafka nodes (controller, broker, or both)"
+  type        = list(string)
+  default     = ["controller", "broker"]
 }
 
 variable "storage_size" {
@@ -52,52 +41,101 @@ variable "storage_size" {
   default     = "10Gi"
 }
 
-variable "kafka_num_partitions" {
-  description = "Default number of partitions for new topics"
+variable "storage_type" {
+  description = "Storage type for persistent volumes (persistent-claim, ephemeral)"
+  type        = string
+  default     = "persistent-claim"
+  
+  validation {
+    condition     = contains(["persistent-claim", "ephemeral"], var.storage_type)
+    error_message = "Storage type must be either 'persistent-claim' or 'ephemeral'."
+  }
+}
+
+variable "storage_class" {
+  description = "Storage class for persistent volumes"
+  type        = string
+  default     = "standard"
+}
+
+variable "storage_delete_claim" {
+  description = "Whether to delete persistent volume claims when scaling down"
+  type        = bool
+  default     = false
+}
+
+# Security Context
+variable "pod_run_as_user" {
+  description = "User ID to run Kafka pods as"
+  type        = number
+  default     = 1001
+}
+
+variable "pod_run_as_group" {
+  description = "Group ID to run Kafka pods as"
+  type        = number
+  default     = 1001
+}
+
+variable "pod_fs_group" {
+  description = "File system group ID for Kafka pods"
+  type        = number
+  default     = 1001
+}
+
+variable "kafka_port" {
+  description = "Kafka broker port"
+  type        = number
+  default     = 9092
+}
+
+variable "kafka_tls_enabled" {
+  description = "Enable TLS for Kafka listeners"
+  type        = bool
+  default     = false
+}
+
+variable "kafka_listener_type" {
+  description = "Kafka listener type (internal, nodeport, loadbalancer, ingress)"
+  type        = string
+  default     = "internal"
+}
+
+# Kafka Configuration Parameters
+variable "offsets_topic_replication_factor" {
+  description = "Replication factor for the offsets topic"
   type        = number
   default     = 3
+}
+
+variable "transaction_state_log_replication_factor" {
+  description = "Replication factor for transaction state log"
+  type        = number
+  default     = 3
+}
+
+variable "transaction_state_log_min_isr" {
+  description = "Minimum in-sync replicas for transaction state log"
+  type        = number
+  default     = 2
+}
+
+variable "default_replication_factor" {
+  description = "Default replication factor for new topics"
+  type        = number
+  default     = 3
+}
+
+variable "min_insync_replicas" {
+  description = "Minimum number of in-sync replicas"
+  type        = number
+  default     = 2
 }
 
 variable "tailscale_expose" {
   description = "Whether to expose Kafka via Tailscale"
   type        = bool
   default     = false
-}
-
-variable "enable_jmx" {
-  description = "Enable JMX monitoring for Kafka"
-  type        = bool
-  default     = false
-}
-
-variable "jmx_port" {
-  description = "JMX port for monitoring"
-  type        = number
-  default     = 9999
-}
-
-variable "cpu_request" {
-  description = "CPU request per Kafka broker"
-  type        = string
-  default     = "500m"
-}
-
-variable "cpu_limit" {
-  description = "CPU limit per Kafka broker"
-  type        = string
-  default     = "1000m"
-}
-
-variable "memory_request" {
-  description = "Memory request per Kafka broker (should match heap size)"
-  type        = string
-  default     = "1Gi"
-}
-
-variable "memory_limit" {
-  description = "Memory limit per Kafka broker"
-  type        = string
-  default     = "2Gi"
 }
 
 # Kafka UI Variables

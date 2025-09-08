@@ -62,7 +62,9 @@ resource "helm_release" "airflow" {
         args     = [
           "bash",
           "-c",
-          "exec airflow kubernetes cleanup-pods --namespace=${var.namespace}"
+          templatefile("${path.module}/scripts/cleanup-pods.sh", {
+            namespace = var.namespace
+          })
         ]
       }
 
@@ -70,7 +72,12 @@ resource "helm_release" "airflow" {
         args = [
           "bash",
           "-c",
-          "if [ \"$AIRFLOW__LOGGING__REMOTE_LOGGING\" = \"True\" ]; then airflow connections add minio_conn --conn-type 'aws' --conn-login '${var.aws_access_key_id}' --conn-password '${var.aws_secret_access_key}' --conn-extra \"{\\\"region_name\\\": \\\"${var.aws_region}\\\", \\\"endpoint_url\\\": \\\"${var.aws_endpoint_url}\\\"}\" || true; fi; exec airflow scheduler"
+          templatefile("${path.module}/scripts/scheduler-init.sh", {
+            aws_access_key_id     = var.aws_access_key_id
+            aws_secret_access_key = var.aws_secret_access_key
+            aws_region           = var.aws_region
+            aws_endpoint_url     = var.aws_endpoint_url
+          })
         ]
       }
 
