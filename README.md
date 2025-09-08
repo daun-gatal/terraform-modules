@@ -88,7 +88,8 @@ Before using this module, ensure you have the following:
 
    You can see all available options and defaults by running:
    ```bash
-   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --help```
+   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --help
+   ```
 
 ---
 
