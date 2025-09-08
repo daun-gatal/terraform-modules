@@ -99,9 +99,9 @@ Before using this module, ensure you have the following:
      ```bash
      kubectl create namespace kafka
      ```
-   - Apply the operator manifest (pinned to release **0.47.0**) stored in this repo:
+   - Apply the operator manifest from your GitLab repository (pinned to release **0.47.0**):
      ```bash
-     kubectl apply -f ../terraform-modules/kafka/operator/values.yaml -n kafka
+     kubectl apply -f https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/kafka/operator/values.yaml?ref_type=heads -n kafka
      ```
    - Documentation: https://strimzi.io/docs/operators/latest/overview
 
