@@ -189,6 +189,8 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 - `enable_tls` (default: false) - Enable TLS certificates
 - `enable_distributed` (default: false) - Enable distributed mode (4+ servers)
 - `tailscale_expose` (default: false) - Expose MinIO API via Tailscale network
+- `image_repository` (default: "quay.io/minio/mini") - Image repository for MinIO
+- `image_tag` (default: "RELEASE.2025-04-08T15-41-24Z") - Image version for MinIO
 
 **Outputs:**
 - `minio_service_dns` - Internal DNS name for API access
