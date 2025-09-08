@@ -70,6 +70,19 @@ Before using this module, ensure you have the following:
      ```
    - Documentation and setup guide: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
 
+6. **Strimzi Kafka Operator**
+   - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
+   - **Important**: Create the namespace first (must match the namespace used in your Kafka module configuration):
+     ```bash
+     kubectl create namespace kafka
+     ```
+   - Deploy the Strimzi cluster operator using installation files:
+     ```bash
+     kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+     ```
+   - **Note**: The namespace specified here (`kafka`) should match the `namespace` parameter when using the Kafka module.
+   - Documentation and setup guide: https://strimzi.io/docs/operators/latest/overview
+
 ---
 
 ## **Modules Overview**
@@ -163,33 +176,41 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 
 ### 🌊 **Kafka Module** (`kafka/`)
 
-Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming.
+Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming. This module uses the Strimzi operator to deploy Kafka with KRaft mode (no Zookeeper dependency) and includes declarative topic management through Entity Operators.
 
-**Purpose:** Deploy Apache Kafka cluster with KRaft mode (no Zookeeper dependency) for event streaming, message queuing, and real-time data pipelines. Includes optional Kafka UI for cluster management and monitoring.
+**Purpose:** Deploy Apache Kafka cluster using Strimzi operator with KRaft mode for event streaming, message queuing, and real-time data pipelines. Includes Entity Operators for declarative topic/user management and optional Kafka UI for web-based cluster administration.
+
+**Prerequisites:** Strimzi Kafka Operator must be installed (see Prerequisites section above).
 
 **Key Parameters:**
-- `namespace` (default: "kafka") - Kubernetes namespace for deployment
+- `namespace` (default: "kafka") - Kubernetes namespace for deployment (must match Strimzi installation namespace)
 - `prefix` (default: "kafka") - Resource naming prefix
-- `kafka_image` (default: "confluentinc/confluent-local") - Kafka container image
-- `kafka_image_tag` (default: "7.8.0") - Kafka image tag
-- `kafka_heap_size` (default: "1G") - JVM heap size for Kafka brokers
-- `kafka_log_retention_hours` (default: 168) - Log retention period in hours (7 days)
-- `kafka_port` (default: 9092) - Kafka broker port
-- `kafka_controller_port` (default: 9093) - KRaft controller port
+- `kafka_version` (default: "4.0.0") - Kafka version to deploy
+- `kafka_metadata_version` (default: "4.0-IV3") - Kafka metadata version (KRaft)
+- `kafka_replicas` (default: 3) - Number of Kafka broker replicas
+- `kafka_roles` (default: ["controller", "broker"]) - Roles for Kafka nodes
+- `storage_type` (default: "persistent-claim") - Storage type (persistent-claim, ephemeral)
 - `storage_size` (default: "10Gi") - Persistent volume size for Kafka logs
-- `kafka_num_partitions` (default: 3) - Default number of partitions for new topics
-- `cpu_request` (default: "500m") - CPU request per Kafka broker
-- `cpu_limit` (default: "1000m") - CPU limit per Kafka broker
-- `memory_request` (default: "1Gi") - Memory request per Kafka broker
-- `memory_limit` (default: "2Gi") - Memory limit per Kafka broker
-- `enable_jmx` (default: false) - Enable JMX monitoring
-- `jmx_port` (default: 9999) - JMX monitoring port
+- `storage_class` (default: "standard") - Storage class for persistent volumes
+- `storage_delete_claim` (default: false) - Whether to delete PVCs when scaling down
+- `kafka_port` (default: 9092) - Kafka broker port
+- `kafka_tls_enabled` (default: false) - Enable TLS for Kafka listeners
+- `kafka_listener_type` (default: "internal") - Listener type (internal, nodeport, loadbalancer)
+- `offsets_topic_replication_factor` (default: 3) - Replication factor for offsets topic
+- `transaction_state_log_replication_factor` (default: 3) - Replication factor for transaction state log
+- `transaction_state_log_min_isr` (default: 2) - Minimum in-sync replicas for transaction state log
+- `default_replication_factor` (default: 3) - Default replication factor for new topics
+- `min_insync_replicas` (default: 2) - Minimum number of in-sync replicas
+- `pod_run_as_user` (default: 1000001) - User ID to run Kafka pods as
+- `pod_run_as_group` (default: 1000001) - Group ID to run Kafka pods as
+- `pod_fs_group` (default: 0) - File system group ID for Kafka pods
 - `enable_kafka_ui` (default: false) - Enable Kafka UI for web-based management
 - `kafka_ui_image` (default: "ghcr.io/kafbat/kafka-ui") - Kafka UI container image
+- `kafka_ui_image_tag` (default: "e3ba25f") - Kafka UI image tag
 - `kafka_ui_port` (default: 8080) - Kafka UI service port
 - `kafka_ui_auth_enabled` (default: false) - Enable basic authentication for UI
 - `kafka_ui_auth_username` (default: "admin", sensitive) - UI authentication username
-- `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password
+- `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password (min 8 chars)
 - `kafka_ui_tailscale_expose` (default: false) - Expose UI via Tailscale network
 - `kafka_ui_tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
 - `tailscale_expose` (default: false) - Expose Kafka brokers via Tailscale network
