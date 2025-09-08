@@ -33,82 +33,37 @@ Before using this module, ensure you have the following:
      minikube start
      ```
 
-3. **Tailscale account and Kubernetes Operator setup**
-   - Add the Tailscale Helm repo and update:
-     ```bash
-     helm repo add tailscale https://pkgs.tailscale.com/helmcharts
-     helm repo update
-     ```
-   - Install or upgrade the Tailscale operator (pinned to **1.86.5**):
-     ```bash
-     helm upgrade \
-       --install \
-       tailscale-operator \
-       tailscale/tailscale-operator \
-       --version 1.86.5 \
-       --namespace=tailscale \
-       --create-namespace \
-       --set-string oauth.clientId="<OAuth client ID>" \
-       --set-string oauth.clientSecret="<OAuth client secret>" \
-       --wait
-     ```
-   - Full setup guide: https://tailscale.com/kb/1236/kubernetes-operator#setup
+3. **Kubernetes Operators installation (Install / Uninstall)**  
+   You can manage all the required operators using a single script (`manage-operators.sh`) hosted on GitLab.
 
-4. **Apache Spark Kubernetes Operator**
-   - The Spark Operator must be installed on your cluster to manage Spark applications.
-   - Installation and setup guide:
-     https://github.com/apache/spark-kubernetes-operator/tree/main
-   - Example installation using Helm (pinned to **1.2.0**):
+   - **Install all operators with default settings:**
      ```bash
-     helm repo add spark https://apache.github.io/spark-kubernetes-operator
-     helm repo update
-     helm install spark spark/spark-kubernetes-operator \
-       --version 1.2.0 \
-       --namespace spark \
-       --create-namespace
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install
      ```
 
-5. **CloudNativePG Operator**
-   - The CloudNativePG operator is required for PostgreSQL cluster management with high availability and automated backup capabilities.
-   - Add the CloudNativePG Helm repository and install the operator (pinned to **0.26.0**):
+   - **Uninstall all operators:**
      ```bash
-     helm repo add cnpg https://cloudnative-pg.github.io/charts
-     helm upgrade --install cnpg \
-       --namespace cnpg-system \
-       --create-namespace \
-       cnpg/cloudnative-pg \
-       --version 0.26.0
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- uninstall
      ```
-   - Documentation: https://cloudnative-pg.io/documentation/current/
 
-6. **MinIO Operator**
-   - The MinIO Operator is required for distributed MinIO cluster deployment with enterprise features like high availability, auto-scaling, and advanced monitoring.
-   - Add the MinIO Operator Helm repository and install the operator (pinned to **7.1.1**):
+   - **Install including Tailscale (with namespace and OAuth):**
      ```bash
-     helm repo add minio-operator https://operator.min.io
-     helm install operator minio-operator/operator \
-       --version 7.1.1 \
-       --namespace minio-operator \
-       --create-namespace
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install \
+       --with-tailscale \
+       --tailscale-namespace tailscale \
+       --oauth-client-id "<OAUTH_CLIENT_ID>" \
+       --oauth-client-secret "<OAUTH_CLIENT_SECRET>"
      ```
-   - Documentation: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
 
-7. **Strimzi Kafka Operator**
-   - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
-   - Add the Strimzi Helm repository and update:
+   - **Install with custom namespaces and versions:**
      ```bash
-     helm repo add strimzi https://strimzi.io/charts/
-     helm repo update
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install \
+       --spark-namespace my-spark --spark-version 1.3.0 \
+       --cnpg-namespace my-db --cnpg-version 0.27.0 \
+       --minio-namespace my-minio --minio-version 7.2.0 \
+       --strimzi-namespace my-kafka --strimzi-version 0.48.0
      ```
-   - Install or upgrade the Strimzi operator (pinned to **0.47.0**):
-     ```bash
-     helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
-       --version 0.47.0 \
-       --namespace kafka \
-       --create-namespace
-     ```
-   - Documentation: https://strimzi.io/docs/operators/latest/overview
-
+     
 ---
 
 ## **Modules Overview**
