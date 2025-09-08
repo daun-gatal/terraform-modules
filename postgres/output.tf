@@ -1,11 +1,11 @@
-output "postgres_service_cluster_ip" {
-  description = "The ClusterIP of the Postgres service"
-  value       = kubernetes_service.postgres.spec[0].cluster_ip
+output "postgres_rw_dns" {
+  description = "PostgreSQL read-write DNS (primary instance)"
+  value       = "${local.cluster_name}-rw.${var.namespace}.svc.cluster.local"
 }
 
-output "postgres_service_dns" {
-  description = "The full DNS name of the Postgres service"
-  value       = "${kubernetes_service.postgres.metadata[0].name}.${kubernetes_service.postgres.metadata[0].namespace}.svc.cluster.local"
+output "postgres_ro_dns" {
+  description = "PostgreSQL read-only DNS (replicas only)"
+  value       = "${local.cluster_name}-ro.${var.namespace}.svc.cluster.local"
 }
 
 output "postgres_database_name" {
@@ -25,7 +25,7 @@ output "postgres_password" {
   sensitive = true
 }
 
-output "postgres_service_port" {
+output "postgres_port" {
   description = "The port of the Postgres service"
-  value       = kubernetes_service.postgres.spec[0].port[0].port
+  value       = var.db_port
 }

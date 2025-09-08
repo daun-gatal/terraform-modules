@@ -1,13 +1,7 @@
 locals {
   prefix = var.prefix
-  deployment_name = "${local.prefix}-deployment"
   app_label = "${local.prefix}-app"
-  container_name = "${local.prefix}-container"
-  service_name = "${local.prefix}-service"
-  postgres_image = "${var.image}:${var.image_tag}"
-  pv_name = "${local.prefix}-pv"
-  pvc_name = "${local.prefix}-pvc"
-  storage_name = "${local.prefix}-storage"
+  cluster_name = "${local.prefix}-cluster"
 }
 
 resource "kubernetes_namespace" "postgres" {
@@ -16,133 +10,89 @@ resource "kubernetes_namespace" "postgres" {
   }
 }
 
-resource "kubernetes_persistent_volume" "postgres" {
-  metadata {
-    name = local.pv_name
-  }
+resource "kubernetes_manifest" "postgres_cluster" {
+  depends_on = [
+    kubernetes_namespace.postgres
+  ]
 
-  spec {
-    capacity = {
-      storage = var.storage_size
-    }
-
-    access_modes = ["ReadWriteOnce"]
-
-    persistent_volume_reclaim_policy = "Retain"
-
-    storage_class_name = "standard"
-
-    persistent_volume_source {
-      host_path {
-        path = "/data/${var.namespace}/${local.prefix}"  # Adjust path on your machine
-        type = "DirectoryOrCreate"
-      }
-    }
-  }
-}
-
-resource "kubernetes_persistent_volume_claim" "postgres" {
-  metadata {
-    name      = local.pvc_name
-    namespace = var.namespace
-  }
-
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    storage_class_name = "standard"
-    resources {
-      requests = {
-        storage = var.storage_size
-      }
-    }
-    volume_name = kubernetes_persistent_volume.postgres.metadata[0].name
-  }
-}
-
-
-resource "kubernetes_deployment" "postgres" {
-  metadata {
-    name      = local.deployment_name
-    namespace = kubernetes_namespace.postgres.metadata[0].name
-    labels = {
-      app = local.app_label
-    }
-  }
-
-  spec {
-    replicas = 1
-    selector {
-      match_labels = {
+  manifest = {
+    apiVersion = "postgresql.cnpg.io/v1"
+    kind       = "Cluster"
+    
+    metadata = {
+      name      = local.cluster_name
+      namespace = var.namespace
+      labels = {
         app = local.app_label
       }
     }
-    template {
-      metadata {
-        labels = {
-          app = local.app_label
+    
+    spec = {
+      instances = var.postgres_replicas
+
+      # Database initialization
+      bootstrap = {
+        initdb = {
+          database = var.db_name
+          owner    = var.db_user
+          secret = {
+            name = kubernetes_secret.postgres_credentials.metadata[0].name
+          }
         }
       }
-      spec {
-        container {
-          name  = local.container_name
-          image = local.postgres_image
 
-          env {
-            name  = "POSTGRES_PASSWORD"
-            value = var.db_password
-          }
-
-          env {
-            name  = "POSTGRES_USER"
-            value = var.db_user
-          }
-
-          env {
-            name  = "POSTGRES_DB"
-            value = var.db_name
-          }
-
-          port {
-            container_port = var.db_port
-          }
-
-          volume_mount {
-            name       = local.storage_name
-            mount_path = "/var/lib/postgresql/data"
-          }
-        }
-
-        volume {
-          name = local.storage_name
-          persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.postgres.metadata[0].name
-          }
-        }
+      # Storage configuration
+      storage = {
+        size         = var.storage_size
+        storageClass = var.storage_class_name
       }
     }
   }
 }
 
-resource "kubernetes_service" "postgres" {
+# Secret for PostgreSQL credentials
+resource "kubernetes_secret" "postgres_credentials" {
   metadata {
-    name      = local.service_name
+    name      = "${local.prefix}-credentials"
     namespace = var.namespace
-    annotations = {
-      "tailscale.com/expose" = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${local.prefix}-int"
-    }
   }
 
-  spec {
-    selector = {
-      app = local.app_label
-    }
+  data = {
+    username = var.db_user
+    password = var.db_password
+  }
 
-    port {
-      port        = var.db_port
-      target_port = var.db_port
-    }
+  type = "kubernetes.io/basic-auth"
+}
 
-    type                 = "ClusterIP"
+# Apply custom PostgreSQL parameters after cluster creation
+resource "null_resource" "postgres_config" {
+  depends_on = [kubernetes_manifest.postgres_cluster]
+
+  triggers = {
+    parameters = jsonencode(var.postgresql_parameters)
+    cluster_name = local.cluster_name
+    namespace = var.namespace
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      # Wait for cluster to be ready
+      kubectl wait --for=condition=Ready cluster/${local.cluster_name} -n ${var.namespace} --timeout=300s
+      
+      # Apply custom PostgreSQL parameters if any are specified
+      if [ "${length(var.postgresql_parameters)}" -gt 0 ]; then
+        echo "Applying custom PostgreSQL parameters..."
+        kubectl patch cluster ${local.cluster_name} -n ${var.namespace} --type='merge' -p='
+        {
+          "spec": {
+            "postgresql": {
+              "parameters": ${jsonencode(var.postgresql_parameters)}
+            }
+          }
+        }'
+        echo "Custom PostgreSQL parameters applied successfully"
+      fi
+    EOT
   }
 }

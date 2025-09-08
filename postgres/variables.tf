@@ -1,3 +1,4 @@
+# Core PostgreSQL Configuration
 variable "namespace" {
   description = "The namespace to deploy the PostgreSQL service into"
   type        = string
@@ -20,7 +21,7 @@ variable "db_user" {
   description = "The username for the PostgreSQL database"
   type        = string
   default     = "postgres"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "db_name" {
@@ -35,26 +36,34 @@ variable "db_port" {
   default     = 5432
 }
 
-variable "image_tag" {
-  description = "The tag of the PostgreSQL image to use"
-  type        = string
-  default     = "15" 
+# Cluster Configuration
+variable "postgres_replicas" {
+  description = "Number of PostgreSQL instances (1 for single instance, 3+ for HA)"
+  type        = number
+  default     = 1
+  
+  validation {
+    condition     = var.postgres_replicas >= 1
+    error_message = "PostgreSQL replicas must be at least 1."
+  }
 }
 
-variable "image" {
-  description = "The PostgreSQL image to use"
-  type        = string
-  default     = "postgres"
-}
-
+# Storage Configuration
 variable "storage_size" {
   description = "The size of the persistent volume claim"
   type        = string
-  default     = "5Gi"
+  default     = "10Gi"
 }
 
-variable "tailscale_expose" {
-  description = "Whether to expose the PostgreSQL service via Tailscale"
-  type        = bool
-  default     = false
+variable "storage_class_name" {
+  description = "Storage class name for persistent volumes"
+  type        = string
+  default     = "standard"
+}
+
+# Advanced Configuration
+variable "postgresql_parameters" {
+  description = "Additional PostgreSQL configuration parameters"
+  type        = map(string)
+  default     = {}
 }
