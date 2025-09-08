@@ -37,15 +37,6 @@ resource "kubernetes_manifest" "kafka_node_pool" {
         ]
       }
       template = {
-        bootstrapService = {
-          metadata = {
-            annotations = {
-              "tailscale.com/expose" = tostring(var.tailscale_expose)
-              "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
-            }
-          }
-        }
-
         pod = {
           securityContext = {
             runAsUser  = var.pod_run_as_user
@@ -88,6 +79,15 @@ resource "kubernetes_manifest" "kafka_cluster" {
           "transaction.state.log.min.isr"            = var.transaction_state_log_min_isr
           "default.replication.factor"               = var.default_replication_factor
           "min.insync.replicas"                      = var.min_insync_replicas
+        }
+
+        bootstrapService = {
+          metadata = {
+            annotations = {
+              "tailscale.com/expose" = tostring(var.tailscale_expose)
+              "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
+            }
+          }
         }
       }
       entityOperator = {
