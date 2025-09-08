@@ -99,9 +99,9 @@ Before using this module, ensure you have the following:
      ```bash
      kubectl create namespace kafka
      ```
-   - Deploy the Strimzi cluster operator (latest release **0.47.0**):
+   - Apply the operator manifest (pinned to release **0.47.0**) stored in this repo:
      ```bash
-     kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+     kubectl apply -f ../terraform-modules/kafka/operator/values.yaml -n kafka
      ```
    - Documentation: https://strimzi.io/docs/operators/latest/overview
 
