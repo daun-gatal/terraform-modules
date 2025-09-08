@@ -44,7 +44,7 @@ variable "storage_size" {
 variable "storage_type" {
   description = "Storage type for persistent volumes (persistent-claim, ephemeral)"
   type        = string
-  default     = "persistent-claim"
+  default     = "ephemeral"
   
   validation {
     condition     = contains(["persistent-claim", "ephemeral"], var.storage_type)
