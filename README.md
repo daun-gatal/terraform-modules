@@ -294,18 +294,15 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 - `postgres_replicas` (default: 1) - Number of PostgreSQL instances (1 for single, 3+ for HA)
 - `storage_size` (default: "10Gi") - Persistent volume size per instance
 - `storage_class_name` (default: "standard") - Storage class for persistent volumes
-- `memory_request` (default: "256Mi") - Memory request per pod
-- `memory_limit` (default: "512Mi") - Memory limit per pod
-- `cpu_request` (default: "100m") - CPU request per pod
-- `cpu_limit` (default: "500m") - CPU limit per pod
-- `monitoring_enabled` (default: false) - Enable monitoring and metrics
-- `backup_enabled` (default: false) - Enable automated backups
 - `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
-- `tailscale_expose` (default: false) - Expose via Tailscale network
 
 **Outputs:**
 - `postgres_rw_dns` - Read-write DNS endpoint (primary instance)
-- `postgres_r_dns` - Read-only DNS endpoint (replicas only)
+- `postgres_ro_dns` - Read-only DNS endpoint (replicas only)
+- `postgres_database_name` - The name of the default database
+- `postgres_username` (sensitive) - The username for the Postgres database
+- `postgres_password` (sensitive) - The password for the Postgres database
+- `postgres_port` - The port of the Postgres service
 
 ---
 
