@@ -169,12 +169,6 @@ variable "kafka_ui_tailscale_expose" {
   default     = false
 }
 
-variable "kafka_ui_tailscale_funnel" {
-  description = "Enable Tailscale Funnel for Kafka UI internet access"
-  type        = bool
-  default     = false
-}
-
 variable "kafka_ui_auth_enabled" {
   description = "Enable basic authentication for Kafka UI"
   type        = bool
