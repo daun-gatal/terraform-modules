@@ -95,13 +95,17 @@ Before using this module, ensure you have the following:
 
 7. **Strimzi Kafka Operator**
    - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
-   - **Important**: Create the namespace first (must match the namespace used in your Kafka module configuration):
+   - Add the Strimzi Helm repository and update:
      ```bash
-     kubectl create namespace kafka
+     helm repo add strimzi https://strimzi.io/charts/
+     helm repo update
      ```
-   - Apply the operator manifest from your GitLab repository (pinned to release **0.47.0**):
+   - Install or upgrade the Strimzi operator (pinned to **0.47.0**):
      ```bash
-     kubectl apply -f https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/kafka/operator/values.yaml -n kafka
+     helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
+       --version 0.47.0 \
+       --namespace kafka \
+       --create-namespace
      ```
    - Documentation: https://strimzi.io/docs/operators/latest/overview
 
