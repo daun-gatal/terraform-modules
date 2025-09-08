@@ -8,14 +8,32 @@ This Terraform module deploys resources to a Kubernetes cluster (i.e., Minikube)
 
 Before using this module, ensure you have the following:
 
-1. **Minikube running**
+1. **Terraform Providers**
+   - This module requires the following Terraform providers:
+     ```hcl
+     terraform {
+       required_providers {
+         kubernetes = {
+           source  = "hashicorp/kubernetes"
+           version = "2.30.0"
+         }
+         helm = {
+           source  = "hashicorp/helm"
+           version = "3.0.2"
+         }
+       }
+     }
+     ```
+   - Make sure you have [Terraform](https://developer.hashicorp.com/terraform/downloads) installed.
+
+2. **Minikube running**
    - Install Minikube: https://minikube.sigs.k8s.io/docs/start/
    - Start a cluster:
      ```bash
      minikube start
      ```
 
-2. **Tailscale account and Kubernetes Operator setup**
+3. **Tailscale account and Kubernetes Operator setup**
    - Add the Tailscale Helm repo and update:
      ```bash
      helm repo add tailscale https://pkgs.tailscale.com/helmcharts
@@ -35,7 +53,7 @@ Before using this module, ensure you have the following:
      ```
    - Follow the full setup guide: https://tailscale.com/kb/1236/kubernetes-operator#setup
 
-3. **Apache Spark Kubernetes Operator**
+4. **Apache Spark Kubernetes Operator**
    - The Spark Operator must be installed on your cluster to manage Spark applications.
    - Installation and setup guide:
      https://github.com/apache/spark-kubernetes-operator/tree/main
@@ -46,7 +64,7 @@ Before using this module, ensure you have the following:
      helm install spark spark/spark-kubernetes-operator --namespace spark --create-namespace
      ```
 
-4. **CloudNativePG Operator**
+5. **CloudNativePG Operator**
    - The CloudNativePG operator is required for PostgreSQL cluster management with high availability and automated backup capabilities.
    - Add the CloudNativePG Helm repository and install the operator:
      ```bash
@@ -58,7 +76,7 @@ Before using this module, ensure you have the following:
      ```
    - Documentation and setup guide: https://cloudnative-pg.io/documentation/current/
 
-5. **MinIO Operator**
+6. **MinIO Operator**
    - The MinIO Operator is required for distributed MinIO cluster deployment with enterprise features like high availability, auto-scaling, and advanced monitoring.
    - Add the MinIO Operator Helm repository and install the operator:
      ```bash
@@ -70,7 +88,7 @@ Before using this module, ensure you have the following:
      ```
    - Documentation and setup guide: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
 
-6. **Strimzi Kafka Operator**
+7. **Strimzi Kafka Operator**
    - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
    - **Important**: Create the namespace first (must match the namespace used in your Kafka module configuration):
      ```bash
