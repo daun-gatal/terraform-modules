@@ -1,164 +1,173 @@
+# MinIO Development-Focused Deployment
+# Simplified for development with minimal configuration
+
 locals {
-  prefix = var.prefix
-  deployment_name = "${local.prefix}-deployment"
-  app_label = "${local.prefix}-app"
-  container_name = "${local.prefix}-container"
-  service_name = "${local.prefix}-service"
-  minio_image = "${var.image}:${var.image_tag}"
-  pv_name = "${local.prefix}-pv"
-  pvc_name = "${local.prefix}-pvc"
-  storage_name = "${local.prefix}-storage"
+  tenant_name = var.tenant_name
+  secret_name = "${local.tenant_name}-secret"
+  
+  # Development defaults
+  servers = var.enable_distributed ? 4 : 1
+  volumes_per_server = 1
 }
 
-
+# Create namespace
 resource "kubernetes_namespace" "minio" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_persistent_volume" "minio" {
+# Create simple secret for credentials
+resource "kubernetes_secret" "minio_credentials" {
   metadata {
-    name = local.pv_name
+    name      = local.secret_name
+    namespace = kubernetes_namespace.minio.metadata[0].name
   }
 
-  spec {
-    capacity = {
-      storage = var.storage_size
+  data = {
+    "config.env" = <<-EOT
+      export MINIO_ROOT_USER=${var.minio_root_user}
+      export MINIO_ROOT_PASSWORD=${var.minio_root_password}
+    EOT
+  }
+
+  type = "Opaque"
+}
+
+# MinIO Tenant (simplified for development)
+resource "kubernetes_manifest" "minio_tenant" {
+  depends_on = [kubernetes_secret.minio_credentials]
+
+  manifest = {
+    apiVersion = "minio.min.io/v2"
+    kind       = "Tenant"
+    metadata = {
+      name      = local.tenant_name
+      namespace = var.namespace
     }
-
-    access_modes = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    storage_class_name = "standard"
-
-    persistent_volume_source {
-      host_path {
-        path = "/data/${var.namespace}/${local.prefix}"  # folder inside Minikube VM
-        type = "DirectoryOrCreate"
+    spec = {
+      # Basic configuration
+      image             = "quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z"
+      imagePullPolicy   = "IfNotPresent"
+      
+      # Configuration secret
+      configuration = {
+        name = kubernetes_secret.minio_credentials.metadata[0].name
       }
+      
+      # Simple pool configuration
+      pools = [
+        {
+          name             = "pool"
+          servers          = local.servers
+          volumesPerServer = local.volumes_per_server
+          
+          # Storage
+          volumeClaimTemplate = {
+            metadata = {
+              name = "data"
+            }
+            spec = {
+              accessModes = ["ReadWriteOnce"]
+              resources = {
+                requests = {
+                  storage = var.storage_size
+                }
+              }
+              storageClassName = var.storage_class_name
+            }
+          }
+          
+          # Basic security context
+          securityContext = {
+            runAsUser    = 1000
+            runAsGroup   = 1000
+            runAsNonRoot = true
+            fsGroup      = 1000
+          }
+          
+          # Container security
+          containerSecurityContext = {
+            runAsUser                = 1000
+            runAsGroup               = 1000
+            runAsNonRoot             = true
+            allowPrivilegeEscalation = false
+            capabilities = {
+              drop = ["ALL"]
+            }
+          }
+        }
+      ]
+      
+      # Simple mount paths
+      mountPath = "/export"
+      subPath   = "/data"
+      
+      # Pod management
+      podManagementPolicy = "Parallel"
+      
+      # TLS configuration (simplified for development)
+      requestAutoCert = var.enable_tls
+      
+      # Service metadata for Tailscale exposure
+      serviceMetadata = {
+        consoleServiceAnnotations = {
+          "tailscale.com/expose"   = tostring(var.tailscale_expose)
+          "tailscale.com/hostname" = "${local.tenant_name}-console"
+        }
+      }
+      
+      # Bucket creation during tenant provisioning
+      buckets = [
+        for bucket in var.buckets : {
+          name       = bucket.name
+          region     = bucket.region
+        }
+      ]
     }
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "minio" {
+# Job to apply lifecycle/retention policies for buckets
+resource "kubernetes_job" "apply_bucket_policies" {
+  count      = length([for b in var.buckets : b if b.expire_days != null || b.noncurrent_expire_days != null]) > 0 ? 1 : 0
+  depends_on = [kubernetes_manifest.minio_tenant]
+  
   metadata {
-    name      = local.pvc_name
+    name      = "${local.tenant_name}-bucket-policies"
     namespace = kubernetes_namespace.minio.metadata[0].name
   }
-
+  
   spec {
-    access_modes = ["ReadWriteOnce"]
-    storage_class_name = "standard"
-    resources {
-      requests = {
-        storage = var.storage_size
-      }
-    }
-    volume_name = kubernetes_persistent_volume.minio.metadata[0].name
-  }
-}
-
-resource "kubernetes_deployment" "minio" {
-  metadata {
-    name      = local.deployment_name
-    namespace = kubernetes_namespace.minio.metadata[0].name
-    labels = { app = local.app_label }
-  }
-
-  spec {
-    replicas = 1
-    selector {
-      match_labels = { app = local.app_label }
-    }
     template {
-      metadata {
-        labels = { app = local.app_label }
-      }
+      metadata {}
       spec {
+        restart_policy = "OnFailure"
         container {
-          name  = local.container_name
-          image = local.minio_image
-
-          env {
-            name  = "MINIO_ROOT_USER"
-            value = var.minio_root_user
-          }
-
-          env {
-            name  = "MINIO_ROOT_PASSWORD"
-            value = var.minio_root_password
-          }
-
-          env {
-            name  = "MINIO_DEFAULT_BUCKETS"
-            value = var.minio_bucket_name
-          }
-
-          env {
-            name  = "MINIO_BROWSER"
-            value = "on"
-          }
-
-          env {
-            name  = "MINIO_CONSOLE_PORT_NUMBER"
-            value = var.minio_console_port
-          }
-
-          env {
-            name  = "MINIO_API_PORT_NUMBER"
-            value = var.minio_api_port
-          }
-
-          port {
-            container_port = var.minio_api_port
-          }
-
-          port {
-            container_port = var.minio_console_port
-          }
-
-          volume_mount {
-            name       = local.storage_name
-            mount_path = "/data"
-          }
-        }
-
-        volume {
-          name = local.storage_name
-          persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.minio.metadata[0].name
-          }
+          name  = "mc"
+          image = "minio/mc:latest"
+          command = [
+            "/bin/sh",
+            "-c",
+            templatefile("${path.module}/scripts/apply-policies.sh", {
+              tenant_name = local.tenant_name
+              namespace   = var.namespace
+              buckets     = var.buckets
+              username    = var.minio_root_user
+              password    = var.minio_root_password
+            })
+          ]
         }
       }
     }
+    backoff_limit = 3
+  }
+
+  wait_for_completion = true
+  timeouts {
+    create = "5m"
+    update = "5m"
   }
 }
 
-resource "kubernetes_service" "minio" {
-  metadata {
-    name      = local.service_name
-    namespace = kubernetes_namespace.minio.metadata[0].name
-    annotations = {
-      "tailscale.com/expose" = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${local.prefix}-int"
-    }
-  }
-
-  spec {
-    selector = { app = local.app_label }
-
-    port {
-      name       = "api"
-      port       = var.minio_api_port
-      target_port = var.minio_api_port
-    }
-
-    port {
-      name       = "console"
-      port       = var.minio_console_port
-      target_port = var.minio_console_port
-    }
-
-    type                 = "ClusterIP"
-  }
-}
+# Services and buckets are automatically created by MinIO Operator
