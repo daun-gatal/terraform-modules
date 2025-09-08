@@ -81,11 +81,13 @@ resource "kubernetes_manifest" "kafka_cluster" {
           "min.insync.replicas"                      = var.min_insync_replicas
         }
 
-        bootstrapService = {
-          metadata = {
-            annotations = {
-              "tailscale.com/expose" = tostring(var.tailscale_expose)
-              "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
+        template = {
+          bootstrapService = {
+            metadata = {
+              annotations = {
+                "tailscale.com/expose"   = tostring(var.tailscale_expose)
+                "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
+              }
             }
           }
         }
