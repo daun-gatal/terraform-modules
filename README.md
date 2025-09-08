@@ -33,37 +33,63 @@ Before using this module, ensure you have the following:
      minikube start
      ```
 
-3. **Kubernetes Operators installation (Install / Uninstall)**  
-   You can manage all the required operators using a single script (`manage-operators.sh`) hosted on GitLab.
+3. **Kubernetes Operators Installation (Install / Uninstall)**  
+   You can manage all the required operators using the helper script (`manage-operators.sh`) hosted on GitLab.
 
-   - **Install all operators with default settings:**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install
-     ```
+   ### ⚙️ Default Versions and Namespaces
 
-   - **Uninstall all operators:**
+    | Operator          | Default Version | Default Namespace  |
+    |-------------------|-----------------|--------------------|
+    | **Tailscale**     | `1.68.0`        | `tailscale`        |
+    | **Spark**         | `1.1.27`        | `spark`            |
+    | **CloudNativePG** | `0.20.0`        | `cnpg`             |
+    | **MinIO**         | `5.0.14`        | `minio-operator`   |
+    | **Strimzi Kafka** | `0.39.0`        | `kafka`            |
+
+   ### 👉 Install Operators
+
+   - **Install all operators with defaults:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- uninstall
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash
      ```
 
    - **Install including Tailscale (with namespace and OAuth):**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install \
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- \
        --with-tailscale \
        --tailscale-namespace tailscale \
        --oauth-client-id "<OAUTH_CLIENT_ID>" \
        --oauth-client-secret "<OAUTH_CLIENT_SECRET>"
      ```
+     > If `--oauth-client-id` and `--oauth-client-secret` are not provided (or not set in environment variables), the script will prompt you to enter them interactively.
 
    - **Install with custom namespaces and versions:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- install \
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- \
        --spark-namespace my-spark --spark-version 1.3.0 \
        --cnpg-namespace my-db --cnpg-version 0.27.0 \
        --minio-namespace my-minio --minio-version 7.2.0 \
        --strimzi-namespace my-kafka --strimzi-version 0.48.0
      ```
-     
+
+   ### 🧹 Uninstall Operators
+
+   - **Uninstall all operators:**
+     ```bash
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --uninstall
+     ```
+
+   - **Uninstall including Tailscale:**
+     ```bash
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --uninstall --with-tailscale
+     ```
+
+   ### 📖 Help
+
+   You can see all available options and defaults by running:
+   ```bash
+   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --help```
+
 ---
 
 ## **Modules Overview**

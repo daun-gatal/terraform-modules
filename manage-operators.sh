@@ -5,6 +5,58 @@ ACTION="install"   # default action
 TAILSCALE_ENABLED=false
 
 # --------------------------
+# Default Versions & Namespaces
+# --------------------------
+TAILSCALE_VERSION="${TAILSCALE_VERSION:-1.68.0}"
+TAILSCALE_NAMESPACE="${TAILSCALE_NAMESPACE:-tailscale}"
+OAUTH_CLIENT_ID="${OAUTH_CLIENT_ID:-}"
+OAUTH_CLIENT_SECRET="${OAUTH_CLIENT_SECRET:-}"
+
+SPARK_VERSION="${SPARK_VERSION:-1.1.27}"
+SPARK_NAMESPACE="${SPARK_NAMESPACE:-spark}"
+
+CNPG_VERSION="${CNPG_VERSION:-0.20.0}"
+CNPG_NAMESPACE="${CNPG_NAMESPACE:-cnpg}"
+
+MINIO_OPERATOR_VERSION="${MINIO_OPERATOR_VERSION:-5.0.14}"
+MINIO_NAMESPACE="${MINIO_NAMESPACE:-minio-operator}"
+
+STRIMZI_VERSION="${STRIMZI_VERSION:-0.39.0}"
+STRIMZI_NAMESPACE="${STRIMZI_NAMESPACE:-kafka}"
+
+# --------------------------
+# Help Message
+# --------------------------
+print_help() {
+  cat <<EOF
+Usage: $0 [options]
+
+Options:
+  --uninstall, -u              Uninstall operators (default: install)
+  --with-tailscale              Include Tailscale operator
+  --tailscale-version VERSION   Tailscale version (default: $TAILSCALE_VERSION)
+  --tailscale-namespace NS      Tailscale namespace (default: $TAILSCALE_NAMESPACE)
+  --oauth-client-id ID          Tailscale OAuth Client ID
+  --oauth-client-secret SECRET  Tailscale OAuth Client Secret
+
+  --spark-version VERSION       Spark Operator version (default: $SPARK_VERSION)
+  --spark-namespace NS          Spark namespace (default: $SPARK_NAMESPACE)
+
+  --cnpg-version VERSION        CloudNativePG version (default: $CNPG_VERSION)
+  --cnpg-namespace NS           CloudNativePG namespace (default: $CNPG_NAMESPACE)
+
+  --minio-version VERSION       MinIO Operator version (default: $MINIO_OPERATOR_VERSION)
+  --minio-namespace NS          MinIO namespace (default: $MINIO_NAMESPACE)
+
+  --strimzi-version VERSION     Strimzi Kafka Operator version (default: $STRIMZI_VERSION)
+  --strimzi-namespace NS        Strimzi namespace (default: $STRIMZI_NAMESPACE)
+
+  --help, -h                    Show this help message
+EOF
+  exit 0
+}
+
+# --------------------------
 # Parse Arguments
 # --------------------------
 while [[ $# -gt 0 ]]; do
@@ -23,6 +75,7 @@ while [[ $# -gt 0 ]]; do
     --minio-namespace) shift; MINIO_NAMESPACE="$1" ;;
     --strimzi-version) shift; STRIMZI_VERSION="$1" ;;
     --strimzi-namespace) shift; STRIMZI_NAMESPACE="$1" ;;
+    --help|-h) print_help ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
   shift
@@ -38,6 +91,16 @@ if [[ "$ACTION" == "install" ]]; then
     echo "🔹 Installing Tailscale Operator..."
     helm repo add tailscale https://pkgs.tailscale.com/helmcharts
     helm repo update
+
+    # Prompt if not set
+    if [[ -z "${OAUTH_CLIENT_ID:-}" ]]; then
+      read -rp "Enter Tailscale OAuth Client ID: " OAUTH_CLIENT_ID
+    fi
+    if [[ -z "${OAUTH_CLIENT_SECRET:-}" ]]; then
+      read -rsp "Enter Tailscale OAuth Client Secret: " OAUTH_CLIENT_SECRET
+      echo
+    fi
+
     helm upgrade --install tailscale-operator tailscale/tailscale-operator \
       --version "$TAILSCALE_VERSION" \
       --namespace "$TAILSCALE_NAMESPACE" \
