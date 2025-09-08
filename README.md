@@ -58,6 +58,18 @@ Before using this module, ensure you have the following:
      ```
    - Documentation and setup guide: https://cloudnative-pg.io/documentation/current/
 
+5. **MinIO Operator**
+   - The MinIO Operator is required for distributed MinIO cluster deployment with enterprise features like high availability, auto-scaling, and advanced monitoring.
+   - Add the MinIO Operator Helm repository and install the operator:
+     ```bash
+     helm repo add minio-operator https://operator.min.io
+     helm install \
+       --namespace minio-operator \
+       --create-namespace \
+       operator minio-operator/operator
+     ```
+   - Documentation and setup guide: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
+
 ---
 
 ## **Modules Overview**
@@ -118,29 +130,34 @@ Metabase is an open-source business intelligence and data visualization platform
 
 ### 🪣 **MinIO Module** (`minio/`)
 
-MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files.
+MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files. This module uses the MinIO Operator for enterprise-grade deployment with high availability, auto-scaling, and advanced monitoring capabilities.
 
-**Purpose:** Deploy MinIO object storage with persistent volumes, providing S3-compatible API for data storage and retrieval.
+**Purpose:** Deploy MinIO object storage cluster using the MinIO Operator with automatic bucket creation, lifecycle management, and optional Tailscale networking integration.
 
 **Key Parameters:**
 - `namespace` (default: "minio") - Kubernetes namespace for deployment
-- `prefix` (default: "minio") - Resource naming prefix
-- `minio_root_user` (default: "minioadmin", sensitive) - Root username
-- `minio_root_password` (required, sensitive) - Root password
-- `minio_bucket_name` (default: "default") - Default bucket to create
-- `minio_api_port` (default: 9000) - API service port
-- `minio_console_port` (default: 9090) - Web console port
-- `storage_size` (default: "10Gi") - Persistent volume size
-- `image` (default: "bitnami/minio") - Container image
-- `image_tag` (default: "2025.7.23") - Container image tag
-- `tailscale_expose` (default: false) - Expose via Tailscale network
+- `tenant_name` (default: "dev-minio") - MinIO tenant name
+- `minio_root_user` (default: "minio", sensitive) - Root username
+- `minio_root_password` (default: "minio123", sensitive) - Root password (minimum 8 characters)
+- `storage_size` (default: "5Gi") - Storage size per volume
+- `storage_class_name` (default: "standard") - Storage class for persistent volumes
+- `buckets` - List of buckets with lifecycle configuration:
+  - `name` - Bucket name
+  - `service` (optional) - Service name for mapping (e.g., "airflow", "spark")
+  - `region` (default: "us-east-1") - AWS region for bucket
+  - `expire_days` (optional) - Auto-delete objects after N days
+  - `noncurrent_expire_days` (optional) - Auto-delete old versions after N days
+- `enable_tls` (default: false) - Enable TLS certificates
+- `enable_distributed` (default: false) - Enable distributed mode (4+ servers)
+- `tailscale_expose` (default: false) - Expose MinIO API via Tailscale network
 
 **Outputs:**
 - `minio_service_dns` - Internal DNS name for API access
-- `minio_service_port` - API service port
+- `minio_service_port` - API service port (9000)
 - `minio_root_user` - Root username (sensitive)
 - `minio_root_password` - Root password (sensitive)
-- `minio_bucket_name` - Default bucket name
+- `minio_bucket_name` - Name of the first bucket
+- `minio_buckets_map` - Map of service names to bucket names (e.g., {"airflow": "bucket-name"})
 
 ---
 
