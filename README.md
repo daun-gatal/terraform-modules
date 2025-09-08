@@ -297,6 +297,8 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 - `storage_size` (default: "10Gi") - Persistent volume size per instance
 - `storage_class_name` (default: "standard") - Storage class for persistent volumes
 - `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
+- `image_repository` (default: "ghcr.io/cloudnative-pg/postgresql") - Image repository for PostgreSQL
+- `image_tag` (default: "15.4") - Image version for PostgreSQL
 
 **Outputs:**
 - `postgres_rw_dns` - Read-write DNS endpoint (primary instance)

@@ -2,6 +2,7 @@ locals {
   prefix = var.prefix
   app_label = "${local.prefix}-app"
   cluster_name = "${local.prefix}-cluster"
+  postgres_image = "${var.image_repository}:${var.image_tag}"
 }
 
 resource "kubernetes_namespace" "postgres" {
@@ -28,6 +29,7 @@ resource "kubernetes_manifest" "postgres_cluster" {
     }
     
     spec = {
+      imageName = local.postgres_image
       instances = var.postgres_replicas
 
       # Database initialization

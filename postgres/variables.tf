@@ -67,3 +67,15 @@ variable "postgresql_parameters" {
   type        = map(string)
   default     = {}
 }
+
+variable "image_repository" {
+  description = "Image repository for Minio to be installed"
+  type = string
+  default = "ghcr.io/cloudnative-pg/postgresql"
+}
+
+variable "image_tag" {
+  description = "Image version for Minio"
+  type = string
+  default = "15.4"
+}
