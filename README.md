@@ -46,6 +46,18 @@ Before using this module, ensure you have the following:
      helm install spark spark/spark-kubernetes-operator --namespace spark --create-namespace
      ```
 
+4. **CloudNativePG Operator**
+   - The CloudNativePG operator is required for PostgreSQL cluster management with high availability and automated backup capabilities.
+   - Add the CloudNativePG Helm repository and install the operator:
+     ```bash
+     helm repo add cnpg https://cloudnative-pg.github.io/charts
+     helm upgrade --install cnpg \
+       --namespace cnpg-system \
+       --create-namespace \
+       cnpg/cloudnative-pg
+     ```
+   - Documentation and setup guide: https://cloudnative-pg.io/documentation/current/
+
 ---
 
 ## **Modules Overview**
@@ -132,6 +144,44 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 
 ---
 
+### 🌊 **Kafka Module** (`kafka/`)
+
+Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming.
+
+**Purpose:** Deploy Apache Kafka cluster with KRaft mode (no Zookeeper dependency) for event streaming, message queuing, and real-time data pipelines. Includes optional Kafka UI for cluster management and monitoring.
+
+**Key Parameters:**
+- `namespace` (default: "kafka") - Kubernetes namespace for deployment
+- `prefix` (default: "kafka") - Resource naming prefix
+- `kafka_image` (default: "confluentinc/confluent-local") - Kafka container image
+- `kafka_image_tag` (default: "7.8.0") - Kafka image tag
+- `kafka_heap_size` (default: "1G") - JVM heap size for Kafka brokers
+- `kafka_log_retention_hours` (default: 168) - Log retention period in hours (7 days)
+- `kafka_port` (default: 9092) - Kafka broker port
+- `kafka_controller_port` (default: 9093) - KRaft controller port
+- `storage_size` (default: "10Gi") - Persistent volume size for Kafka logs
+- `kafka_num_partitions` (default: 3) - Default number of partitions for new topics
+- `cpu_request` (default: "500m") - CPU request per Kafka broker
+- `cpu_limit` (default: "1000m") - CPU limit per Kafka broker
+- `memory_request` (default: "1Gi") - Memory request per Kafka broker
+- `memory_limit` (default: "2Gi") - Memory limit per Kafka broker
+- `enable_jmx` (default: false) - Enable JMX monitoring
+- `jmx_port` (default: 9999) - JMX monitoring port
+- `enable_kafka_ui` (default: false) - Enable Kafka UI for web-based management
+- `kafka_ui_image` (default: "ghcr.io/kafbat/kafka-ui") - Kafka UI container image
+- `kafka_ui_port` (default: 8080) - Kafka UI service port
+- `kafka_ui_auth_enabled` (default: false) - Enable basic authentication for UI
+- `kafka_ui_auth_username` (default: "admin", sensitive) - UI authentication username
+- `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password
+- `kafka_ui_tailscale_expose` (default: false) - Expose UI via Tailscale network
+- `kafka_ui_tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
+- `tailscale_expose` (default: false) - Expose Kafka brokers via Tailscale network
+
+**Outputs:**
+- `kafka_bootstrap_servers` - Kafka bootstrap servers connection string for client applications
+
+---
+
 ### 🌊 **Nessie Module** (`nessie/`)
 
 Nessie is a Git-like data catalog that provides versioning, branching, and tagging capabilities for data lake tables, particularly with Apache Iceberg.
@@ -166,9 +216,9 @@ Nessie is a Git-like data catalog that provides versioning, branching, and taggi
 
 ### 🐘 **PostgreSQL Module** (`postgres/`)
 
-PostgreSQL is a powerful, open-source relational database system commonly used as the backend for other services in the data stack.
+PostgreSQL is a powerful, open-source relational database system managed by the CloudNativePG operator for production-ready deployment with high availability, automated backups, and self-healing capabilities.
 
-**Purpose:** Deploy PostgreSQL database with persistent storage for use by other services like Airflow, Metabase, and Nessie.
+**Purpose:** Deploy PostgreSQL cluster using CloudNativePG operator with support for multiple instances, automated failover, read/write separation, and production-grade features for use by other services like Airflow, Metabase, and Nessie.
 
 **Key Parameters:**
 - `namespace` (default: "database") - Kubernetes namespace for deployment
@@ -177,18 +227,21 @@ PostgreSQL is a powerful, open-source relational database system commonly used a
 - `db_password` (required, sensitive) - Database password
 - `db_name` (default: "postgres") - Database name
 - `db_port` (default: 5432) - Database port
-- `storage_size` (default: "5Gi") - Persistent volume size
-- `image` (default: "postgres") - Container image
-- `image_tag` (default: "15") - Container image tag
+- `postgres_replicas` (default: 1) - Number of PostgreSQL instances (1 for single, 3+ for HA)
+- `storage_size` (default: "10Gi") - Persistent volume size per instance
+- `storage_class_name` (default: "standard") - Storage class for persistent volumes
+- `memory_request` (default: "256Mi") - Memory request per pod
+- `memory_limit` (default: "512Mi") - Memory limit per pod
+- `cpu_request` (default: "100m") - CPU request per pod
+- `cpu_limit` (default: "500m") - CPU limit per pod
+- `monitoring_enabled` (default: false) - Enable monitoring and metrics
+- `backup_enabled` (default: false) - Enable automated backups
+- `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
 - `tailscale_expose` (default: false) - Expose via Tailscale network
 
 **Outputs:**
-- `postgres_service_dns` - Internal DNS name for database access
-- `postgres_service_port` - Database port
-- `postgres_database_name` - Database name
-- `postgres_username` - Database username (sensitive)
-- `postgres_password` - Database password (sensitive)
-- `postgres_service_cluster_ip` - Internal cluster IP
+- `postgres_rw_dns` - Read-write DNS endpoint (primary instance)
+- `postgres_r_dns` - Read-only DNS endpoint (replicas only)
 
 ---
 
@@ -256,11 +309,12 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 This terraform module collection creates a modern data platform with the following typical data flow:
 
 1. **Data Ingestion**: Use Airflow to orchestrate data pipelines
-2. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
-3. **Data Cataloging**: Use Nessie to version and manage table metadata
-4. **Data Processing**: Process data using Apache Spark
-5. **Data Querying**: Query data using Trino with Iceberg tables
-6. **Data Visualization**: Create dashboards and insights with Metabase
-7. **Metadata Storage**: PostgreSQL serves as the backend database for metadata
+2. **Real-time Streaming**: Stream real-time data through Apache Kafka for event-driven architectures
+3. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
+4. **Data Cataloging**: Use Nessie to version and manage table metadata
+5. **Data Processing**: Process batch and streaming data using Apache Spark
+6. **Data Querying**: Query data using Trino with Iceberg tables
+7. **Data Visualization**: Create dashboards and insights with Metabase
+8. **Metadata Storage**: PostgreSQL serves as the backend database for metadata and application state
 
 All services can be integrated with Tailscale for secure networking and optionally exposed to the internet via Tailscale Funnel.
