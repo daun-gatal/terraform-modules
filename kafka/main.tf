@@ -37,6 +37,15 @@ resource "kubernetes_manifest" "kafka_node_pool" {
         ]
       }
       template = {
+        bootstrapService = {
+          metadata = {
+            annotations = {
+              "tailscale.com/expose" = tostring(var.tailscale_expose)
+              "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
+            }
+          }
+        }
+
         pod = {
           securityContext = {
             runAsUser  = var.pod_run_as_user
