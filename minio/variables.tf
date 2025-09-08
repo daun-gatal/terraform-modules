@@ -69,6 +69,18 @@ variable "enable_tls" {
   default     = false
 }
 
+variable "image_repository" {
+  description = "Image repository for Minio to be installed"
+  type = string
+  default = "quay.io/minio/mini"
+}
+
+variable "image_tag" {
+  description = "Image version for Minio"
+  type = string
+  default = "RELEASE.2025-04-08T15-41-24Z"
+}
+
 # Tailscale (for easy development access)
 variable "tailscale_expose" {
   description = "Expose MinIO API via Tailscale"

@@ -4,6 +4,7 @@
 locals {
   tenant_name = var.tenant_name
   secret_name = "${local.tenant_name}-secret"
+  minio_image = "${var.image_repository}:${var.image_tag}"
   
   # Development defaults
   servers = var.enable_distributed ? 4 : 1
@@ -47,7 +48,7 @@ resource "kubernetes_manifest" "minio_tenant" {
     }
     spec = {
       # Basic configuration
-      image             = "quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z"
+      image             = local.minio_image
       imagePullPolicy   = "IfNotPresent"
       
       # Configuration secret
