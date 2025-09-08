@@ -39,54 +39,59 @@ Before using this module, ensure you have the following:
      helm repo add tailscale https://pkgs.tailscale.com/helmcharts
      helm repo update
      ```
-   - Install or upgrade the Tailscale operator:
+   - Install or upgrade the Tailscale operator (pinned to **1.86.5**):
      ```bash
      helm upgrade \
        --install \
        tailscale-operator \
        tailscale/tailscale-operator \
+       --version 1.86.5 \
        --namespace=tailscale \
        --create-namespace \
        --set-string oauth.clientId="<OAuth client ID>" \
        --set-string oauth.clientSecret="<OAuth client secret>" \
        --wait
      ```
-   - Follow the full setup guide: https://tailscale.com/kb/1236/kubernetes-operator#setup
+   - Full setup guide: https://tailscale.com/kb/1236/kubernetes-operator#setup
 
 4. **Apache Spark Kubernetes Operator**
    - The Spark Operator must be installed on your cluster to manage Spark applications.
    - Installation and setup guide:
      https://github.com/apache/spark-kubernetes-operator/tree/main
-   - Example installation using Helm:
+   - Example installation using Helm (pinned to **1.2.0**):
      ```bash
      helm repo add spark https://apache.github.io/spark-kubernetes-operator
      helm repo update
-     helm install spark spark/spark-kubernetes-operator --namespace spark --create-namespace
+     helm install spark spark/spark-kubernetes-operator \
+       --version 1.2.0 \
+       --namespace spark \
+       --create-namespace
      ```
 
 5. **CloudNativePG Operator**
    - The CloudNativePG operator is required for PostgreSQL cluster management with high availability and automated backup capabilities.
-   - Add the CloudNativePG Helm repository and install the operator:
+   - Add the CloudNativePG Helm repository and install the operator (pinned to **0.26.0**):
      ```bash
      helm repo add cnpg https://cloudnative-pg.github.io/charts
      helm upgrade --install cnpg \
        --namespace cnpg-system \
        --create-namespace \
-       cnpg/cloudnative-pg
+       cnpg/cloudnative-pg \
+       --version 0.26.0
      ```
-   - Documentation and setup guide: https://cloudnative-pg.io/documentation/current/
+   - Documentation: https://cloudnative-pg.io/documentation/current/
 
 6. **MinIO Operator**
    - The MinIO Operator is required for distributed MinIO cluster deployment with enterprise features like high availability, auto-scaling, and advanced monitoring.
-   - Add the MinIO Operator Helm repository and install the operator:
+   - Add the MinIO Operator Helm repository and install the operator (pinned to **7.1.1**):
      ```bash
      helm repo add minio-operator https://operator.min.io
-     helm install \
+     helm install operator minio-operator/operator \
+       --version 7.1.1 \
        --namespace minio-operator \
-       --create-namespace \
-       operator minio-operator/operator
+       --create-namespace
      ```
-   - Documentation and setup guide: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
+   - Documentation: https://docs.min.io/community/minio-object-store/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html
 
 7. **Strimzi Kafka Operator**
    - The Strimzi operator is required for Apache Kafka cluster deployment with KRaft mode, declarative topic management, and enterprise-grade features.
@@ -94,12 +99,11 @@ Before using this module, ensure you have the following:
      ```bash
      kubectl create namespace kafka
      ```
-   - Deploy the Strimzi cluster operator using installation files:
+   - Deploy the Strimzi cluster operator (latest release **0.47.0**):
      ```bash
      kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
      ```
-   - **Note**: The namespace specified here (`kafka`) should match the `namespace` parameter when using the Kafka module.
-   - Documentation and setup guide: https://strimzi.io/docs/operators/latest/overview
+   - Documentation: https://strimzi.io/docs/operators/latest/overview
 
 ---
 
