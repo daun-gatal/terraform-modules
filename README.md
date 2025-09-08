@@ -101,7 +101,7 @@ Before using this module, ensure you have the following:
      ```
    - Apply the operator manifest from your GitLab repository (pinned to release **0.47.0**):
      ```bash
-     kubectl apply -f https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/kafka/operator/values.yaml?ref_type=heads -n kafka
+     kubectl apply -f https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/kafka/operator/values.yaml -n kafka
      ```
    - Documentation: https://strimzi.io/docs/operators/latest/overview
 
