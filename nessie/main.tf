@@ -68,7 +68,7 @@ resource "helm_release" "nessie" {
   set = [
     {
       name  = "versionStoreType"
-      value = "JDBC2"
+      value = "JDBC"
     },
     {
         name = "catalog.enabled"
