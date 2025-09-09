@@ -92,10 +92,6 @@ resource "kubernetes_stateful_set" "spark_connect" {
       }
 
       spec {
-        security_context {
-          run_as_user = 0
-        }
-
         container {
           name  = local.spark_conn
           image = local.spark_image

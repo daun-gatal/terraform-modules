@@ -5,12 +5,6 @@
 
 set -euo pipefail
 
-# Ensure rsync is available (needed by spark-daemon.sh in standalone mode)
-if ! command -v rsync >/dev/null 2>&1; then
-  echo "rsync not found. Installing..."
-  apt-get update && apt-get install -y rsync openssh-client && rm -rf /var/lib/apt/lists/*
-fi
-
 SPARK_HOME=$${SPARK_HOME:-/opt/spark}
 
 # Detect Spark version
@@ -29,7 +23,6 @@ if [ "$SPARK_MAJOR" -lt 4 ]; then
   echo "Using Spark < 4. Adding spark-connect package..."
   exec "$SPARK_HOME/sbin/start-connect-server.sh" \
     --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" \
-    --master "${master_url}" \
     --name 'Spark Connect Server' \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
