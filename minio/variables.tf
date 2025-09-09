@@ -95,3 +95,16 @@ variable "enable_distributed" {
   default     = false
 }
 
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for MinIO namespace (requests and limits)"
+  type        = string
+  default     = "1"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for MinIO namespace (requests and limits)"
+  type        = string
+  default     = "1Gi"
+}
+

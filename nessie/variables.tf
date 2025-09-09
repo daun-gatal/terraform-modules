@@ -88,3 +88,16 @@ variable "tailscale_expose" {
   type        = bool
   default     = false
 }
+
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Nessie namespace (requests and limits)"
+  type        = string
+  default     = "500m"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Nessie namespace (requests and limits)"
+  type        = string
+  default     = "512Mi"
+}

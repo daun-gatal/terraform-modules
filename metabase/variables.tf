@@ -63,3 +63,16 @@ variable "tailscale_funnel" {
   type        = bool
   default     = false
 }
+
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Metabase namespace (requests and limits)"
+  type        = string
+  default     = "500m"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Metabase namespace (requests and limits)"
+  type        = string
+  default     = "512Mi"
+}

@@ -9,6 +9,14 @@ locals {
   kafka_ui_secret_name = "${local.prefix}-ui-auth-secret"
 }
 
+module "kafka_resources" {
+  source = "../resource"
+  
+  namespace = var.namespace
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_manifest" "kafka_node_pool" {
   manifest = {
     apiVersion = "kafka.strimzi.io/v1beta2"

@@ -152,3 +152,16 @@ variable "enable_https" {
   type        = bool
   default     = false
 }
+
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Trino namespace (requests and limits)"
+  type        = string
+  default     = "2"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Trino namespace (requests and limits)"
+  type        = string
+  default     = "2Gi"
+}

@@ -12,6 +12,15 @@ resource "kubernetes_namespace" "nessie" {
   }
 }
 
+# Apply resource limits to the Nessie namespace
+module "nessie_resources" {
+  source = "../resource"
+  
+  namespace = kubernetes_namespace.nessie.metadata[0].name
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_secret" "nessie_jdbc" {
   metadata {
     name      = local.secret_name

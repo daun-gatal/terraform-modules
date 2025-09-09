@@ -18,6 +18,15 @@ resource "kubernetes_namespace" "trino" {
   }
 }
 
+# Apply resource limits to the Trino namespace
+module "trino_resources" {
+  source = "../resource"
+  
+  namespace = kubernetes_namespace.trino.metadata[0].name
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "htpasswd_password" "trino" {
   password = var.trino_admin_password
 }

@@ -29,6 +29,15 @@ resource "kubernetes_namespace" "airflow" {
   }
 }
 
+# Apply resource limits to the Airflow namespace
+module "airflow_resources" {
+  source = "../resource"
+  
+  namespace = kubernetes_namespace.airflow.metadata[0].name
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_secret" "airflow_secret" {
   metadata {
     name      = local.secret_name

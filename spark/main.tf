@@ -8,6 +8,15 @@ locals {
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
 }
 
+# Apply resource limits to the Spark namespace
+module "spark_resources" {
+  source = "../resource"
+  
+  namespace = var.namespace
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_manifest" "spark_cluster" {
   manifest = {
     apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
