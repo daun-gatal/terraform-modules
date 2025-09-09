@@ -31,6 +31,7 @@ resource "kubernetes_namespace" "airflow" {
 
 # Apply resource limits to the Airflow namespace
 module "airflow_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
   namespace = kubernetes_namespace.airflow.metadata[0].name

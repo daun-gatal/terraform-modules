@@ -92,3 +92,9 @@ variable "memory_allocation" {
   type        = string
   default     = "1536Mi"
 }
+
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}

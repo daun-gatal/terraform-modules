@@ -14,6 +14,7 @@ resource "kubernetes_namespace" "nessie" {
 
 # Apply resource limits to the Nessie namespace
 module "nessie_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
   namespace = kubernetes_namespace.nessie.metadata[0].name

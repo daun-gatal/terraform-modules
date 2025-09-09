@@ -10,6 +10,7 @@ locals {
 }
 
 module "kafka_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
   namespace = var.namespace

@@ -16,6 +16,7 @@ resource "kubernetes_namespace" "metabase" {
 
 # Apply resource limits to the Metabase namespace
 module "metabase_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
   namespace = var.namespace

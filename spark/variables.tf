@@ -77,3 +77,8 @@ variable "memory_allocation" {
   default     = "512Mi"
 }
 
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}

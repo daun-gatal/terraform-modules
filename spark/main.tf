@@ -10,6 +10,7 @@ locals {
 
 # Apply resource limits to the Spark namespace
 module "spark_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
   namespace = var.namespace
