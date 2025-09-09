@@ -5,14 +5,14 @@
 
 set -euo pipefail
 
-SPARK_HOME=${SPARK_HOME:-/opt/spark}
+SPARK_HOME=$${SPARK_HOME:-/opt/spark}
 
 # Detect Spark version
-SPARK_VERSION=$($SPARK_HOME/bin/spark-submit --version 2>&1 | \
+SPARK_VERSION=$$($SPARK_HOME/bin/spark-submit --version 2>&1 | \
   grep -oE "version [0-9]+\.[0-9]+\.[0-9]+" | awk '{print $2}')
 echo "Detected Spark version: $SPARK_VERSION"
 
-SPARK_MAJOR=$(echo "$SPARK_VERSION" | cut -d. -f1)
+SPARK_MAJOR=$$(echo "$SPARK_VERSION" | cut -d. -f1)
 
 echo "Master URL: ${master_url}"
 echo "Executor Memory: ${executor_memory}"
@@ -23,7 +23,7 @@ if [ "$SPARK_MAJOR" -lt 4 ]; then
   echo "Using Spark < 4. Adding spark-connect package..."
   exec $SPARK_HOME/bin/spark-submit \
     --class org.apache.spark.sql.connect.SparkConnectServer \
-    --packages "org.apache.spark:spark-connect_2.12:${SPARK_VERSION}" \
+    --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" \
     --master "${master_url}" \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
@@ -38,5 +38,4 @@ else
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
     --conf "spark.cores.max=${max_cores}" \
-    --conf "spark.dynamicAllocation.enabled=false"
 fi
