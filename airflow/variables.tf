@@ -193,3 +193,22 @@ variable "enable_remote_logging" {
   type    = bool
   default = false
 }
+
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Airflow namespace (requests and limits)"
+  type        = string
+  default     = "1"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Airflow namespace (requests and limits)"
+  type        = string
+  default     = "1Gi"
+}
+
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}

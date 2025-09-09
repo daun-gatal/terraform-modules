@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -euo pipefail
 
 MINIO_ENDPOINT="http://${tenant_name}-hl.${namespace}.svc.cluster.local:9000"
 MINIO_ROOT_USER="${username}"

@@ -8,6 +8,16 @@ locals {
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
 }
 
+# Apply resource limits to the Spark namespace
+module "spark_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
+  source = "../resource"
+  
+  namespace = var.namespace
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_manifest" "spark_cluster" {
   manifest = {
     apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
@@ -104,7 +114,12 @@ resource "kubernetes_stateful_set" "spark_connect" {
           command = [
             "/bin/bash",
             "-c",
-            "/opt/spark/bin/spark-submit --class org.apache.spark.sql.connect.service.SparkConnectServer --name 'Spark Connect Server' --master spark://${local.spark_cluster}-master-svc:7077 --conf spark.executor.memory=${var.spark_connect_executor_memory} --conf spark.executor.cores=${var.spark_connect_executor_cores} --conf spark.cores.max=${var.spark_connect_max_cores} --conf spark.dynamicAllocation.enabled=false"
+            templatefile("${path.module}/scripts/spark-connect-server.sh", {
+              master_url       = "spark://${local.spark_cluster}-master-svc:7077"
+              executor_memory  = var.spark_connect_executor_memory
+              executor_cores   = var.spark_connect_executor_cores
+              max_cores        = var.spark_connect_max_cores
+            })
           ]
         }
       }

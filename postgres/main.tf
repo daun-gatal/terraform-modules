@@ -11,6 +11,16 @@ resource "kubernetes_namespace" "postgres" {
   }
 }
 
+# Apply resource limits to the Postgres namespace
+module "postgres_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
+  source = "../resource"
+  
+  namespace = kubernetes_namespace.postgres.metadata[0].name
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_manifest" "postgres_cluster" {
   depends_on = [
     kubernetes_namespace.postgres

@@ -193,3 +193,21 @@ variable "kafka_ui_auth_password" {
     error_message = "Password must be at least 8 characters long when provided."
   }
 }
+
+variable "cpu_allocation" {
+  description = "CPU allocation for Kafka namespace (requests and limits)"
+  type        = string
+  default     = "1500m"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Kafka namespace (requests and limits)"
+  type        = string
+  default     = "2Gi"
+}
+
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}

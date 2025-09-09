@@ -14,6 +14,16 @@ resource "kubernetes_namespace" "metabase" {
   }
 }
 
+# Apply resource limits to the Metabase namespace
+module "metabase_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
+  source = "../resource"
+  
+  namespace = var.namespace
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 resource "kubernetes_deployment" "metabase" {
   metadata {
     name      = local.deployment_name
