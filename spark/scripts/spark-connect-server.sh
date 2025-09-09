@@ -9,7 +9,7 @@ SPARK_HOME=$${SPARK_HOME:-/opt/spark}
 
 # Detect Spark version
 SPARK_VERSION=$$($SPARK_HOME/bin/spark-submit --version 2>&1 | \
-  grep -oE "version [0-9]+\.[0-9]+\.[0-9]+" | awk '{print $2}')
+  grep -oE "version [3-9]\.[0-9]+\.[0-9]+" | head -n1 | awk '{print $2}')
 echo "Detected Spark version: $SPARK_VERSION"
 
 SPARK_MAJOR=$$(echo "$SPARK_VERSION" | cut -d. -f1)
