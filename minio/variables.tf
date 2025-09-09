@@ -72,7 +72,7 @@ variable "enable_tls" {
 variable "image_repository" {
   description = "Image repository for Minio to be installed"
   type = string
-  default = "quay.io/minio/mini"
+  default = "quay.io/minio/minio"
 }
 
 variable "image_tag" {
