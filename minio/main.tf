@@ -18,6 +18,16 @@ resource "kubernetes_namespace" "minio" {
   }
 }
 
+# Apply resource limits to the MinIO namespace
+module "minio_resources" {
+  count = var.enable_resource_allocation ? 1 : 0
+  source = "../resource"
+  
+  namespace = kubernetes_namespace.minio.metadata[0].name
+  cpu       = var.cpu_allocation
+  memory    = var.memory_allocation
+}
+
 # Create simple secret for credentials
 resource "kubernetes_secret" "minio_credentials" {
   metadata {

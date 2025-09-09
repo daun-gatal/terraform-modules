@@ -64,3 +64,21 @@ variable "spark_connect_max_cores" {
   default     = 1
 }
 
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Spark namespace (requests and limits)"
+  type        = string
+  default     = "500m"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Spark namespace (requests and limits)"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}
