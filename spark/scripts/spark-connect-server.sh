@@ -8,14 +8,7 @@ set -euo pipefail
 # Ensure rsync is available (needed by spark-daemon.sh in standalone mode)
 if ! command -v rsync >/dev/null 2>&1; then
   echo "rsync not found. Installing..."
-
-  if [ "$(id -u)" -ne 0 ]; then
-    echo "Switching to root to install rsync..."
-    # run apt-get as root
-    sudo apt-get update && sudo apt-get install -y rsync && sudo rm -rf /var/lib/apt/lists/*
-  else
-    apt-get update && apt-get install -y rsync && rm -rf /var/lib/apt/lists/*
-  fi
+  apt-get update && apt-get install -y rsync && rm -rf /var/lib/apt/lists/*
 fi
 
 SPARK_HOME=$${SPARK_HOME:-/opt/spark}
