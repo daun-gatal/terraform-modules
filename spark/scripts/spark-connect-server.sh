@@ -25,7 +25,6 @@ if [ "$SPARK_MAJOR" -lt 4 ]; then
     --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" \
     --master "${master_url}" \
     --name 'Spark Connect Server' \
-    --deploy-mode "cluster" \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
     --conf "spark.cores.max=${max_cores}" \
@@ -36,7 +35,6 @@ else
     --class org.apache.spark.sql.connect.service.SparkConnectServer \
     --name 'Spark Connect Server' \
     --master "${master_url}" \
-    --deploy-mode "cluster" \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
     --conf "spark.cores.max=${max_cores}" \
