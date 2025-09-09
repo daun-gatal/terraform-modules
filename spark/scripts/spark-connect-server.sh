@@ -37,5 +37,5 @@ else
     --master "${master_url}" \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
-    --conf "spark.cores.max=${max_cores}" \
+    --conf "spark.cores.max=${max_cores}"
 fi
