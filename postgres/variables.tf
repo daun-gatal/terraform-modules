@@ -79,3 +79,22 @@ variable "image_tag" {
   type = string
   default = "15.4"
 }
+
+# Resource allocation variables
+variable "cpu_allocation" {
+  description = "CPU allocation for Postgres namespace (requests and limits)"
+  type        = string
+  default     = "1"
+}
+
+variable "memory_allocation" {
+  description = "Memory allocation for Postgres namespace (requests and limits)"
+  type        = string
+  default     = "1536Mi"
+}
+
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type = bool
+  default = false
+}

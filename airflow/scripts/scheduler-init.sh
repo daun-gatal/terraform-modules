@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Airflow Scheduler Initialization Script
 # Sets up MinIO connection if remote logging is enabled, then starts scheduler
