@@ -5,6 +5,12 @@
 
 set -euo pipefail
 
+# Ensure rsync is available (needed by spark-daemon.sh in standalone mode)
+if ! command -v rsync >/dev/null 2>&1; then
+  echo "rsync not found. Installing..."
+  apt-get update && apt-get install -y rsync && rm -rf /var/lib/apt/lists/*
+fi
+
 SPARK_HOME=$${SPARK_HOME:-/opt/spark}
 
 # Detect Spark version
