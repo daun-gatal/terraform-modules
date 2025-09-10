@@ -23,6 +23,7 @@ if [ "$SPARK_MAJOR" -lt 4 ]; then
   echo "Using Spark < 4. Adding spark-connect package..."
   exec "$SPARK_HOME/sbin/start-connect-server.sh" \
     --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" \
+    --master "${master_url}" \
     --name 'Spark Connect Server' \
     --conf "spark.executor.memory=${executor_memory}" \
     --conf "spark.executor.cores=${executor_cores}" \
