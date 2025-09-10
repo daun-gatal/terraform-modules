@@ -6,6 +6,8 @@ locals {
   spark_cluster = "${var.prefix}-spark-cluster"
   spark_cluster_custom_svc = "${local.spark_cluster}-custom-service"
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
+  spark_major_version = tonumber(split(".", var.image_tag)[0])
+  spark_connect_package = local.spark_major_version < 4 ? "org.apache.spark:spark-connect_2.12:${var.image_tag}" : ""
 }
 
 # Apply resource limits to the Spark namespace
@@ -63,6 +65,7 @@ resource "kubernetes_manifest" "spark_connect" {
       }
       sparkConf = {
         "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
+        "spark.jars.packages" = local.spark_connect_package
         "spark.submit.deployMode" = "cluster"
         "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
         "spark.cores.max" = tostring(var.spark_connect_max_cores)
