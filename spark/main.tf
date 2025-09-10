@@ -6,6 +6,8 @@ locals {
   spark_cluster = "${var.prefix}-spark-cluster"
   spark_cluster_custom_svc = "${local.spark_cluster}-custom-service"
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
+
+  spark_v4 = split(".", var.image_tag)[0] >= 4 ? true : false
 }
 
 # Apply resource limits to the Spark namespace
@@ -49,6 +51,8 @@ resource "kubernetes_manifest" "spark_cluster" {
 }
 
 resource "kubernetes_manifest" "spark_connect" {
+  count = local.spark_v4 ? 1 : 0
+
   manifest = {
     apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
     kind       = "SparkApplication"
@@ -75,6 +79,8 @@ resource "kubernetes_manifest" "spark_connect" {
 }
 
 resource "kubernetes_service" "spark_connect" {
+  count = local.spark_v4 ? 1 : 0
+
   metadata {
     name      = local.spark_conn_svc
     namespace = var.namespace

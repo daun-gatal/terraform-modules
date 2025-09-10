@@ -20,6 +20,14 @@ variable "image_tag" {
   description = "The image tag of Spark"
   type = string
   default = "4.0.0"
+
+  validation {
+    condition = (
+      tonumber(split(".", var.image_tag)[0]) > 3 ||
+      (tonumber(split(".", var.image_tag)[0]) == 3 && tonumber(split(".", var.image_tag)[1]) >= 5)
+    )
+    error_message = "Unsupported Spark version. Only 3.5.x and 4.x.x are supported."
+  }
 }
 
 variable "spark_k8s_opt_version" {
