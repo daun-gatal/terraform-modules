@@ -6,8 +6,6 @@ locals {
   spark_cluster = "${var.prefix}-spark-cluster"
   spark_cluster_custom_svc = "${local.spark_cluster}-custom-service"
   spark_cluster_ingress = "${local.spark_cluster}-ingress"
-  spark_major_version = tonumber(split(".", var.image_tag)[0])
-  spark_connect_package = local.spark_major_version < 4 ? "org.apache.spark:spark-connect_2.12:${var.image_tag}" : ""
 }
 
 # Apply resource limits to the Spark namespace
@@ -65,8 +63,7 @@ resource "kubernetes_manifest" "spark_connect" {
       }
       sparkConf = {
         "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
-        "spark.jars.packages" = local.spark_connect_package
-        "spark.submit.deployMode" = "client"
+        "spark.submit.deployMode" = "cluster"
         "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
         "spark.cores.max" = tostring(var.spark_connect_max_cores)
         "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
@@ -104,63 +101,6 @@ resource "kubernetes_service" "spark_connect" {
     type = "ClusterIP"
   }
 }
-
-# resource "kubernetes_stateful_set" "spark_connect" {
-#   metadata {
-#     name      = local.spark_conn_stateful
-#     namespace = var.namespace
-#   }
-
-#   spec {
-#     service_name = kubernetes_service.spark_connect.metadata[0].name
-#     replicas     = 1
-
-#     selector {
-#       match_labels = { app = local.spark_conn }
-#     }
-
-#     template {
-#       metadata {
-#         labels = { app = local.spark_conn }
-#       }
-
-#       spec {
-#         container {
-#           name  = local.spark_conn
-#           image = local.spark_image
-
-#           env {
-#             name  = "SPARK_MODE"
-#             value = "driver"
-#           }
-
-#           env {
-#             name  = "SPARK_MASTER"
-#             value = "spark://${local.spark_cluster}-master-svc:7077"
-#           }
-
-#           port {
-#             container_port = 15002
-#             name           = "connect"
-#           }
-
-#           command = [
-#             "/bin/bash",
-#             "-c",
-#             templatefile("${path.module}/scripts/spark-connect-server.sh", {
-#               master_url       = "spark://${local.spark_cluster}-master-svc:7077"
-#               executor_memory  = var.spark_connect_executor_memory
-#               executor_cores   = var.spark_connect_executor_cores
-#               max_cores        = var.spark_connect_max_cores
-#             })
-#           ]
-#         }
-#       }
-#     }
-#   }
-
-#   depends_on = [ kubernetes_manifest.spark_cluster ]
-# }
 
 resource "kubernetes_service" "spark_custom_service" {
   count = var.tailscale_expose ? 1 : 0
