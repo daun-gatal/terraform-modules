@@ -66,7 +66,7 @@ resource "kubernetes_manifest" "spark_connect" {
       sparkConf = {
         "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
         "spark.jars.packages" = local.spark_connect_package
-        "spark.submit.deployMode" = "cluster"
+        "spark.submit.deployMode" = "client"
         "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
         "spark.cores.max" = tostring(var.spark_connect_max_cores)
         "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
