@@ -74,29 +74,30 @@ resource "kubernetes_manifest" "spark_connect" {
   }
 }
 
-# resource "kubernetes_service" "spark_connect" {
-#   metadata {
-#     name      = local.spark_conn_svc
-#     namespace = var.namespace
-#     labels = { app = local.spark_conn }
-#     annotations = {
-#       "tailscale.com/expose" = "${var.tailscale_expose}"
-#       "tailscale.com/hostname" = "${var.prefix}-connect-int"
-#     }
-#   }
+resource "kubernetes_service" "spark_connect" {
+  metadata {
+    name      = local.spark_conn_svc
+    namespace = var.namespace
+    labels = { app = local.spark_conn }
+    annotations = {
+      "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${var.prefix}-connect-int"
+    }
+  }
 
-#   spec {
-#     selector = { app = local.spark_conn }
+  spec {
+    selector = { app = local.spark_conn }
 
-#     port {
-#       name        = "connect"
-#       port        = 15002
-#       target_port = 15002
-#     }
+    port {
+      name        = "connect"
+      port        = 15002
+      target_port = 15002
+      protocol = "TCP"
+    }
 
-#     type = "ClusterIP"
-#   }
-# }
+    type = "ClusterIP"
+  }
+}
 
 # resource "kubernetes_stateful_set" "spark_connect" {
 #   metadata {
