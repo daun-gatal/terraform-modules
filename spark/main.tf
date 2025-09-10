@@ -23,7 +23,7 @@ resource "kubernetes_manifest" "spark_cluster" {
     apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
     kind       = "SparkCluster"
     metadata = {
-      name      =local.spark_cluster
+      name      = local.spark_cluster
       namespace = var.namespace
     }
     spec = {
@@ -48,86 +48,112 @@ resource "kubernetes_manifest" "spark_cluster" {
   }
 }
 
-resource "kubernetes_service" "spark_connect" {
-  metadata {
-    name      = local.spark_conn_svc
-    namespace = var.namespace
-    labels = { app = local.spark_conn }
-    annotations = {
-      "tailscale.com/expose" = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${var.prefix}-connect-int"
+resource "kubernetes_manifest" "spark_connect" {
+  manifest = {
+    apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
+    kind       = "SparkApplication"
+    metadata = {
+      name      = local.spark_conn_stateful
+      namespace = var.namespace
     }
-  }
-
-  spec {
-    selector = { app = local.spark_conn }
-
-    port {
-      name        = "connect"
-      port        = 15002
-      target_port = 15002
-    }
-
-    type = "ClusterIP"
-  }
-}
-
-resource "kubernetes_stateful_set" "spark_connect" {
-  metadata {
-    name      = local.spark_conn_stateful
-    namespace = var.namespace
-  }
-
-  spec {
-    service_name = kubernetes_service.spark_connect.metadata[0].name
-    replicas     = 1
-
-    selector {
-      match_labels = { app = local.spark_conn }
-    }
-
-    template {
-      metadata {
-        labels = { app = local.spark_conn }
+    spec = {
+      mainClass = "org.apache.spark.sql.connect.service.SparkConnectServer"
+      runtimeVersions = {
+        sparkVersion = var.image_tag
       }
-
-      spec {
-        container {
-          name  = local.spark_conn
-          image = local.spark_image
-
-          env {
-            name  = "SPARK_MODE"
-            value = "driver"
-          }
-
-          env {
-            name  = "SPARK_MASTER"
-            value = "spark://${local.spark_cluster}-master-svc:7077"
-          }
-
-          port {
-            container_port = 15002
-            name           = "connect"
-          }
-
-          command = [
-            "/bin/bash",
-            "-c",
-            templatefile("${path.module}/scripts/spark-connect-server.sh", {
-              master_url       = "spark://${local.spark_cluster}-master-svc:7077"
-              executor_memory  = var.spark_connect_executor_memory
-              executor_cores   = var.spark_connect_executor_cores
-              max_cores        = var.spark_connect_max_cores
-            })
-          ]
-        }
+      sparkConf = {
+        "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
+        "spark.submit.deployMode" = "cluster"
+        "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
+        "spark.cores.max" = tostring(var.spark_connect_max_cores)
+        "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
+        "spark.kubernetes.container.image" = local.spark_image
+        "spark.ui.reverseProxy" = "true"
       }
     }
   }
-
-  depends_on = [ kubernetes_manifest.spark_cluster ]
 }
+
+# resource "kubernetes_service" "spark_connect" {
+#   metadata {
+#     name      = local.spark_conn_svc
+#     namespace = var.namespace
+#     labels = { app = local.spark_conn }
+#     annotations = {
+#       "tailscale.com/expose" = "${var.tailscale_expose}"
+#       "tailscale.com/hostname" = "${var.prefix}-connect-int"
+#     }
+#   }
+
+#   spec {
+#     selector = { app = local.spark_conn }
+
+#     port {
+#       name        = "connect"
+#       port        = 15002
+#       target_port = 15002
+#     }
+
+#     type = "ClusterIP"
+#   }
+# }
+
+# resource "kubernetes_stateful_set" "spark_connect" {
+#   metadata {
+#     name      = local.spark_conn_stateful
+#     namespace = var.namespace
+#   }
+
+#   spec {
+#     service_name = kubernetes_service.spark_connect.metadata[0].name
+#     replicas     = 1
+
+#     selector {
+#       match_labels = { app = local.spark_conn }
+#     }
+
+#     template {
+#       metadata {
+#         labels = { app = local.spark_conn }
+#       }
+
+#       spec {
+#         container {
+#           name  = local.spark_conn
+#           image = local.spark_image
+
+#           env {
+#             name  = "SPARK_MODE"
+#             value = "driver"
+#           }
+
+#           env {
+#             name  = "SPARK_MASTER"
+#             value = "spark://${local.spark_cluster}-master-svc:7077"
+#           }
+
+#           port {
+#             container_port = 15002
+#             name           = "connect"
+#           }
+
+#           command = [
+#             "/bin/bash",
+#             "-c",
+#             templatefile("${path.module}/scripts/spark-connect-server.sh", {
+#               master_url       = "spark://${local.spark_cluster}-master-svc:7077"
+#               executor_memory  = var.spark_connect_executor_memory
+#               executor_cores   = var.spark_connect_executor_cores
+#               max_cores        = var.spark_connect_max_cores
+#             })
+#           ]
+#         }
+#       }
+#     }
+#   }
+
+#   depends_on = [ kubernetes_manifest.spark_cluster ]
+# }
 
 resource "kubernetes_service" "spark_custom_service" {
   count = var.tailscale_expose ? 1 : 0
