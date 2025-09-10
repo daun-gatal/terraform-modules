@@ -124,7 +124,7 @@ resource "kubernetes_manifest" "minio_tenant" {
       serviceMetadata = {
         consoleServiceAnnotations = {
           "tailscale.com/expose"   = tostring(var.tailscale_expose)
-          "tailscale.com/hostname" = "${local.tenant_name}-console"
+          "tailscale.com/hostname" = "${local.tenant_name}-console-int"
         }
       }
       
