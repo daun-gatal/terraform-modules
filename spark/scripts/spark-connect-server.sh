@@ -8,8 +8,8 @@ set -euo pipefail
 echo "Starting Spark Connect Server..."
 
 # Detect Spark version
-SPARK_VERSION=$(cat $$SPARK_HOME/RELEASE 2>/dev/null | grep "Spark " | cut -d' ' -f2 || echo "unknown")
-SPARK_MAJOR_VERSION=$(echo $$SPARK_VERSION | cut -d'.' -f1)
+SPARK_VERSION=$$(cat $$SPARK_HOME/RELEASE 2>/dev/null | grep "Spark " | cut -d' ' -f2 || echo "unknown")
+SPARK_MAJOR_VERSION=$$(echo $$SPARK_VERSION | cut -d'.' -f1)
 
 echo "Detected Spark version: $$SPARK_VERSION"
 echo "Master URL: ${master_url}"
