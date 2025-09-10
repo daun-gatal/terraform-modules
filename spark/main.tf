@@ -86,7 +86,10 @@ resource "kubernetes_service" "spark_connect" {
   }
 
   spec {
-    selector = { app = local.spark_conn }
+    selector = {
+      "spark.operator/spark-app-name" = local.spark_conn_stateful
+      "spark-role" = "driver"
+    }
 
     port {
       name        = "connect"
