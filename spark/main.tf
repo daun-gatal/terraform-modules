@@ -94,7 +94,7 @@ resource "kubernetes_stateful_set" "spark_connect" {
       spec {
         container {
           name  = local.spark_conn
-          image = "bitnami/spark:${var.image_tag}"
+          image = local.spark_image
 
           env {
             name  = "SPARK_MODE"

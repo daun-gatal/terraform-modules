@@ -22,13 +22,13 @@ echo "Max Cores: ${max_cores}"
 if [ "$SPARK_MAJOR" -lt 4 ]; then
   echo "Using Spark < 4. Adding spark-connect package..."
   exec "$SPARK_HOME/sbin/start-connect-server.sh" \
-    --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" \
-    --master "${master_url}" \
-    --name 'Spark Connect Server' \
-    --conf "spark.executor.memory=${executor_memory}" \
-    --conf "spark.executor.cores=${executor_cores}" \
-    --conf "spark.cores.max=${max_cores}" \
-    --conf "spark.dynamicAllocation.enabled=false"
+    --packages "org.apache.spark:spark-connect_2.12:$${SPARK_VERSION}" 
+    # --master "${master_url}" \
+    # --name 'Spark Connect Server' \
+    # --conf "spark.executor.memory=${executor_memory}" \
+    # --conf "spark.executor.cores=${executor_cores}" \
+    # --conf "spark.cores.max=${max_cores}" \
+    # --conf "spark.dynamicAllocation.enabled=false"
 else
   echo "Using Spark >= 4. Running current Spark Connect script..."
   exec $SPARK_HOME/bin/spark-submit \
