@@ -1,0 +1,12 @@
+# Spark Example Configuration
+# Copy this file to terraform.tfvars and customize
+
+namespace     = "my-spark"
+prefix        = "my-spark"
+worker_count  = 2
+spark_version = "4.0.0"  # Use "3.5.3" for Spark 3.x
+
+# Spark Connect configuration (Spark 4.x only)
+executor_memory = "4g"
+executor_cores  = 2
+max_cores      = 4

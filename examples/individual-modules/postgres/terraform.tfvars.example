@@ -1,0 +1,10 @@
+# PostgreSQL Example Configuration
+# Copy this file to terraform.tfvars and customize
+
+namespace   = "my-postgres"
+prefix      = "my-postgres"
+db_password = "CHANGE_ME_STRONG_PASSWORD"
+
+# Optional configurations
+storage_size      = "20Gi"
+postgres_replicas = 1  # Set to 3 for HA

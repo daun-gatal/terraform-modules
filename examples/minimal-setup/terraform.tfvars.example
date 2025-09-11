@@ -1,0 +1,41 @@
+# Minimal Data Platform Configuration
+# Copy this file to terraform.tfvars and customize with your values
+
+# Global Configuration
+namespace_prefix = "my-data-platform"
+
+# PostgreSQL Configuration (Airflow metadata backend)
+postgres_password     = "CHANGE_ME_STRONG_DB_PASSWORD"
+postgres_storage_size = "20Gi"
+postgres_replicas     = 1  # Set to 3 for HA
+
+# MinIO Configuration (Object storage for logs and data)
+minio_password      = "CHANGE_ME_MINIO_PASSWORD"  # Min 8 characters
+minio_storage_size  = "50Gi"
+logs_retention_days = 30  # Days to keep Airflow logs
+
+# Airflow Configuration (Workflow orchestration)
+airflow_fernet_key       = "CHANGE_ME_32_CHAR_FERNET_KEY_HERE"  # Must be exactly 32 chars
+airflow_api_secret_key   = "CHANGE_ME_API_SECRET_KEY"
+airflow_password         = "CHANGE_ME_AIRFLOW_PASSWORD"
+git_ssh_key_path         = "~/.ssh/id_rsa"
+dags_repo_url           = "git@github.com:your-org/airflow-dags.git"
+dags_branch             = "main"
+airflow_scheduler_replicas = 1
+airflow_enable_triggerer   = false
+
+# Integration Settings
+enable_remote_logging = true   # Store Airflow logs in MinIO
+
+# Networking (optional)
+enable_tailscale     = false  # Enable for private network access
+enable_public_access = false  # Enable for internet access via Tailscale Funnel
+
+# Resource Management
+enable_resource_limits = true
+postgres_cpu          = "2"
+postgres_memory       = "4Gi"
+minio_cpu            = "1"
+minio_memory         = "2Gi"
+airflow_cpu          = "2"
+airflow_memory       = "4Gi"
