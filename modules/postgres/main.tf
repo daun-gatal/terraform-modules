@@ -65,7 +65,7 @@ resource "kubernetes_manifest" "postgres_cluster" {
 
       lifecycle = {
         ignore_changes = [
-          manifest["spec"]["postgresql"]["parameters"]
+          manifest.spec.postgresql.parameters
         ]
       }
     }
