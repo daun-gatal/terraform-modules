@@ -51,14 +51,15 @@ variable "buckets" {
   description = "List of buckets to create automatically with optional retention settings"
   type = list(object({
     name                    = string
-    service                 = optional(string, null)  # Service name for mapping (e.g., "airflow", "spark")
     region                  = optional(string, "us-east-1")
     expire_days             = optional(number, null)  # Delete objects after N days
     noncurrent_expire_days  = optional(number, null)  # Delete old versions after N days
     }))
   default = [
     {
-      name = "dev-data"
+      name = "default",
+      expire_days = 7
+      noncurrent_expire_days = 10
     }
   ]
 }

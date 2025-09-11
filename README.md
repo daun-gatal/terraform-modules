@@ -106,25 +106,40 @@ Apache Airflow is a workflow orchestration platform that allows you to programma
 **Key Parameters:**
 - `namespace` (default: "airflow") - Kubernetes namespace for deployment
 - `prefix` (default: "airflow") - Resource naming prefix
+- `chart_name` (default: "airflow") - Helm chart name for Airflow
 - `chart_version` (default: "1.18.0") - Helm chart version
 - `airflow_metadata_db_conn` (required, sensitive) - PostgreSQL connection string
 - `airflow_fernet_key` (required, sensitive) - Encryption key for secrets
 - `airflow_api_secret_key` (required, sensitive) - API authentication secret
+- `airflow_default_password` (required, sensitive) - Default password for Airflow login
 - `git_ssh_key_path` (required) - Path to SSH key for DAG repository access
+- `airflow_dags_git_sync_enabled` (default: true) - Enable git-sync for DAGs
 - `airflow_dags_git_sync_repo` (required) - Git repository URL for DAGs
 - `airflow_dags_git_sync_branch` (default: "main") - Git branch for DAG sync
+- `airflow_dags_git_sync_rev` (default: "HEAD") - Git revision for DAG sync
+- `airflow_dags_git_sync_ref` (default: "") - Git reference for DAG sync
+- `airflow_dags_git_sync_subpath` (default: "") - SubPath inside DAGs repo for sync
 - `airflow_scheduler_replicas` (default: 1) - Number of scheduler replicas
+- `airflow_log_retention_days` (default: 7) - Log retention in days for Airflow components
 - `airflow_enable_triggerer` (default: false) - Enable triggerer component
+- `airflow_triggerer_replicas` (default: 1) - Number of triggerer replicas
 - `airflow_dag_processor_enabled` (default: true) - Enable standalone DAG processor
+- `airflow_dag_processor_replicas` (default: 1) - Number of DAG processor replicas
 - `enable_remote_logging` (default: false) - Enable S3/MinIO logging
 - `airflow_logs_bucket_name` - S3/MinIO bucket for logs
+- `enable_log_groomer_sidecar` (default: false) - Enable Airflow log groomer sidecar
+- `enable_statsd` (default: false) - Enable statsd metrics collection
 - `aws_access_key_id` (sensitive) - S3/MinIO access credentials
 - `aws_secret_access_key` (sensitive) - S3/MinIO secret credentials
+- `aws_region` (default: "us-east-1") - AWS region for S3 connection
 - `aws_endpoint_url` - Custom S3 endpoint for MinIO
 - `tailscale_expose` (default: false) - Expose via Tailscale network
 - `tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
 - `image_repository` (default: "apache/airflow") - Container image repository
 - `image_tag` (default: "3.0.6") - Container image tag
+- `cpu_allocation` (default: "1") - CPU allocation for namespace
+- `memory_allocation` (default: "1Gi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 ---
 
@@ -146,6 +161,9 @@ Metabase is an open-source business intelligence and data visualization platform
 - `image_tag` (default: "v0.56.x") - Container image tag
 - `tailscale_expose` (default: false) - Expose via Tailscale network
 - `tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
+- `cpu_allocation` (default: "500m") - CPU allocation for namespace
+- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 ---
 
@@ -164,15 +182,17 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 - `storage_class_name` (default: "standard") - Storage class for persistent volumes
 - `buckets` - List of buckets with lifecycle configuration:
   - `name` - Bucket name
-  - `service` (optional) - Service name for mapping (e.g., "airflow", "spark")
   - `region` (default: "us-east-1") - AWS region for bucket
   - `expire_days` (optional) - Auto-delete objects after N days
   - `noncurrent_expire_days` (optional) - Auto-delete old versions after N days
 - `enable_tls` (default: false) - Enable TLS certificates
 - `enable_distributed` (default: false) - Enable distributed mode (4+ servers)
 - `tailscale_expose` (default: false) - Expose MinIO API via Tailscale network
-- `image_repository` (default: "quay.io/minio/mini") - Image repository for MinIO
+- `image_repository` (default: "quay.io/minio/minio") - Image repository for MinIO
 - `image_tag` (default: "RELEASE.2025-04-08T15-41-24Z") - Image version for MinIO
+- `cpu_allocation` (default: "1") - CPU allocation for namespace
+- `memory_allocation` (default: "1Gi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
 - `minio_service_dns` - Internal DNS name for API access
@@ -199,7 +219,7 @@ Apache Kafka is a distributed event streaming platform capable of handling trill
 - `kafka_metadata_version` (default: "4.0-IV3") - Kafka metadata version (KRaft)
 - `kafka_replicas` (default: 3) - Number of Kafka broker replicas
 - `kafka_roles` (default: ["controller", "broker"]) - Roles for Kafka nodes
-- `storage_type` (default: "persistent-claim") - Storage type (persistent-claim, ephemeral)
+- `storage_type` (default: "ephemeral") - Storage type (persistent-claim, ephemeral)
 - `storage_size` (default: "10Gi") - Persistent volume size for Kafka logs
 - `storage_class` (default: "standard") - Storage class for persistent volumes
 - `storage_delete_claim` (default: false) - Whether to delete PVCs when scaling down
@@ -211,9 +231,9 @@ Apache Kafka is a distributed event streaming platform capable of handling trill
 - `transaction_state_log_min_isr` (default: 2) - Minimum in-sync replicas for transaction state log
 - `default_replication_factor` (default: 3) - Default replication factor for new topics
 - `min_insync_replicas` (default: 2) - Minimum number of in-sync replicas
-- `pod_run_as_user` (default: 1000001) - User ID to run Kafka pods as
-- `pod_run_as_group` (default: 1000001) - Group ID to run Kafka pods as
-- `pod_fs_group` (default: 0) - File system group ID for Kafka pods
+- `pod_run_as_user` (default: 1001) - User ID to run Kafka pods as
+- `pod_run_as_group` (default: 1001) - Group ID to run Kafka pods as
+- `pod_fs_group` (default: 1001) - File system group ID for Kafka pods
 - `enable_kafka_ui` (default: false) - Enable Kafka UI for web-based management
 - `kafka_ui_image` (default: "ghcr.io/kafbat/kafka-ui") - Kafka UI container image
 - `kafka_ui_image_tag` (default: "e3ba25f") - Kafka UI image tag
@@ -222,8 +242,10 @@ Apache Kafka is a distributed event streaming platform capable of handling trill
 - `kafka_ui_auth_username` (default: "admin", sensitive) - UI authentication username
 - `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password (min 8 chars)
 - `kafka_ui_tailscale_expose` (default: false) - Expose UI via Tailscale network
-- `kafka_ui_tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
 - `tailscale_expose` (default: false) - Expose Kafka brokers via Tailscale network
+- `cpu_allocation` (default: "1500m") - CPU allocation for namespace
+- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
 - `kafka_bootstrap_servers` - Kafka bootstrap servers connection string for client applications
@@ -252,6 +274,10 @@ Nessie is a Git-like data catalog that provides versioning, branching, and taggi
 - `nessie_s3_access_key_name` (required, sensitive) - S3/MinIO access key
 - `nessie_s3_access_key_secret` (required, sensitive) - S3/MinIO secret key
 - `tailscale_expose` (default: false) - Expose via Tailscale network
+- `chart_name` (default: "nessie") - Helm chart name for Nessie
+- `cpu_allocation` (default: "500m") - CPU allocation for namespace
+- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
 - `nessie_service_dns` - Internal DNS name for API access
@@ -281,6 +307,9 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 - `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
 - `image_repository` (default: "ghcr.io/cloudnative-pg/postgresql") - Image repository for PostgreSQL
 - `image_tag` (default: "15.4") - Image version for PostgreSQL
+- `cpu_allocation` (default: "1") - CPU allocation for namespace
+- `memory_allocation` (default: "1536Mi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
 - `postgres_rw_dns` - Read-write DNS endpoint (primary instance)
@@ -289,6 +318,30 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 - `postgres_username` (sensitive) - The username for the Postgres database
 - `postgres_password` (sensitive) - The password for the Postgres database
 - `postgres_port` - The port of the Postgres service
+
+---
+
+### 📊 **Resource Module** (`resource/`)
+
+The Resource module provides namespace-level resource allocation management, allowing you to set CPU and memory limits and requests for specific Kubernetes namespaces. This is essential for resource governance and preventing resource contention in multi-tenant environments.
+
+**Purpose:** Apply resource quotas and limits to Kubernetes namespaces to ensure fair resource distribution and prevent resource starvation across different services.
+
+**Key Parameters:**
+- `namespace` (required) - Kubernetes namespace to apply resource limits to
+- `cpu` (default: "2") - CPU limit and request for the namespace (format: "100m" or "2")
+- `memory` (default: "4Gi") - Memory limit and request for the namespace (format: "512Mi", "4Gi", etc.)
+
+**Usage Example:**
+```hcl
+module "airflow_resources" {
+  source = "./resource"
+  
+  namespace = "airflow"
+  cpu       = "2"
+  memory    = "4Gi"
+}
+```
 
 ---
 
@@ -302,14 +355,17 @@ Apache Spark is a unified analytics engine for large-scale data processing with 
 - `namespace` (default: "spark") - Kubernetes namespace for deployment
 - `prefix` (default: "spark") - Resource naming prefix
 - `image_repository` (default: "apache/spark") - Container image repository
-- `image_tag` (default: "4.0.0") - Container image tag
+- `image_tag` (default: "4.0.0") - Container image tag (supports 3.5.x and 4.x.x)
 - `spark_k8s_opt_version` (default: "v1beta1") - Spark Kubernetes operator API version
 - `cluster_worker_count` (default: 1) - Number of worker nodes
 - `cluster_name` (default: "Spark Cluster") - Cluster display name
-- `spark_connect_executor_memory` (default: "2g") - Memory per executor
-- `spark_connect_executor_cores` (default: 1) - CPU cores per executor
-- `spark_connect_max_cores` (default: 1) - Maximum total cores
+- `spark_connect_executor_memory` (default: "2g") - Memory per executor for Spark Connect
+- `spark_connect_executor_cores` (default: 1) - CPU cores per executor for Spark Connect
+- `spark_connect_max_cores` (default: 1) - Maximum total cores for Spark Connect
 - `tailscale_expose` (default: false) - Expose via Tailscale network
+- `cpu_allocation` (default: "500m") - CPU allocation for namespace
+- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 ---
 
@@ -322,6 +378,7 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 **Key Parameters:**
 - `namespace` (default: "trino") - Kubernetes namespace for deployment
 - `prefix` (default: "trino") - Resource naming prefix
+- `chart_name` (default: "trino") - Helm chart name for Trino
 - `chart_version` (default: "1.40.0") - Helm chart version
 - `worker_count` (default: 1) - Number of worker replicas
 - `trino_admin_user` (default: "trino") - Admin username
@@ -330,7 +387,7 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 - `trino_coordinator_jvm_max_heap_size` (default: "6G") - Coordinator JVM heap size
 - `trino_coordinator_query_max_memory` (default: "1GB") - Coordinator query memory limit
 - `trino_worker_jvm_max_heap_size` (default: "6G") - Worker JVM heap size
-- `trino_worker_query_max_memory` (default: "1GB") - Worker query memory limit
+- `trino_worker_query_max_memory` (default: "4GB") - Worker query memory limit
 - `coordinator_as_worker` (default: false) - Enable coordinator as worker
 - `enable_https` (default: false) - Enable HTTPS
 - `iceberg_catalog_type` (default: "nessie") - Iceberg catalog type
@@ -344,6 +401,9 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 - `nessie_s3_path_style_access` (default: true) - Enable path-style S3 access
 - `nessie_native_s3_enabled` (default: true) - Enable native S3 support
 - `tailscale_expose` (default: false) - Expose via Tailscale network
+- `cpu_allocation` (default: "2") - CPU allocation for namespace
+- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
 - `trino_service_dns` - Internal DNS name for query access
