@@ -8,32 +8,38 @@ This Terraform module deploys resources to a Kubernetes cluster (i.e., Minikube)
 
 Before using this module, ensure you have the following:
 
-1. **Terraform Providers**
+1. **Terraform >= 1.0**
+   - **Terraform version 1.0 or higher is required** for all modules
+   - Install Terraform: https://developer.hashicorp.com/terraform/downloads
+   - Verify your version: `terraform version`
+
+2. **Terraform Providers**
    - This module requires the following Terraform providers:
      ```hcl
      terraform {
+       required_version = ">= 1.0"
+       
        required_providers {
          kubernetes = {
            source  = "hashicorp/kubernetes"
-           version = "2.30.0"
+           version = "~> 2.30.0"
          }
          helm = {
            source  = "hashicorp/helm"
-           version = "3.0.2"
+           version = "~> 3.0.2"
          }
        }
      }
      ```
-   - Make sure you have [Terraform](https://developer.hashicorp.com/terraform/downloads) installed.
 
-2. **Minikube running**
+3. **Minikube running**
    - Install Minikube: https://minikube.sigs.k8s.io/docs/start/
    - Start a cluster:
      ```bash
      minikube start
      ```
 
-3. **Kubernetes Operators Installation (Install / Uninstall)**  
+4. **Kubernetes Operators Installation (Install / Uninstall)**  
    You can manage all the required operators using the helper script (`manage-operators.sh`) hosted on GitLab.
 
    ### ⚙️ Default Versions and Namespaces
@@ -97,7 +103,7 @@ Before using this module, ensure you have the following:
 
 This repository contains Terraform modules for deploying a complete data platform on Kubernetes. Each module is designed to work independently or as part of an integrated data stack.
 
-### 🌬️ **Airflow Module** (`airflow/`)
+### 🌬️ **Airflow Module** (`modules/airflow/`)
 
 Apache Airflow is a workflow orchestration platform that allows you to programmatically author, schedule, and monitor data pipelines.
 
@@ -143,7 +149,7 @@ Apache Airflow is a workflow orchestration platform that allows you to programma
 
 ---
 
-### 📊 **Metabase Module** (`metabase/`)
+### 📊 **Metabase Module** (`modules/metabase/`)
 
 Metabase is an open-source business intelligence and data visualization platform that connects to databases to create dashboards and insights.
 
@@ -167,7 +173,7 @@ Metabase is an open-source business intelligence and data visualization platform
 
 ---
 
-### 🪣 **MinIO Module** (`minio/`)
+### 🪣 **MinIO Module** (`modules/minio/`)
 
 MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files. This module uses the MinIO Operator for enterprise-grade deployment with high availability, auto-scaling, and advanced monitoring capabilities.
 
@@ -204,7 +210,7 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 
 ---
 
-### 🌊 **Kafka Module** (`kafka/`)
+### 🌊 **Kafka Module** (`modules/kafka/`)
 
 Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming. This module uses the Strimzi operator to deploy Kafka with KRaft mode (no Zookeeper dependency) and includes declarative topic management through Entity Operators.
 
@@ -252,7 +258,7 @@ Apache Kafka is a distributed event streaming platform capable of handling trill
 
 ---
 
-### 🌊 **Nessie Module** (`nessie/`)
+### 🌊 **Nessie Module** (`modules/nessie/`)
 
 Nessie is a Git-like data catalog that provides versioning, branching, and tagging capabilities for data lake tables, particularly with Apache Iceberg.
 
@@ -288,7 +294,7 @@ Nessie is a Git-like data catalog that provides versioning, branching, and taggi
 
 ---
 
-### 🐘 **PostgreSQL Module** (`postgres/`)
+### 🐘 **PostgreSQL Module** (`modules/postgres/`)
 
 PostgreSQL is a powerful, open-source relational database system managed by the CloudNativePG operator for production-ready deployment with high availability, automated backups, and self-healing capabilities.
 
@@ -321,7 +327,7 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 
 ---
 
-### 📊 **Resource Module** (`resource/`)
+### 📊 **Resource Module** (`modules/resource/`)
 
 The Resource module provides namespace-level resource allocation management, allowing you to set CPU and memory limits and requests for specific Kubernetes namespaces. This is essential for resource governance and preventing resource contention in multi-tenant environments.
 
@@ -335,7 +341,7 @@ The Resource module provides namespace-level resource allocation management, all
 **Usage Example:**
 ```hcl
 module "airflow_resources" {
-  source = "./resource"
+  source = "./modules/resource"
   
   namespace = "airflow"
   cpu       = "2"
@@ -345,7 +351,7 @@ module "airflow_resources" {
 
 ---
 
-### ⚡ **Spark Module** (`spark/`)
+### ⚡ **Spark Module** (`modules/spark/`)
 
 Apache Spark is a unified analytics engine for large-scale data processing with built-in modules for streaming, SQL, machine learning, and graph processing.
 
@@ -369,7 +375,7 @@ Apache Spark is a unified analytics engine for large-scale data processing with 
 
 ---
 
-### 🔍 **Trino Module** (`trino/`)
+### 🔍 **Trino Module** (`modules/trino/`)
 
 Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query data from multiple sources including data lakes, databases, and object stores.
 
