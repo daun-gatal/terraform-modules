@@ -53,6 +53,10 @@ resource "kubernetes_manifest" "postgres_cluster" {
         }
       }
 
+      postgresql = {
+        parameters = var.postgresql_parameters
+      }
+
       # Storage configuration
       storage = {
         size         = var.storage_size
@@ -78,33 +82,33 @@ resource "kubernetes_secret" "postgres_credentials" {
 }
 
 # Apply custom PostgreSQL parameters after cluster creation
-resource "null_resource" "postgres_config" {
-  depends_on = [kubernetes_manifest.postgres_cluster]
+# resource "null_resource" "postgres_config" {
+#   depends_on = [kubernetes_manifest.postgres_cluster]
 
-  triggers = {
-    parameters = jsonencode(var.postgresql_parameters)
-    cluster_name = local.cluster_name
-    namespace = var.namespace
-  }
+#   triggers = {
+#     parameters = jsonencode(var.postgresql_parameters)
+#     cluster_name = local.cluster_name
+#     namespace = var.namespace
+#   }
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      # Wait for cluster to be ready
-      kubectl wait --for=condition=Ready cluster/${local.cluster_name} -n ${var.namespace} --timeout=300s
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       # Wait for cluster to be ready
+#       kubectl wait --for=condition=Ready cluster/${local.cluster_name} -n ${var.namespace} --timeout=300s
       
-      # Apply custom PostgreSQL parameters if any are specified
-      if [ "${length(var.postgresql_parameters)}" -gt 0 ]; then
-        echo "Applying custom PostgreSQL parameters..."
-        kubectl patch cluster ${local.cluster_name} -n ${var.namespace} --type='merge' -p='
-        {
-          "spec": {
-            "postgresql": {
-              "parameters": ${jsonencode(var.postgresql_parameters)}
-            }
-          }
-        }'
-        echo "Custom PostgreSQL parameters applied successfully"
-      fi
-    EOT
-  }
-}
+#       # Apply custom PostgreSQL parameters if any are specified
+#       if [ "${length(var.postgresql_parameters)}" -gt 0 ]; then
+#         echo "Applying custom PostgreSQL parameters..."
+#         kubectl patch cluster ${local.cluster_name} -n ${var.namespace} --type='merge' -p='
+#         {
+#           "spec": {
+#             "postgresql": {
+#               "parameters": ${jsonencode(var.postgresql_parameters)}
+#             }
+#           }
+#         }'
+#         echo "Custom PostgreSQL parameters applied successfully"
+#       fi
+#     EOT
+#   }
+# }

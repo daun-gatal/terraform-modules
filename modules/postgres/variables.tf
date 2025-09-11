@@ -65,7 +65,9 @@ variable "storage_class_name" {
 variable "postgresql_parameters" {
   description = "Additional PostgreSQL configuration parameters"
   type        = map(string)
-  default     = {}
+  default     = {
+    "max_connections": "300"
+  }
 }
 
 variable "image_repository" {
