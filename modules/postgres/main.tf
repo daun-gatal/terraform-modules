@@ -62,13 +62,11 @@ resource "kubernetes_manifest" "postgres_cluster" {
         size         = var.storage_size
         storageClass = var.storage_class_name
       }
-
-      lifecycle = {
-        ignore_changes = [
-          manifest.spec.postgresql.parameters
-        ]
-      }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [manifest]
   }
 }
 
