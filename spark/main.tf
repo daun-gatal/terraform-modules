@@ -130,6 +130,12 @@ resource "kubernetes_service" "spark_custom_service" {
       target_port = 8080
     }
 
+    port {
+      name = "spark-master"
+      port = 7077
+      target_port = 7077
+    }
+
     type = "ClusterIP"
   }
 }
