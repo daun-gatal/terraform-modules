@@ -88,11 +88,23 @@ resource "null_resource" "postgres_config" {
   }
 
   provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command = templatefile("${path.module}/scripts/apply_postgres.sh", {
-      cluster_name          = local.cluster_name
-      namespace             = var.namespace
-      postgresql_parameters = jsonencode(var.postgresql_parameters)
-    })
+    command = <<-EOT
+      # Wait for cluster to be ready
+      kubectl wait --for=condition=Ready cluster/${local.cluster_name} -n ${var.namespace} --timeout=300s
+      
+      # Apply custom PostgreSQL parameters if any are specified
+      if [ "${length(var.postgresql_parameters)}" -gt 0 ]; then
+        echo "Applying custom PostgreSQL parameters..."
+        kubectl patch cluster ${local.cluster_name} -n ${var.namespace} --type='merge' -p='
+        {
+          "spec": {
+            "postgresql": {
+              "parameters": ${jsonencode(var.postgresql_parameters)}
+            }
+          }
+        }'
+        echo "Custom PostgreSQL parameters applied successfully"
+      fi
+    EOT
   }
 }
