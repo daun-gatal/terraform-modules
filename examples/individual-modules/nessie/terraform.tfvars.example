@@ -1,0 +1,24 @@
+# Nessie Example Configuration
+# Copy this file to terraform.tfvars and customize
+
+namespace = "my-nessie"
+
+# PostgreSQL configuration (for Nessie metadata)
+postgres_host     = "postgres-rw.database.svc.cluster.local"  # Update with your PostgreSQL service
+postgres_port     = "5432"
+postgres_user     = "postgres"
+postgres_password = "CHANGE_ME_DB_PASSWORD"
+postgres_db       = "nessie"
+
+# S3/MinIO configuration (for data storage)
+s3_bucket     = "data-warehouse"                               # Update with your bucket name
+s3_endpoint   = "http://minio.minio.svc.cluster.local:9000"  # Update with your MinIO service
+s3_region     = "us-east-1"
+s3_access_key = "CHANGE_ME_S3_ACCESS_KEY"
+s3_secret_key = "CHANGE_ME_S3_SECRET_KEY"
+
+# Warehouse configuration
+warehouse_path = "warehouse"
+
+# Optional: Nessie version
+nessie_version = "0.104.10"

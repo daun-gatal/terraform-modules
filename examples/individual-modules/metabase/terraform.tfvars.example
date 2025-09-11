@@ -1,0 +1,14 @@
+# Metabase Example Configuration
+# Copy this file to terraform.tfvars and customize
+
+namespace = "my-metabase"
+
+# Database connection (requires external PostgreSQL)
+db_host     = "postgres-rw.database.svc.cluster.local"  # Update with your PostgreSQL service
+db_user     = "postgres"
+db_password = "CHANGE_ME_DB_PASSWORD"
+db_name     = "metabase"
+db_port     = 5432
+
+# Optional: Metabase version
+metabase_version = "v0.56.x"

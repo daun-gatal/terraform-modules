@@ -1,0 +1,22 @@
+# Airflow Example Configuration
+# Copy this file to terraform.tfvars and customize
+
+namespace = "my-airflow"
+
+# Database connection (requires external PostgreSQL)
+db_connection_string = "postgresql://airflow:CHANGE_PASSWORD@postgres-host:5432/airflow"
+
+# Required secrets (generate secure values)
+fernet_key       = "CHANGE_ME_32_CHAR_FERNET_KEY_HERE"  # Must be exactly 32 characters
+api_secret_key   = "CHANGE_ME_API_SECRET_KEY"
+airflow_password = "CHANGE_ME_ADMIN_PASSWORD"
+
+# Git DAGs configuration
+git_ssh_key_path = "~/.ssh/id_rsa"  # Path to your SSH key
+dags_repo_url    = "git@github.com:your-org/airflow-dags.git"
+dags_branch      = "main"
+
+# Optional configurations
+scheduler_replicas   = 1
+enable_triggerer     = false
+enable_remote_logging = false
