@@ -2,6 +2,7 @@
 # Copy this file to terraform.tfvars and customize
 
 namespace   = "my-postgres"
+prefix      = "my-postgres"
 db_password = "CHANGE_ME_STRONG_PASSWORD"
 
 # Optional configurations

@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "minio-example"
 }
 
+variable "tenant_name" {
+  description = "MinIO tenant name (used in resource naming)"
+  type        = string
+  default     = "dev-minio"
+}
+
 variable "minio_password" {
   description = "MinIO root password (minimum 8 characters)"
   type        = string

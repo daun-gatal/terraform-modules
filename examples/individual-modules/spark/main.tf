@@ -6,6 +6,7 @@ module "spark_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # Spark cluster configuration
   cluster_worker_count = var.worker_count

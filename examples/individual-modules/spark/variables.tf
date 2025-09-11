@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "spark-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Spark resource names"
+  type        = string
+  default     = "spark"
+}
+
 variable "worker_count" {
   description = "Number of Spark worker nodes"
   type        = number

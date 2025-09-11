@@ -2,6 +2,7 @@
 # Copy this file to terraform.tfvars and customize
 
 namespace = "my-airflow"
+prefix    = "my-airflow"
 
 # Database connection (requires external PostgreSQL)
 db_connection_string = "postgresql://airflow:CHANGE_PASSWORD@postgres-host:5432/airflow"

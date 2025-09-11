@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "kafka-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Kafka resource names"
+  type        = string
+  default     = "kafka"
+}
+
 variable "kafka_replicas" {
   description = "Number of Kafka broker replicas"
   type        = number

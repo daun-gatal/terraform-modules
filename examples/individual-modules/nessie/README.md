@@ -25,6 +25,7 @@ Deploy Nessie data catalog for Git-like data lake versioning.
 
 3. **Access:**
    ```bash
+   # Nessie service (service name: {prefix}-release)
    kubectl port-forward -n my-nessie svc/my-nessie-release 19120:19120
    # API: http://localhost:19120/api/v1
    # UI: http://localhost:19120
@@ -32,6 +33,8 @@ Deploy Nessie data catalog for Git-like data lake versioning.
 
 ## Key Variables
 
+- `namespace`: Kubernetes namespace (default: "nessie-example")
+- `prefix`: Resource name prefix (default: "nessie")
 - `postgres_host`: PostgreSQL host (required)
 - `postgres_password`: Database password (required)
 - `s3_bucket`: S3/MinIO bucket (required)
@@ -47,6 +50,10 @@ curl http://localhost:19120/api/v1/trees
 # Create branch
 curl -X POST http://localhost:19120/api/v1/trees/branch/my-feature
 ```
+
+## Services Created
+
+- `{prefix}-release`: Nessie catalog API and UI (port 19120)
 
 ## Cleanup
 

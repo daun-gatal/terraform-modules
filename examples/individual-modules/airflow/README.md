@@ -36,6 +36,7 @@ openssl rand -base64 32
 
 3. **Access:**
    ```bash
+   # Airflow webserver (service name: {prefix}-release-api-server)
    kubectl port-forward -n my-airflow svc/my-airflow-release-api-server 8080:8080
    # Open http://localhost:8080
    # Login: admin / YOUR_PASSWORD
@@ -43,6 +44,8 @@ openssl rand -base64 32
 
 ## Key Variables
 
+- `namespace`: Kubernetes namespace (default: "airflow-example")
+- `prefix`: Resource name prefix (default: "airflow")
 - `db_connection_string`: PostgreSQL connection (required)
 - `fernet_key`: 32-character encryption key (required)
 - `airflow_password`: Admin password (required)
@@ -51,6 +54,12 @@ openssl rand -base64 32
 ## Connection String Format
 
 `postgresql://username:password@hostname:port/database`
+
+## Services Created
+
+- `{prefix}-release-api-server`: Airflow webserver (port 8080)
+- `{prefix}-release-scheduler`: Airflow scheduler
+- `{prefix}-release-git-sync`: DAG synchronization
 
 ## Cleanup
 

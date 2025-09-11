@@ -6,6 +6,7 @@ module "minio_example" {
   
   # Required variables
   namespace           = var.namespace
+  tenant_name         = var.tenant_name
   minio_root_password = var.minio_password
   
   # Storage configuration
@@ -37,7 +38,7 @@ output "minio_credentials" {
 output "minio_access" {
   description = "How to access MinIO console"
   value = {
-    port_forward = "kubectl port-forward -n ${var.namespace} svc/${var.namespace}-console 9001:9001"
+    port_forward = "kubectl port-forward -n ${var.namespace} svc/${var.tenant_name}-console 9001:9001"
     url = "http://localhost:9001"
   }
 }

@@ -24,20 +24,27 @@ Deploy Apache Kafka using Strimzi operator with optional web UI.
 
 3. **Access:**
    ```bash
-   # Kafka UI
+   # Kafka UI (service name: {prefix}-ui-service)
    kubectl port-forward -n my-kafka svc/my-kafka-ui-service 8080:8080
    # Open http://localhost:8080
    ```
 
 ## Key Variables
 
+- `namespace`: Kubernetes namespace (default: "kafka-example")
+- `prefix`: Resource name prefix (default: "kafka")
 - `kafka_replicas`: Number of brokers (default: 1)
 - `storage_type`: "ephemeral" or "persistent-claim"
 - `enable_kafka_ui`: Enable web UI (default: true)
 
 ## Connection
 
-Bootstrap servers: `my-kafka-kafka-bootstrap.my-kafka.svc.cluster.local:9092`
+Bootstrap servers: `{prefix}-kafka-bootstrap.{namespace}.svc.cluster.local:9092`
+Example: `my-kafka-kafka-bootstrap.my-kafka.svc.cluster.local:9092`
+
+## Outputs
+
+- `kafka_bootstrap_servers`: Full connection string for Kafka clients
 
 ## Cleanup
 

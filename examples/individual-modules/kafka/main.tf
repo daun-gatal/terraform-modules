@@ -6,6 +6,7 @@ module "kafka_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # Basic Kafka configuration
   kafka_replicas = var.kafka_replicas

@@ -2,6 +2,7 @@
 # Copy this file to terraform.tfvars and customize
 
 namespace      = "my-minio"
+tenant_name    = "my-minio"
 minio_password = "CHANGE_ME_MINIO_PASSWORD"
 storage_size   = "10Gi"
 

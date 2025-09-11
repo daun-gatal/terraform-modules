@@ -35,6 +35,7 @@ openssl rand -base64 32
 
 3. **Access:**
    ```bash
+   # Trino coordinator (service name: {prefix}-release)
    kubectl port-forward -n my-trino svc/my-trino-release 8080:8080
    # Open http://localhost:8080
    # Login: trino / YOUR_ADMIN_PASSWORD
@@ -42,6 +43,8 @@ openssl rand -base64 32
 
 ## Key Variables
 
+- `namespace`: Kubernetes namespace (default: "trino-example")
+- `prefix`: Resource name prefix (default: "trino")
 - `admin_password`: Admin password (required)
 - `shared_secret`: Internal communication secret (required)
 - `nessie_api_uri`: Nessie API endpoint (required)
@@ -64,6 +67,10 @@ CREATE TABLE iceberg.example.customer (
 ## JDBC Connection
 
 `jdbc:trino://localhost:8080`
+
+## Services Created
+
+- `{prefix}-release`: Trino coordinator UI and API (port 8080)
 
 ## Cleanup
 

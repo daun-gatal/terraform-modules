@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "airflow-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Airflow resource names"
+  type        = string
+  default     = "airflow"
+}
+
 variable "db_connection_string" {
   description = "PostgreSQL connection string (format: postgresql://user:pass@host:port/db)"
   type        = string

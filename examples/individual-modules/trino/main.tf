@@ -6,6 +6,7 @@ module "trino_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # Cluster configuration
   worker_count = var.worker_count

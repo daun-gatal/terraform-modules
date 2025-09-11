@@ -6,6 +6,7 @@ module "postgres_example" {
   
   # Required variables
   namespace   = var.namespace
+  prefix      = var.prefix
   db_password = var.db_password
   
   # Optional: Basic configuration

@@ -2,6 +2,7 @@
 # Copy this file to terraform.tfvars and customize
 
 namespace    = "my-trino"
+prefix       = "my-trino"
 worker_count = 2
 
 # Authentication (generate secure values)

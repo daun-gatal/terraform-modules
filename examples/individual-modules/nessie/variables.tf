@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "nessie-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Nessie resource names"
+  type        = string
+  default     = "nessie"
+}
+
 # PostgreSQL configuration (for Nessie metadata)
 variable "postgres_host" {
   description = "PostgreSQL host for Nessie metadata"

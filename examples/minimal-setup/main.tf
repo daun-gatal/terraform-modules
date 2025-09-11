@@ -6,6 +6,7 @@ module "postgres" {
   source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
   
   namespace   = "${var.namespace_prefix}-database"
+  prefix      = "${var.namespace_prefix}-postgres"
   db_password = var.postgres_password
   
   # Basic configuration for development
@@ -57,6 +58,7 @@ module "airflow" {
   source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/airflow?ref=main"
   
   namespace = "${var.namespace_prefix}-orchestration"
+  prefix    = "${var.namespace_prefix}-airflow"
   
   # Connect to PostgreSQL for metadata
   airflow_metadata_db_conn = "postgresql://postgres:${var.postgres_password}@${module.postgres.postgres_rw_dns}:5432/postgres"

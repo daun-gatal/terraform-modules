@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "metabase-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Metabase resource names"
+  type        = string
+  default     = "metabase"
+}
+
 variable "db_host" {
   description = "PostgreSQL database host"
   type        = string

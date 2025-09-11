@@ -6,6 +6,7 @@ module "metabase_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # Database connection (requires external PostgreSQL)
   metabase_db_host     = var.db_host

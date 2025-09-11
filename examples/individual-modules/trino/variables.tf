@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "trino-example"
 }
 
+variable "prefix" {
+  description = "Prefix for Trino resource names"
+  type        = string
+  default     = "trino"
+}
+
 variable "worker_count" {
   description = "Number of Trino worker nodes"
   type        = number

@@ -6,6 +6,7 @@ module "airflow_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # Database connection (requires external PostgreSQL)
   airflow_metadata_db_conn = var.db_connection_string

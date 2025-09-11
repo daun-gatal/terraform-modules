@@ -6,6 +6,7 @@ module "nessie_example" {
   
   # Required variables
   namespace = var.namespace
+  prefix    = var.prefix
   
   # PostgreSQL connection (for Nessie metadata)
   nessie_jdbc_url      = var.postgres_host

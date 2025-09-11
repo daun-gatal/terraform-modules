@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "postgres-example"
 }
 
+variable "prefix" {
+  description = "Prefix for PostgreSQL resource names"
+  type        = string
+  default     = "postgres"
+}
+
 variable "db_password" {
   description = "PostgreSQL database password"
   type        = string

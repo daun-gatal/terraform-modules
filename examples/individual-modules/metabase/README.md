@@ -24,6 +24,7 @@ Deploy Metabase business intelligence platform with PostgreSQL backend.
 
 3. **Access:**
    ```bash
+   # Metabase service (service name: {prefix}-service)
    kubectl port-forward -n my-metabase svc/my-metabase-service 3000:3000
    # Open http://localhost:3000
    # Complete initial setup wizard
@@ -31,6 +32,8 @@ Deploy Metabase business intelligence platform with PostgreSQL backend.
 
 ## Key Variables
 
+- `namespace`: Kubernetes namespace (default: "metabase-example")
+- `prefix`: Resource name prefix (default: "metabase")
 - `db_host`: PostgreSQL host (required)
 - `db_password`: Database password (required)
 - `db_name`: Database name (default: "metabase")
@@ -39,6 +42,10 @@ Deploy Metabase business intelligence platform with PostgreSQL backend.
 ## Initial Setup
 
 First access will guide you through admin account creation and data source connections.
+
+## Services Created
+
+- `{prefix}-service`: Metabase web interface (port 3000)
 
 ## Cleanup
 
