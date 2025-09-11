@@ -88,7 +88,7 @@ resource "null_resource" "postgres_config" {
   }
 
   provisioner "local-exec" {
-    command = templatefile("${path.module}/apply_postgres.sh", {
+    command = templatefile("${path.module}/scripts/apply_postgres.sh", {
       cluster_name          = local.cluster_name
       namespace             = var.namespace
       postgresql_parameters = jsonencode(var.postgresql_parameters)
