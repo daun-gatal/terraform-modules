@@ -88,6 +88,7 @@ resource "null_resource" "postgres_config" {
   }
 
   provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
     command = templatefile("${path.module}/scripts/apply_postgres.sh", {
       cluster_name          = local.cluster_name
       namespace             = var.namespace
