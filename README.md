@@ -379,7 +379,7 @@ Apache Spark is a unified analytics engine for large-scale data processing with 
 
 Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query data from multiple sources including data lakes, databases, and object stores.
 
-**Purpose:** Deploy Trino cluster with Iceberg catalog integration, authentication, and S3/MinIO connectivity for federated data querying.
+**Purpose:** Deploy Trino cluster with flexible catalog configuration system supporting multiple data sources including PostgreSQL, Iceberg, Delta Lake, and many other connectors for federated data querying.
 
 **Key Parameters:**
 - `namespace` (default: "trino") - Kubernetes namespace for deployment
@@ -387,29 +387,24 @@ Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query d
 - `chart_name` (default: "trino") - Helm chart name for Trino
 - `chart_version` (default: "1.40.0") - Helm chart version
 - `worker_count` (default: 1) - Number of worker replicas
-- `trino_admin_user` (default: "trino") - Admin username
-- `trino_admin_password` (required, sensitive) - Admin password
+- `coordinator_as_worker` (default: false) - Whether coordinator acts as worker
 - `trino_shared_secret` (required, sensitive) - Internal communication secret
 - `trino_coordinator_jvm_max_heap_size` (default: "6G") - Coordinator JVM heap size
 - `trino_coordinator_query_max_memory` (default: "1GB") - Coordinator query memory limit
 - `trino_worker_jvm_max_heap_size` (default: "6G") - Worker JVM heap size
-- `trino_worker_query_max_memory` (default: "4GB") - Worker query memory limit
-- `coordinator_as_worker` (default: false) - Enable coordinator as worker
-- `enable_https` (default: false) - Enable HTTPS
-- `iceberg_catalog_type` (default: "nessie") - Iceberg catalog type
-- `iceberg_nessie_uri` (required) - Nessie API URI
-- `iceberg_nessie_ref` (default: "main") - Nessie branch/tag reference
-- `iceberg_nessie_default_warehouse` (required) - Default warehouse S3 path
-- `nessie_s3_endpoint` (required) - S3/MinIO endpoint
-- `nessie_s3_region` (default: "us-east-1") - S3/MinIO region
-- `nessie_s3_access_key` (required, sensitive) - S3/MinIO access key
-- `nessie_s3_secret_key` (required, sensitive) - S3/MinIO secret key
-- `nessie_s3_path_style_access` (default: true) - Enable path-style S3 access
-- `nessie_native_s3_enabled` (default: true) - Enable native S3 support
+- `trino_worker_query_max_memory` (default: "1GB") - Worker query memory limit
+- `enabled_catalogs` (default: []) - List of catalog configurations:
+  - `name` - Catalog name in Trino
+  - `params` - Map of catalog configuration parameters (connector-specific)
 - `tailscale_expose` (default: false) - Expose via Tailscale network
 - `cpu_allocation` (default: "2") - CPU allocation for namespace
 - `memory_allocation` (default: "2Gi") - Memory allocation for namespace
 - `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+
+**Catalog Examples:**
+- **Memory**: `{"connector.name" = "memory"}` - For testing
+- **Iceberg with Nessie**: `{"connector.name" = "iceberg", "iceberg.catalog.type" = "nessie", "iceberg.nessie-catalog.uri" = "http://nessie:19120/api/v1", ...}`
+- **Delta Lake**: `{"connector.name" = "delta_lake", "hive.metastore.uri" = "thrift://hive-metastore:9083", ...}`
 
 **Outputs:**
 - `trino_service_dns` - Internal DNS name for query access
