@@ -16,13 +16,13 @@ variable "worker_count" {
   default     = 1
 }
 
-# Authentication
-variable "admin_password" {
-  description = "Trino admin user password"
-  type        = string
-  sensitive   = true
+variable "coordinator_as_worker" {
+  description = "Whether the coordinator should also act as a worker"
+  type        = bool
+  default     = false
 }
 
+# Authentication
 variable "shared_secret" {
   description = "Shared secret for internal Trino communication"
   type        = string
@@ -54,45 +54,41 @@ variable "worker_query_memory" {
   default     = "4GB"
 }
 
-# Nessie catalog configuration
-variable "nessie_api_uri" {
-  description = "Nessie API URI (e.g., http://nessie:19120/api/v1)"
-  type        = string
+# Network exposure
+variable "tailscale_expose" {
+  description = "Whether to expose Trino via Tailscale"
+  type        = bool
+  default     = false
 }
 
-variable "nessie_branch" {
-  description = "Nessie branch/ref to use"
-  type        = string
-  default     = "main"
+# Resource allocation
+variable "enable_resource_allocation" {
+  description = "Enable resource allocation for namespace"
+  type        = bool
+  default     = false
 }
 
-variable "warehouse_location" {
-  description = "Default warehouse location (e.g., s3://bucket/warehouse)"
+variable "cpu_allocation" {
+  description = "CPU allocation for Trino namespace (requests and limits)"
   type        = string
+  default     = "4"
 }
 
-# S3/MinIO configuration
-variable "s3_endpoint" {
-  description = "S3/MinIO endpoint URL"
+variable "memory_allocation" {
+  description = "Memory allocation for Trino namespace (requests and limits)"
   type        = string
+  default     = "8Gi"
 }
 
-variable "s3_region" {
-  description = "S3/MinIO region"
-  type        = string
-  default     = "us-east-1"
-}
-
-variable "s3_access_key" {
-  description = "S3/MinIO access key"
-  type        = string
-  sensitive   = true
-}
-
-variable "s3_secret_key" {
-  description = "S3/MinIO secret key"
-  type        = string
-  sensitive   = true
+# Catalog configuration
+variable "enabled_catalogs" {
+  description = "List of catalogs to enable in Trino"
+  type = list(object({
+    name      = string       # catalog name in Trino
+    params    = map(string)  # raw key=value pairs for catalog configuration
+  }))
+  
+  default = []
 }
 
 variable "trino_version" {

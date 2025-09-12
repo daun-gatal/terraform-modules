@@ -10,10 +10,10 @@ module "trino_example" {
   
   # Cluster configuration
   worker_count = var.worker_count
+  coordinator_as_worker = var.coordinator_as_worker
   
   # Authentication
-  trino_admin_password = var.admin_password
-  trino_shared_secret  = var.shared_secret
+  trino_shared_secret = var.shared_secret
   
   # JVM and performance settings
   trino_coordinator_jvm_max_heap_size = var.coordinator_heap
@@ -21,16 +21,16 @@ module "trino_example" {
   trino_coordinator_query_max_memory = var.coordinator_query_memory
   trino_worker_query_max_memory      = var.worker_query_memory
   
-  # Iceberg catalog (requires Nessie)
-  iceberg_nessie_uri               = var.nessie_api_uri
-  iceberg_nessie_ref               = var.nessie_branch
-  iceberg_nessie_default_warehouse = var.warehouse_location
+  # Network exposure
+  tailscale_expose = var.tailscale_expose
   
-  # S3/MinIO configuration for Iceberg tables
-  nessie_s3_endpoint   = var.s3_endpoint
-  nessie_s3_region     = var.s3_region
-  nessie_s3_access_key = var.s3_access_key
-  nessie_s3_secret_key = var.s3_secret_key
+  # Resource allocation
+  enable_resource_allocation = var.enable_resource_allocation
+  cpu_allocation            = var.cpu_allocation
+  memory_allocation         = var.memory_allocation
+  
+  # Catalogs configuration
+  enabled_catalogs = var.enabled_catalogs
   
   # Helm chart version
   chart_version = var.trino_version
