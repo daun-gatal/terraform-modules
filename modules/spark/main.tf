@@ -39,13 +39,16 @@ resource "kubernetes_manifest" "spark_cluster" {
           maxWorkers  = var.cluster_worker_count
         }
       }
-      sparkConf = {
-        "spark.kubernetes.container.image" = local.spark_image
-        "spark.master.ui.title"            = var.cluster_name
-        "spark.master.rest.enabled"        = "true"
-        "spark.master.rest.host"           = "0.0.0.0"
-        "spark.ui.reverseProxy"            = "true"
-      }
+      sparkConf = merge(
+        {
+          "spark.kubernetes.container.image" = local.spark_image
+          "spark.master.ui.title"            = var.cluster_name
+          "spark.master.rest.enabled"        = "true"
+          "spark.master.rest.host"           = "0.0.0.0"
+          "spark.ui.reverseProxy"            = "true"
+        },
+        var.extra_spark_conf
+      )
     }
   }
 }

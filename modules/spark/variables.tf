@@ -90,3 +90,9 @@ variable "enable_resource_allocation" {
   type = bool
   default = false
 }
+
+variable "extra_spark_conf" {
+  description = "Extra SparkConf if necessary"
+  type    = map(string)
+  default = {}
+}
