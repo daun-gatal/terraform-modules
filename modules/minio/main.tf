@@ -181,4 +181,32 @@ resource "kubernetes_job" "apply_bucket_policies" {
   }
 }
 
-# Services and buckets are automatically created by MinIO Operator
+resource "kubernetes_service" "minio_api_service" {
+  count = var.tailscale_expose ? 1 : 0
+
+  metadata {
+    name      = "${local.tenant_name}-api-service"
+    namespace = var.namespace
+    labels = {
+      app = local.tenant_name
+    }
+    annotations = {
+      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${local.tenant_name}-api-int"
+    }
+  }
+
+  spec {
+    selector = {
+      "v1.min.io/tenant" = local.tenant_name
+    }
+
+    port {
+      name        = "${local.tenant_name}-custom-api"
+      port        = 9000
+      target_port = 9000
+    }
+
+    type = "ClusterIP"
+  }
+}
