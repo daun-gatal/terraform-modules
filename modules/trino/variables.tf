@@ -35,80 +35,11 @@ variable "worker_query_max_memory" {
   default     = "4GB"
 }
 
-variable "iceberg_catalog_type" {
-  description = "The type of Iceberg catalog (e.g., nessie)"
-  type        = string
-  default     = "nessie"
-}
-
-variable "iceberg_nessie_uri" {
-  description = "The URI for the Nessie catalog with format http://<nessie-host>:<port>/api/v1"
-  type        = string
-}
-
-variable "iceberg_nessie_ref" {
-  description = "The Nessie reference (branch or tag) to use"
-  type        = string
-  default     = "main"
-}
-
-variable "iceberg_nessie_default_warehouse" {
-  description = "The default warehouse path for Iceberg with format s3://<bucket>/<path>"
-  type        = string
-}
-
-variable "nessie_native_s3_enabled" {
-  description = "Enable native S3 support in Nessie"
-  type        = bool
-  default     = true
-}
-
-variable "nessie_s3_endpoint" {
-  description = "The S3/Minio endpoint for Nessie with format http://host:port"
-  type        = string
-}
-
-variable "nessie_s3_region" {
-  description = "The S3/Minio region for Nessie"
-  type        = string
-  default     = "us-east-1"
-}
-
-variable "nessie_s3_access_key" {
-  description = "The access key for S3/Minio"
-  type        = string
-  sensitive   = true
-}
-
-variable "nessie_s3_secret_key" {
-  description = "The secret key for S3/Minio"
-  type        = string
-  sensitive   = true
-}
-
-variable "nessie_s3_path_style_access" {
-  description = "Enable path style access for S3/Minio"
-  type        = bool
-  default     = true
-}
-
 variable "tailscale_expose" {
   description = "Whether to expose Trino via Tailscale"
   type        = bool
   default     = false
   
-}
-
-variable "trino_admin_user" {
-  description = "The Trino admin username"
-  type        = string
-  default     = "trino"
-}
-
-variable "trino_admin_password" {
-  description = "The Trino admin password"
-  type        = string
-  sensitive   = true
 }
 
 variable "trino_coordinator_jvm_max_heap_size" {
@@ -147,12 +78,6 @@ variable "coordinator_as_worker" {
   default     = false
 }
 
-variable "enable_https" {
-  description = "Whether to enable HTTPS for Trino"
-  type        = bool
-  default     = false
-}
-
 # Resource allocation variables
 variable "cpu_allocation" {
   description = "CPU allocation for Trino namespace (requests and limits)"
@@ -170,4 +95,33 @@ variable "enable_resource_allocation" {
   description = "Enable resource allocation for namespace"
   type = bool
   default = false
+}
+
+# Catalog Variables
+variable "enabled_catalogs" {
+  description = "List of catalogs to enable"
+  type = list(object({
+    name      = string       # catalog name in Trino
+    connector = string       # connector type (iceberg, hive, delta, etc.)
+    params    = map(string)  # raw key=value pairs
+  }))
+
+  default = [
+    {
+      name      = "analytics_iceberg"
+      params = {
+        connector.name                       = "iceberg"
+        iceberg.catalog.type                  = "nessie"
+        iceberg.nessie-catalog.uri            = "http://nessie:19120/api/v2"
+        iceberg.nessie-catalog.ref            = "main"
+        iceberg.nessie-catalog.default-warehouse-dir = "s3://warehouse/iceberg"
+        fs.native-s3.enabled                  = "true"
+        s3.endpoint                           = "http://minio:9000"
+        s3.region                             = "us-east-1"
+        s3.aws-access-key                     = "minioadmin"
+        s3.aws-secret-key                     = "minioadmin"
+        s3.path-style-access                  = "true"
+      }
+    }
+  ]
 }

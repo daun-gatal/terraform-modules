@@ -1,6 +1,14 @@
 locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
+
+  rendered_catalogs = {
+    for catalog in var.enabled_catalogs :
+    "catalogs.${catalog.name}" =>
+    templatefile("${path.module}/templates/catalog.tpl", {
+      params = catalog.params
+    })
+  }
 }
 
 resource "kubernetes_namespace" "trino" {
@@ -17,10 +25,6 @@ module "trino_resources" {
   namespace = kubernetes_namespace.trino.metadata[0].name
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
-}
-
-resource "htpasswd_password" "trino" {
-  password = var.trino_admin_password
 }
 
 resource "helm_release" "trino" {
@@ -42,10 +46,6 @@ resource "helm_release" "trino" {
     {
         name = "server.workers"
         value = var.worker_count
-    },
-    {
-        name = "server.config.authenticationType"
-        value = "PASSWORD"
     },
     {
         name = "coordinator.jvm.maxHeapSize"
@@ -72,39 +72,23 @@ resource "helm_release" "trino" {
         value = var.coordinator_as_worker 
     },
     {
-        name = "server.config.https.enabled"
-        value = var.enable_https
-    },
-    {
         name = "fullnameOverride"
         value = "${local.release_name}"
     }
   ]
 
-  set_sensitive = [
-    {
-        name = "catalogs.iceberg"
-        value = <<EOF
-        connector.name=iceberg
-        iceberg.catalog.type=${var.iceberg_catalog_type}
-        iceberg.nessie-catalog.uri=${var.iceberg_nessie_uri}
-        iceberg.nessie-catalog.ref=${var.iceberg_nessie_ref}
-        iceberg.nessie-catalog.default-warehouse-dir=${var.iceberg_nessie_default_warehouse}
-        fs.native-s3.enabled=${var.nessie_native_s3_enabled}
-        s3.endpoint=${var.nessie_s3_endpoint}
-        s3.region=${var.nessie_s3_region}
-        s3.aws-access-key=${var.nessie_s3_access_key}
-        s3.aws-secret-key=${var.nessie_s3_secret_key}
-        s3.path-style-access=${var.nessie_s3_path_style_access}
-        EOF
-    },
-    {
-        name = "auth.passwordAuth"
-        value = "${var.trino_admin_user}:${htpasswd_password.trino.bcrypt}"
-    },
-    {
-      name  = "additionalConfigProperties[0]"
-      value = "internal-communication.shared-secret=${var.trino_shared_secret}"
-    }
-  ]
+  set_sensitive = concat(
+    [
+      for name, value in local.rendered_catalogs : {
+        name  = name
+        value = value
+      }
+    ],
+    [
+      {
+        name  = "additionalConfigProperties[0]"
+        value = "internal-communication.shared-secret=${var.trino_shared_secret}"
+      }
+    ]
+  )
 }
