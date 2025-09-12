@@ -106,22 +106,5 @@ variable "enabled_catalogs" {
     params    = map(string)  # raw key=value pairs
   }))
 
-  default = [
-    {
-      name      = "analytics_iceberg"
-      params = {
-        connector.name                       = "iceberg"
-        iceberg.catalog.type                  = "nessie"
-        iceberg.nessie-catalog.uri            = "http://nessie:19120/api/v2"
-        iceberg.nessie-catalog.ref            = "main"
-        iceberg.nessie-catalog.default-warehouse-dir = "s3://warehouse/iceberg"
-        fs.native-s3.enabled                  = "true"
-        s3.endpoint                           = "http://minio:9000"
-        s3.region                             = "us-east-1"
-        s3.aws-access-key                     = "minioadmin"
-        s3.aws-secret-key                     = "minioadmin"
-        s3.path-style-access                  = "true"
-      }
-    }
-  ]
+  default = []
 }
