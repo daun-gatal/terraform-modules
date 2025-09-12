@@ -102,7 +102,6 @@ variable "enabled_catalogs" {
   description = "List of catalogs to enable"
   type = list(object({
     name      = string       # catalog name in Trino
-    connector = string       # connector type (iceberg, hive, delta, etc.)
     params    = map(string)  # raw key=value pairs
   }))
 
