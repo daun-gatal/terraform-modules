@@ -56,12 +56,12 @@ Before using this module, ensure you have the following:
 
    - **Install all operators with defaults:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
      ```
 
    - **Install including Tailscale (with namespace and OAuth):**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- \
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- \
        --with-tailscale \
        --tailscale-namespace tailscale \
        --oauth-client-id "<OAUTH_CLIENT_ID>" \
@@ -71,7 +71,7 @@ Before using this module, ensure you have the following:
 
    - **Install with custom namespaces and versions:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- \
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- \
        --spark-namespace my-spark --spark-version 1.3.0 \
        --cnpg-namespace my-db --cnpg-version 0.27.0 \
        --minio-namespace my-minio --minio-version 7.2.0 \
@@ -82,19 +82,19 @@ Before using this module, ensure you have the following:
 
    - **Uninstall all operators:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --uninstall
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --uninstall
      ```
 
    - **Uninstall including Tailscale:**
      ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --uninstall --with-tailscale
+     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --uninstall --with-tailscale
      ```
 
    ### 📖 Help
 
    You can see all available options and defaults by running:
    ```bash
-   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/manage-operators.sh" | bash -s -- --help
+   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --help
    ```
 
 ---
