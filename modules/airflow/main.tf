@@ -23,18 +23,11 @@ locals {
   ] : []
 }
 
-resource "kubernetes_namespace" "airflow" {
-  metadata {
-    name = var.namespace
-  }
-}
-
-# Apply resource limits to the Airflow namespace
 module "airflow_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
-  namespace = kubernetes_namespace.airflow.metadata[0].name
+  namespace = var.namespace
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
 }
@@ -42,7 +35,7 @@ module "airflow_resources" {
 resource "kubernetes_secret" "airflow_secret" {
   metadata {
     name      = local.secret_name
-    namespace = kubernetes_namespace.airflow.metadata[0].name
+    namespace = var.namespace
   }
 
   data = {
@@ -57,7 +50,7 @@ resource "kubernetes_secret" "airflow_secret" {
 
 resource "helm_release" "airflow" {
   name       = local.release_name
-  namespace  = kubernetes_namespace.airflow.metadata[0].name
+  namespace  = var.namespace
   repository = "https://airflow.apache.org"
   chart      = var.chart_name
   version    = var.chart_version

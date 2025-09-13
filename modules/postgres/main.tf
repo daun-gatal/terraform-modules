@@ -5,18 +5,12 @@ locals {
   postgres_image = "${var.image_repository}:${var.image_tag}"
 }
 
-resource "kubernetes_namespace" "postgres" {
-  metadata {
-    name = var.namespace
-  }
-}
-
 # Apply resource limits to the Postgres namespace
 module "postgres_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
-  namespace = kubernetes_namespace.postgres.metadata[0].name
+  namespace = var.namespace
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
 }
