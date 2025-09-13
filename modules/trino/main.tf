@@ -11,25 +11,19 @@ locals {
   }
 }
 
-resource "kubernetes_namespace" "trino" {
-  metadata {
-    name = var.namespace
-  }
-}
-
 # Apply resource limits to the Trino namespace
 module "trino_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
-  namespace = kubernetes_namespace.trino.metadata[0].name
+  namespace = var.namespace
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
 }
 
 resource "helm_release" "trino" {
   name       = local.release_name
-  namespace  = kubernetes_namespace.trino.metadata[0].name
+  namespace  = var.namespace
   repository = "https://trinodb.github.io/charts"
   chart      = var.chart_name
   version    = var.chart_version

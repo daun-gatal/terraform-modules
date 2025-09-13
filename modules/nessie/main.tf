@@ -6,18 +6,12 @@ locals {
   s3_warehouse_location = "s3://${var.nessie_s3_bucket}/${var.nessie_default_warehouse}"
 }
 
-resource "kubernetes_namespace" "nessie" {
-  metadata {
-    name = var.namespace
-  }
-}
-
 # Apply resource limits to the Nessie namespace
 module "nessie_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
-  namespace = kubernetes_namespace.nessie.metadata[0].name
+  namespace = var.namespace
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
 }
@@ -25,7 +19,7 @@ module "nessie_resources" {
 resource "kubernetes_secret" "nessie_jdbc" {
   metadata {
     name      = local.secret_name
-    namespace = kubernetes_namespace.nessie.metadata[0].name
+    namespace = var.namespace
   }
 
   data = {
@@ -39,7 +33,7 @@ resource "kubernetes_secret" "nessie_jdbc" {
 resource "kubernetes_secret" "nessie_s3" {
   metadata {
     name      = local.s3_secret_name
-    namespace = kubernetes_namespace.nessie.metadata[0].name
+    namespace = var.namespace
   }
 
   data = {
@@ -52,7 +46,7 @@ resource "kubernetes_secret" "nessie_s3" {
 
 resource "helm_release" "nessie" {
   name       = local.release_name
-  namespace  = kubernetes_namespace.nessie.metadata[0].name
+  namespace  = var.namespace
   repository = "https://charts.projectnessie.org"
   chart      = var.chart_name
   version    = var.chart_version
