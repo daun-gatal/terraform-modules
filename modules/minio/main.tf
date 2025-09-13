@@ -11,19 +11,11 @@ locals {
   volumes_per_server = 1
 }
 
-# Create namespace
-resource "kubernetes_namespace" "minio" {
-  metadata {
-    name = var.namespace
-  }
-}
-
-# Apply resource limits to the MinIO namespace
 module "minio_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
   
-  namespace = kubernetes_namespace.minio.metadata[0].name
+  namespace = var.namespace
   cpu       = var.cpu_allocation
   memory    = var.memory_allocation
 }
@@ -32,7 +24,7 @@ module "minio_resources" {
 resource "kubernetes_secret" "minio_credentials" {
   metadata {
     name      = local.secret_name
-    namespace = kubernetes_namespace.minio.metadata[0].name
+    namespace = var.namespace
   }
 
   data = {
@@ -146,7 +138,7 @@ resource "kubernetes_job" "apply_bucket_policies" {
   
   metadata {
     name      = "${local.tenant_name}-bucket-policies"
-    namespace = kubernetes_namespace.minio.metadata[0].name
+    namespace = var.namespace
   }
   
   spec {

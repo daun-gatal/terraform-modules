@@ -57,6 +57,44 @@ EOF
 }
 
 # --------------------------
+# Helpers
+# --------------------------
+delete_cnpg_crds() {
+  echo "🧹 Cleaning up CNPG CRDs..."
+  local crds
+  crds=$(kubectl get crd -o name | grep "postgresql.cnpg.io" || true)
+  if [[ -n "$crds" ]]; then
+    echo "$crds" | xargs kubectl delete --ignore-not-found
+  else
+    echo "ℹ️  No CNPG CRDs found."
+  fi
+}
+
+delete_spark_crds() {
+  echo "🧹 Cleaning up Spark CRDs..."
+  local crds
+  crds=$(kubectl get crd -o name | grep "sparkoperator.k8s.io" || true)
+  if [[ -n "$crds" ]]; then
+    echo "$crds" | xargs kubectl delete --ignore-not-found
+  else
+    echo "ℹ️  No Spark CRDs found."
+  fi
+}
+
+force_delete_namespace() {
+  local ns="$1"
+  echo "🗑️ Forcing deletion of namespace: $ns"
+  kubectl delete namespace "$ns" --ignore-not-found --wait=false
+
+  # If namespace is stuck in Terminating, remove finalizers
+  if kubectl get namespace "$ns" -o json 2>/dev/null | grep -q '"kubernetes"'; then
+    kubectl get namespace "$ns" -o json \
+      | jq '.spec.finalizers=[]' \
+      | kubectl replace --raw "/api/v1/namespaces/$ns/finalize" -f - || true
+  fi
+}
+
+# --------------------------
 # Parse Arguments
 # --------------------------
 while [[ $# -gt 0 ]]; do
@@ -86,12 +124,19 @@ done
 # --------------------------
 if [[ "$ACTION" == "install" ]]; then
   echo "🚀 Installing Operators..."
-  
+
+  # Add repos once
+  $TAILSCALE_ENABLED && helm repo add tailscale https://pkgs.tailscale.com/helmcharts
+  helm repo add spark https://apache.github.io/spark-kubernetes-operator
+  helm repo add cnpg https://cloudnative-pg.github.io/charts
+  helm repo add minio-operator https://operator.min.io
+  helm repo add strimzi https://strimzi.io/charts/
+
+  # Update repos once
+  helm repo update
+
   if $TAILSCALE_ENABLED; then
     echo "🔹 Installing Tailscale Operator..."
-    helm repo add tailscale https://pkgs.tailscale.com/helmcharts
-    helm repo update
-
     # Prompt if not set
     if [[ -z "${OAUTH_CLIENT_ID:-}" ]]; then
       read -rp "Enter Tailscale OAuth Client ID: " OAUTH_CLIENT_ID
@@ -111,32 +156,24 @@ if [[ "$ACTION" == "install" ]]; then
   fi
 
   echo "🔹 Installing Spark Operator..."
-  helm repo add spark https://apache.github.io/spark-kubernetes-operator
-  helm repo update
-  helm upgrade --install spark spark/spark-kubernetes-operator \
+  helm upgrade --install spark-operator spark/spark-kubernetes-operator \
     --version "$SPARK_VERSION" \
     --namespace "$SPARK_NAMESPACE" \
     --create-namespace
 
   echo "🔹 Installing CloudNativePG Operator..."
-  helm repo add cnpg https://cloudnative-pg.github.io/charts
-  helm repo update
-  helm upgrade --install cnpg cnpg/cloudnative-pg \
+  helm upgrade --install cnpg-operator cnpg/cloudnative-pg \
     --version "$CNPG_VERSION" \
     --namespace "$CNPG_NAMESPACE" \
     --create-namespace
 
   echo "🔹 Installing MinIO Operator..."
-  helm repo add minio-operator https://operator.min.io
-  helm repo update
-  helm upgrade --install operator minio-operator/operator \
+  helm upgrade --install minio-operator minio-operator/operator \
     --version "$MINIO_OPERATOR_VERSION" \
     --namespace "$MINIO_NAMESPACE" \
     --create-namespace
 
   echo "🔹 Installing Strimzi Kafka Operator..."
-  helm repo add strimzi https://strimzi.io/charts/
-  helm repo update
   helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
     --version "$STRIMZI_VERSION" \
     --namespace "$STRIMZI_NAMESPACE" \
@@ -147,22 +184,21 @@ if [[ "$ACTION" == "install" ]]; then
 else
   echo "🧹 Uninstalling Operators..."
 
-  if $TAILSCALE_ENABLED; then
-    echo "🔹 Uninstalling Tailscale Operator..."
-    helm uninstall tailscale-operator --namespace "$TAILSCALE_NAMESPACE" || true
-  fi
-
-  echo "🔹 Uninstalling Spark Operator..."
-  helm uninstall spark --namespace "$SPARK_NAMESPACE" || true
-
-  echo "🔹 Uninstalling CloudNativePG Operator..."
-  helm uninstall cnpg --namespace "$CNPG_NAMESPACE" || true
-
-  echo "🔹 Uninstalling MinIO Operator..."
-  helm uninstall operator --namespace "$MINIO_NAMESPACE" || true
-
-  echo "🔹 Uninstalling Strimzi Kafka Operator..."
+  $TAILSCALE_ENABLED && helm uninstall tailscale-operator --namespace "$TAILSCALE_NAMESPACE" || true
+  helm uninstall spark-operator --namespace "$SPARK_NAMESPACE" || true
+  helm uninstall cnpg-operator --namespace "$CNPG_NAMESPACE" || true
+  helm uninstall minio-operator --namespace "$MINIO_NAMESPACE" || true
   helm uninstall strimzi-kafka-operator --namespace "$STRIMZI_NAMESPACE" || true
+
+  delete_spark_crds
+  delete_cnpg_crds
+
+  echo "🗑️ Deleting namespaces..."
+  $TAILSCALE_ENABLED && force_delete_namespace "$TAILSCALE_NAMESPACE"
+  force_delete_namespace "$SPARK_NAMESPACE"
+  force_delete_namespace "$CNPG_NAMESPACE"
+  force_delete_namespace "$MINIO_NAMESPACE"
+  force_delete_namespace "$STRIMZI_NAMESPACE"
 
   echo "✅ Uninstallation complete!"
 fi

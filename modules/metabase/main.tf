@@ -8,13 +8,6 @@ locals {
   ingress_name = "${local.prefix}-ingress"
 }
 
-resource "kubernetes_namespace" "metabase" {
-  metadata {
-    name = var.namespace
-  }
-}
-
-# Apply resource limits to the Metabase namespace
 module "metabase_resources" {
   count = var.enable_resource_allocation ? 1 : 0
   source = "../resource"
@@ -27,7 +20,7 @@ module "metabase_resources" {
 resource "kubernetes_deployment" "metabase" {
   metadata {
     name      = local.deployment_name
-    namespace = kubernetes_namespace.metabase.metadata[0].name
+    namespace = var.namespace
     labels = {
       app = local.app_label
     }
