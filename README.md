@@ -75,7 +75,8 @@ Before using this module, ensure you have the following:
        --spark-namespace my-spark --spark-version 1.3.0 \
        --cnpg-namespace my-db --cnpg-version 0.27.0 \
        --minio-namespace my-minio --minio-version 7.2.0 \
-       --strimzi-namespace my-kafka --strimzi-version 0.48.0
+       --strimzi-namespace my-kafka --strimzi-version 0.48.0 \
+       --flink-namespace my-flink --flink-version 1.12.1
      ```
 
    ### 🧹 Uninstall Operators

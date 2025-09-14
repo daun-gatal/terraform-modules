@@ -24,6 +24,9 @@ MINIO_NAMESPACE="${MINIO_NAMESPACE:-minio-operator}"
 STRIMZI_VERSION="${STRIMZI_VERSION:-0.47.0}"
 STRIMZI_NAMESPACE="${STRIMZI_NAMESPACE:-kafka}"
 
+FLINK_OPERATOR_VERSION="${FLINK_OPERATOR_VERSION:-1.12.1}"
+FLINK_NAMESPACE="${FLINK_NAMESPACE:-flink}"
+
 # --------------------------
 # Help Message
 # --------------------------
@@ -50,6 +53,9 @@ Options:
 
   --strimzi-version VERSION     Strimzi Kafka Operator version (default: $STRIMZI_VERSION)
   --strimzi-namespace NS        Strimzi namespace (default: $STRIMZI_NAMESPACE)
+
+  --flink-version VERSION      Flink Operator version (default: $FLINK_OPERATOR_VERSION)
+  --flink-namespace NS         Flink namespace (default: $FLINK_NAMESPACE)
 
   --help, -h                    Show this help message
 EOF
@@ -113,6 +119,8 @@ while [[ $# -gt 0 ]]; do
     --minio-namespace) shift; MINIO_NAMESPACE="$1" ;;
     --strimzi-version) shift; STRIMZI_VERSION="$1" ;;
     --strimzi-namespace) shift; STRIMZI_NAMESPACE="$1" ;;
+    --flink-version) shift; FLINK_OPERATOR_VERSION="$1" ;;
+    --flink-namespace) shift; FLINK_NAMESPACE="$1" ;;
     --help|-h) print_help ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -131,6 +139,7 @@ if [[ "$ACTION" == "install" ]]; then
   helm repo add cnpg https://cloudnative-pg.github.io/charts
   helm repo add minio-operator https://operator.min.io
   helm repo add strimzi https://strimzi.io/charts/
+  helm repo add flink-operator https://downloads.apache.org/flink/flink-kubernetes-operator-$FLINK_OPERATOR_VERSION
 
   # Update repos once
   helm repo update
@@ -179,6 +188,12 @@ if [[ "$ACTION" == "install" ]]; then
     --namespace "$STRIMZI_NAMESPACE" \
     --create-namespace
 
+  echo "🔹 Installing Flink Operator..."
+  helm upgrade --install flink-operator flink-operator/flink-kubernetes-operator \
+    --namespace "$FLINK_NAMESPACE" \
+    --create-namespace
+    --set webhook.create=false
+
   echo "✅ Installation complete!"
 
 else
@@ -189,6 +204,7 @@ else
   helm uninstall cnpg-operator --namespace "$CNPG_NAMESPACE" || true
   helm uninstall minio-operator --namespace "$MINIO_NAMESPACE" || true
   helm uninstall strimzi-kafka-operator --namespace "$STRIMZI_NAMESPACE" || true
+  helm uninstall flink-operator --namespace "$FLINK_NAMESPACE" || true
 
   delete_spark_crds
   delete_cnpg_crds
@@ -199,6 +215,7 @@ else
   force_delete_namespace "$CNPG_NAMESPACE"
   force_delete_namespace "$MINIO_NAMESPACE"
   force_delete_namespace "$STRIMZI_NAMESPACE"
+  force_delete_namespace "$FLINK_NAMESPACE"
 
   echo "✅ Uninstallation complete!"
 fi
