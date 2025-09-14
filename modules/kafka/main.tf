@@ -91,7 +91,7 @@ resource "kubernetes_manifest" "kafka_cluster" {
         }
 
         template = {
-          externalBootstrapService = {
+          bootstrapService = {
             metadata = {
               annotations = {
                 "tailscale.com/expose"   = tostring(var.tailscale_expose)
