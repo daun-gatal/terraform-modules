@@ -1,6 +1,5 @@
 locals {
   prefix = var.prefix
-  bootstrap_type = var.kafka_listener_type == "cluster-ip" ? "externalBootstrapService" : "bootstrapService"
   
   # Kafka UI
   kafka_ui_deployment_name = "${local.prefix}-ui-deployment"
@@ -94,7 +93,7 @@ resource "kubernetes_manifest" "kafka_cluster" {
         }
 
         template = {
-          (local.bootstrap_type) = {
+          externalBootstrapService = {
             metadata = {
               annotations = {
                 "tailscale.com/expose"   = tostring(var.tailscale_expose)
