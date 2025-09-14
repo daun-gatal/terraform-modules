@@ -16,10 +16,6 @@ module "postgres_resources" {
 }
 
 resource "kubernetes_manifest" "postgres_cluster" {
-  depends_on = [
-    kubernetes_namespace.postgres
-  ]
-
   manifest = {
     apiVersion = "postgresql.cnpg.io/v1"
     kind       = "Cluster"
