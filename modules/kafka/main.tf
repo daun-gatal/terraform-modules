@@ -7,6 +7,7 @@ locals {
   kafka_ui_app_label = "${local.prefix}-ui-app"
   kafka_ui_image = "${var.kafka_ui_image}:${var.kafka_ui_image_tag}"
   kafka_ui_secret_name = "${local.prefix}-ui-auth-secret"
+  kafka_ui_bootstrap_servers = var.kafka_listener_type == "cluster-ip" ? "${local.prefix}-kafka-brokers.${var.namespace}.svc.cluster.local:9092" : "${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
 }
 
 module "kafka_resources" {
@@ -170,7 +171,7 @@ resource "kubernetes_deployment" "kafka_ui" {
 
           env {
             name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
-            value = "${local.prefix}-kafka-brokers.${var.namespace}.svc.cluster.local:9092"
+            value = local.kafka_ui_bootstrap_servers
           }
 
           env {

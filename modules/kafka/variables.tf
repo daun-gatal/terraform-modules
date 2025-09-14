@@ -96,10 +96,16 @@ variable "kafka_tls_enabled" {
 }
 
 variable "kafka_listener_type" {
-  description = "Kafka listener type (internal, nodeport, loadbalancer, ingress)"
+  description = "Kafka listener type (internal, cluster-ip)"
   type        = string
   default     = "internal"
+
+  validation {
+    condition     = contains(["internal", "cluster-ip"], var.kafka_listener_type)
+    error_message = "kafka_listener_type must be either 'internal' or 'cluster-ip'."
+  }
 }
+
 
 # Kafka Configuration Parameters
 variable "offsets_topic_replication_factor" {
