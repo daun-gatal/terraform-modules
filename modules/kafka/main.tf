@@ -170,7 +170,7 @@ resource "kubernetes_deployment" "kafka_ui" {
 
           env {
             name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
-            value = "${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
+            value = "${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9091"
           }
 
           env {
