@@ -68,15 +68,17 @@ resource "kubernetes_manifest" "spark_connect" {
       runtimeVersions = {
         sparkVersion = var.image_tag
       }
-      sparkConf = {
-        "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
-        "spark.submit.deployMode" = "cluster"
-        "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
-        "spark.cores.max" = tostring(var.spark_connect_max_cores)
-        "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
-        "spark.kubernetes.container.image" = local.spark_image
-        "spark.ui.reverseProxy" = "true"
-      }
+      sparkConf = merge({
+          "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
+          "spark.submit.deployMode" = "cluster"
+          "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
+          "spark.cores.max" = tostring(var.spark_connect_max_cores)
+          "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
+          "spark.kubernetes.container.image" = local.spark_image
+          "spark.ui.reverseProxy" = "true"
+        },
+        var.extra_spark_conf
+      )
     }
   }
 }
