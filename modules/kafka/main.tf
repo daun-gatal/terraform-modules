@@ -263,7 +263,7 @@ resource "kubernetes_service" "kafka_ui" {
 
     port {
       name        = "http"
-      port        = 8888
+      port        = var.kafka_listener_type == "cluster-ip" ? 8081 : var.kafka_ui_port
       target_port = var.kafka_ui_port
     }
 
