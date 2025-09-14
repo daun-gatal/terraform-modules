@@ -191,7 +191,7 @@ if [[ "$ACTION" == "install" ]]; then
   echo "🔹 Installing Flink Operator..."
   helm upgrade --install flink-operator flink-operator/flink-kubernetes-operator \
     --namespace "$FLINK_NAMESPACE" \
-    --create-namespace
+    --create-namespace  \
     --set webhook.create=false
 
   echo "✅ Installation complete!"
