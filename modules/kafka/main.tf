@@ -7,8 +7,6 @@ locals {
   kafka_ui_app_label = "${local.prefix}-ui-app"
   kafka_ui_image = "${var.kafka_ui_image}:${var.kafka_ui_image_tag}"
   kafka_ui_secret_name = "${local.prefix}-ui-auth-secret"
-  kafka_ui_bootstrap_servers = var.kafka_listener_type == "cluster-ip" ? "${local.prefix}-kafka-brokers" : "${local.prefix}-kafka-bootstrap"
-  kafka_ui_port = var.kafka_listener_type == "cluster-ip" ? 8081 : 8080
 }
 
 module "kafka_resources" {
@@ -91,21 +89,6 @@ resource "kubernetes_manifest" "kafka_cluster" {
           "default.replication.factor"               = var.default_replication_factor
           "min.insync.replicas"                      = var.min_insync_replicas
         }
-
-        template = {
-          externalBootstrapService = {
-            metadata = {
-              annotations = {
-                "tailscale.com/expose"   = tostring(var.tailscale_expose)
-                "tailscale.com/hostname" = "${local.prefix}-bootstrap-int"
-              }
-            }
-          }
-        }
-      }
-      entityOperator = {
-        topicOperator = {}
-        userOperator  = {}
       }
     }
   }
@@ -172,7 +155,7 @@ resource "kubernetes_deployment" "kafka_ui" {
 
           env {
             name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
-            value = "${local.kafka_ui_bootstrap_servers}.${var.namespace}.svc.cluster.local:9092"
+            value = "${local.prefix}-kafka-brokers.${var.namespace}.svc.cluster.local:9092"
           }
 
           env {
@@ -280,7 +263,7 @@ resource "kubernetes_service" "kafka_ui" {
 
     port {
       name        = "http"
-      port        = local.kafka_ui_port
+      port        = 8888
       target_port = var.kafka_ui_port
     }
 
