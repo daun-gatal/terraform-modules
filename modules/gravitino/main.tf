@@ -20,14 +20,17 @@ resource "helm_release" "gravitino" {
   chart      = var.chart_name
   version    = var.chart_version
 
-  values = yamlencode({
-    service = {
-      annotations = {
-        "tailscale.com/expose"   = "${var.tailscale_expose}"
-        "tailscale.com/hostname" = "${var.prefix}-int"
+  values = [
+    yamlencode({
+      service = {
+        annotations = {
+          "tailscale.com/expose"   = "${var.tailscale_expose}"
+          "tailscale.com/hostname" = "${var.prefix}-int"
+        }
       }
-    }
-  })
+    })
+  ]
+
 
   set = [
     {
