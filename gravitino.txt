@@ -1,0 +1,3 @@
+helm repo add datastrato https://datastrato.github.io/multicloud-deployment/
+
+helm install my-gravitino datastrato/gravitino --version 1.0.3
