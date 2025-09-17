@@ -102,6 +102,7 @@ variable "iceberg_rest_catalog_backend" {
 variable "iceberg_rest_warehouse" {
   description = "The warehouse directory of Iceberg in S3 bucket/Minio with format s3://bucket/path"
   type        = string
+  default     = "s3://default/warehouse"
 }
 
 # Iceberg REST JDBC configuration
@@ -114,6 +115,7 @@ variable "iceberg_rest_jdbc_user" {
 variable "iceberg_rest_jdbc_password" {
   description = "JDBC password for Iceberg REST service"
   type        = string
+  default     = "gravitino"
   sensitive   = true
 }
 
@@ -146,17 +148,20 @@ variable "iceberg_rest_credential_providers" {
 variable "iceberg_rest_s3_access_key_id" {
   description = "S3 access key ID for Iceberg REST service"
   type        = string
+  default     = ""
   sensitive   = true
 }
 
 variable "iceberg_rest_s3_secret_access_key" {
   description = "S3 secret access key for Iceberg REST service"
   type        = string
+  default     = ""
   sensitive   = true
 }
 
 variable "iceberg_rest_s3_endpoint" {
   description = "S3 endpoint for Iceberg REST service"
+  default     = ""
   type        = string
 }
 
@@ -195,7 +200,7 @@ variable "persistence_size" {
 variable "persistence_storage_class" {
   description = "Storage class for persistent volume"
   type        = string
-  default     = ""
+  default     = "standard"
 }
 
 # Environment variables
