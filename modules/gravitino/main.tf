@@ -24,7 +24,7 @@ resource "helm_release" "gravitino" {
     yamlencode({
       service = {
         annotations = {
-          "tailscale.com/expose"   = "${var.tailscale_expose}"
+          "tailscale.com/expose"   = tostring(var.tailscale_expose)
           "tailscale.com/hostname" = "${var.prefix}-int"
         }
       }
