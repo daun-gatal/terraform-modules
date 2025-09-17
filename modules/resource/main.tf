@@ -1,15 +1,24 @@
-# Create a ResourceQuota for the namespace to limit resource consumption
-resource "kubernetes_resource_quota" "namespace_quota" {
+# Create a LimitRange for the namespace to set default CPU/Memory
+resource "kubernetes_limit_range" "namespace_limits" {
   metadata {
-    name      = "${var.namespace}-resource-quota"
+    name      = "${var.namespace}-limit-range"
     namespace = var.namespace
   }
 
   spec {
-    hard = {
-      # Total namespace limits only (more flexible)
-      "cpu"    = var.cpu
-      "memory" = var.memory
+    limit {
+      type = "Pod"
+
+      # If a Pod/Container doesn't specify resources, these will be applied
+      default = {
+        cpu    = var.cpu
+        memory = var.memory
+      }
+
+      default_request = {
+        cpu    = var.cpu
+        memory = var.memory
+      }
     }
   }
 }
