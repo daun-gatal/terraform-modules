@@ -38,6 +38,14 @@ resource "helm_release" "trino" {
 
   set = [
     {
+        name = "image.repository"
+        value = var.image_repository
+    },
+    {
+        name = "image.tag"
+        value = var.image_tag
+    },
+    {
         name = "server.workers"
         value = var.worker_count
     },
@@ -82,6 +90,12 @@ resource "helm_release" "trino" {
       {
         name  = "additionalConfigProperties[0]"
         value = "internal-communication.shared-secret=${var.trino_shared_secret}"
+      }
+    ],
+    [
+      for idx, property in var.additional_config_properties : {
+        name  = "additionalConfigProperties[${idx + 1}]"
+        value = property
       }
     ]
   )
