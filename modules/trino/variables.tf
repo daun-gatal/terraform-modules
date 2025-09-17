@@ -22,6 +22,18 @@ variable "chart_version" {
   default     = "1.40.0"
 }
 
+variable "image_repository" {
+  description = "The image repository for Trino"
+  type        = string
+  default     = "trinodb/trino"
+}
+
+variable "image_tag" {
+  description = "The image tag for Trino"
+  type        = string
+  default     = "1.40.0"
+}
+
 variable "worker_count" {
   description = "The number of Trino worker replicas"
   type        = number
@@ -106,4 +118,11 @@ variable "enabled_catalogs" {
   }))
 
   default = []
+}
+
+# Additional Configuration Properties
+variable "additional_config_properties" {
+  description = "List of additional configuration properties for Trino server (e.g., ['retry-policy=TASK', 'query.max-execution-time=1h'])"
+  type        = list(string)
+  default     = []
 }

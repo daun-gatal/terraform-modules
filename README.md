@@ -211,6 +211,55 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 
 ---
 
+### 🌌 **Gravitino Module** (`modules/gravitino/`)
+
+Apache Gravitino is a high-performance, geo-distributed, and federated metadata lake management system. It provides a unified interface to manage metadata across different storage systems and compute engines, particularly optimized for Apache Iceberg table formats.
+
+**Purpose:** Deploy Gravitino metadata lake management system with Iceberg REST service integration, S3/MinIO storage support, and PostgreSQL backend for managing distributed data lake metadata and catalogs.
+
+**Key Parameters:**
+- `namespace` (default: "gravitino") - Kubernetes namespace for deployment
+- `prefix` (default: "gravitino") - Resource naming prefix
+- `chart_name` (default: "gravitino") - Helm chart name for Gravitino
+- `chart_version` (default: "1.0.3") - Helm chart version
+- `entity_store` (default: "relational") - The entity store type to use
+- `entity_jdbc_url` (default: "jdbc:h2") - JDBC URL for the entity store
+- `entity_jdbc_driver` (default: "org.h2.Driver") - JDBC driver class name
+- `entity_jdbc_user` (default: "gravitino") - JDBC username
+- `entity_jdbc_password` (default: "gravitino", sensitive) - JDBC password
+- `entity_storage_path` (default: "/root/gravitino/data/jdbc") - Storage path for entity data
+- `aux_service_names` (default: "iceberg-rest") - Auxiliary service names (comma-separated)
+- `iceberg_rest_catalog_backend` (default: "memory") - Catalog backend for Iceberg REST service
+- `iceberg_rest_warehouse` (required) - S3/MinIO warehouse directory (format: s3://bucket/path)
+- `iceberg_rest_jdbc_user` (default: "gravitino") - JDBC user for Iceberg REST service
+- `iceberg_rest_jdbc_password` (required, sensitive) - JDBC password for Iceberg REST service
+- `iceberg_rest_jdbc_driver` (default: "org.postgresql.Driver") - JDBC driver for Iceberg REST
+- `iceberg_rest_jdbc_initialize` (default: true) - Initialize Iceberg meta tables in RDBMS
+- `iceberg_rest_io_impl` (default: "org.apache.iceberg.aws.s3.S3FileIO") - File I/O implementation class
+- `iceberg_rest_credential_providers` (default: "s3-token") - Credential providers (comma-separated)
+- `iceberg_rest_s3_access_key_id` (required, sensitive) - S3/MinIO access key ID
+- `iceberg_rest_s3_secret_access_key` (required, sensitive) - S3/MinIO secret access key
+- `iceberg_rest_s3_endpoint` (required) - S3/MinIO endpoint URL
+- `iceberg_rest_s3_region` (default: "us-east-1") - S3/MinIO region
+- `iceberg_rest_s3_path_style_access` (default: true) - Use path-style access for S3
+- `replicas` (default: 1) - Number of Gravitino replicas
+- `persistence_enabled` (default: false) - Enable persistent storage
+- `persistence_size` (default: "10Gi") - Persistent volume size
+- `persistence_storage_class` (default: "") - Storage class for persistent volume
+- `gravitino_home` (default: "/root/gravitino") - Gravitino home directory
+- `gravitino_mem` (default: "-Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m") - JVM memory settings
+- `tailscale_expose` (default: false) - Expose via Tailscale network
+- `cpu_allocation` (default: "1") - CPU allocation for namespace
+- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
+- `enable_resource_allocation` (default: true) - Enable resource allocation for namespace
+
+**Outputs:**
+- `gravitino_service_dns` - Internal DNS name for API access
+- `gravitino_service_port` - Main service port (8090)
+- `gravitino_iceberg_rest_port` - Iceberg REST service port (9001)
+
+---
+
 ### 🌊 **Kafka Module** (`modules/kafka/`)
 
 Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming. This module uses the Strimzi operator to deploy Kafka with KRaft mode (no Zookeeper dependency) and includes declarative topic management through Entity Operators.
@@ -420,10 +469,11 @@ This terraform module collection creates a modern data platform with the followi
 1. **Data Ingestion**: Use Airflow to orchestrate data pipelines
 2. **Real-time Streaming**: Stream real-time data through Apache Kafka for event-driven architectures
 3. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
-4. **Data Cataloging**: Use Nessie to version and manage table metadata
-5. **Data Processing**: Process batch and streaming data using Apache Spark
-6. **Data Querying**: Query data using Trino with Iceberg tables
-7. **Data Visualization**: Create dashboards and insights with Metabase
-8. **Metadata Storage**: PostgreSQL serves as the backend database for metadata and application state
+4. **Metadata Lake Management**: Use Gravitino to provide federated metadata management across different storage systems and compute engines
+5. **Data Cataloging**: Use Nessie to version and manage table metadata with Git-like capabilities
+6. **Data Processing**: Process batch and streaming data using Apache Spark
+7. **Data Querying**: Query data using Trino with Iceberg tables through Gravitino's unified metadata interface
+8. **Data Visualization**: Create dashboards and insights with Metabase
+9. **Metadata Storage**: PostgreSQL serves as the backend database for metadata and application state
 
 All services can be integrated with Tailscale for secure networking and optionally exposed to the internet via Tailscale Funnel.
