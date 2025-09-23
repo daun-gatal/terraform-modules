@@ -67,9 +67,39 @@ resource "kubernetes_secret" "postgres_credentials" {
   type = "kubernetes.io/basic-auth"
 }
 
+resource "kubernetes_manifest" "extra_postgres_databases" {
+  for_each = toset(var.extra_db_names)
+
+  manifest = {
+    apiVersion = "postgresql.cnpg.io/v1"
+    kind       = "Database"
+
+    metadata = {
+      name      = each.value
+    }
+
+    spec = {
+      name    = each.value
+      owner   = var.db_user
+      cluster = {
+        name = local.cluster_name
+      }
+    }
+  }
+
+  depends_on = [
+    kubernetes_manifest.postgres_cluster,
+    kubernetes_secret.postgres_credentials
+  ]
+}
+
 # Apply custom PostgreSQL parameters after cluster creation
 resource "null_resource" "postgres_config" {
-  depends_on = [kubernetes_manifest.postgres_cluster]
+  depends_on = [
+    kubernetes_manifest.postgres_cluster, 
+    kubernetes_secret.postgres_credentials, 
+    kubernetes_manifest.extra_postgres_databases
+  ]
 
   triggers = {
     parameters = jsonencode(var.postgresql_parameters)

@@ -100,3 +100,9 @@ variable "enable_resource_allocation" {
   type = bool
   default = false
 }
+
+variable "extra_db_names" {
+  description = "List of additional PostgreSQL databases to create"
+  type        = list(string)
+  default     = []
+}
