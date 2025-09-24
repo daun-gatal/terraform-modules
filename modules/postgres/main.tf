@@ -76,6 +76,7 @@ resource "kubernetes_manifest" "extra_postgres_databases" {
 
     metadata = {
       name      = each.value
+      namespace = var.namespace
     }
 
     spec = {
