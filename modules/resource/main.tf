@@ -9,8 +9,7 @@ resource "kubernetes_limit_range" "namespace_limits" {
     limit {
       type = "Pod"
 
-      # Default values applied when pods don't specify resources
-      default = {
+      max = {
         cpu    = var.cpu
         memory = var.memory
       }
