@@ -234,7 +234,7 @@ variable "airflow_worker_keda_enabled" {
 variable "airflow_worker_keda_min_replicas" {
   description = "Minimum number of Airflow worker replicas when using KEDA"
   type        = number
-  default     = 1
+  default     = 0
 }
 
 variable "airflow_worker_keda_max_replicas" {
@@ -243,17 +243,11 @@ variable "airflow_worker_keda_max_replicas" {
   default     = 3
 }
 
-variable "airflow_flower_username" {
+variable "airflow_flower_credential" {
   description = "Username for Airflow Flower UI"
   type        = string
-  default     = "admin"
-}
-
-variable "airflow_flower_password" {
-  description = "Password for Airflow Flower UI"
-  type        = string
-  sensitive   = true
-  default = "admin"
+  sensitive = true
+  default     = "admin:admin"
 }
 
 variable "airflow_flower_enabled" {

@@ -43,7 +43,7 @@ resource "kubernetes_secret" "airflow_secret" {
     fernet-key       = var.airflow_fernet_key
     api-secret-key   = var.airflow_api_secret_key
     gitSshKey        = file("${var.git_ssh_key_path}")
-    basicAuth = "${var.airflow_flower_username}:${var.airflow_flower_password}"
+    basicAuth = var.airflow_flower_credential
   }
 
   type = "Opaque"
