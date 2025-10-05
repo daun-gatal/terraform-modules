@@ -208,10 +208,16 @@ variable "enable_resource_allocation" {
 }
 
 variable "airflow_executor" {
-  description = "Executor type for Airflow (e.g., LocalExecutor, CeleryExecutor, KubernetesExecutor)"
+  description = "Executor type for Airflow. Supported: CeleryExecutor or KubernetesExecutor."
   type        = string
   default     = "KubernetesExecutor"
+
+  validation {
+    condition     = contains(["CeleryExecutor", "KubernetesExecutor"], var.airflow_executor)
+    error_message = "Invalid executor type. Must be either 'CeleryExecutor' or 'KubernetesExecutor'."
+  }
 }
+
 
 variable "airflow_worker_replicas" {
   description = "Number of Airflow worker replicas"
