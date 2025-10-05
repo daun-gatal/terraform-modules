@@ -261,3 +261,9 @@ variable "airflow_kubernetes_cleanup_enabled" {
   type        = bool
   default     = false
 }
+
+variable "redis_image_tag" {
+  description = "Container image tag for Redis"
+  type        = string
+  default     = "7.2.11-alpine"
+}

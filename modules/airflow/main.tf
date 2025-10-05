@@ -318,6 +318,10 @@ resource "helm_release" "airflow" {
     {
       name = "multiNamespaceMode"
       value = true
+    },
+    {
+      name = "images.redis.tag"
+      value = var.redis_image_tag
     }
   ]
 }
