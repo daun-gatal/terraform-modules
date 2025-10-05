@@ -89,7 +89,7 @@ resource "helm_release" "airflow" {
         service = {
           annotations = {
             "tailscale.com/expose" = tostring(var.tailscale_expose)
-            "tailscale.com/hostname" = "${local.prefix}-int"
+            "tailscale.com/hostname" = "${local.prefix}-web-int"
           }
         }
       }
@@ -98,7 +98,7 @@ resource "helm_release" "airflow" {
         service = {
           annotations = {
             "tailscale.com/expose" = tostring(var.tailscale_expose)
-            "tailscale.com/hostname" = "${local.prefix}-int"
+            "tailscale.com/hostname" = "${local.prefix}-flower-int"
           }
         }
       }
