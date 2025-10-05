@@ -45,12 +45,6 @@ variable "git_ssh_key_path" {
   type        = string
 }
 
-variable "tailscale_funnel" {
-  description = "Enable Tailscale Funnel for ingress so Airflow can be accessible through internet"
-  type        = bool
-  default     = false
-}
-
 variable "tailscale_expose" {
   description = "Whether to expose the Airflow service via Tailscale"
   type        = bool
@@ -211,4 +205,59 @@ variable "enable_resource_allocation" {
   description = "Enable resource allocation for namespace"
   type = bool
   default = false
+}
+
+variable "airflow_executor" {
+  description = "Executor type for Airflow (e.g., LocalExecutor, CeleryExecutor, KubernetesExecutor)"
+  type        = string
+  default     = "KubernetesExecutor"
+}
+
+variable "airflow_worker_replicas" {
+  description = "Number of Airflow worker replicas"
+  type        = number
+  default     = 1
+}
+
+variable "airflow_worker_keda_enabled" {
+  description = "Enable KEDA for Airflow workers"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_worker_keda_min_replicas" {
+  description = "Minimum number of Airflow worker replicas when using KEDA"
+  type        = number
+  default     = 1
+}
+
+variable "airflow_worker_keda_max_replicas" {
+  description = "Maximum number of Airflow worker replicas when using KEDA"
+  type        = number
+  default     = 3
+}
+
+variable "airflow_flower_username" {
+  description = "Username for Airflow Flower UI"
+  type        = string
+  default     = "admin"
+}
+
+variable "airflow_flower_password" {
+  description = "Password for Airflow Flower UI"
+  type        = string
+  sensitive   = true
+  default = "admin"
+}
+
+variable "airflow_flower_enabled" {
+  description = "Enable Airflow Flower UI"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_kubernetes_cleanup_enabled" {
+  description = "Enable Kubernetes pod cleanup"
+  type        = bool
+  default     = false
 }
