@@ -1,8 +1,0 @@
-# Kafka Example Configuration
-# Copy this file to terraform.tfvars and customize
-
-namespace       = "my-kafka"
-prefix          = "my-kafka"
-kafka_replicas  = 1
-storage_type    = "ephemeral"  # Use "persistent-claim" for production
-enable_kafka_ui = true

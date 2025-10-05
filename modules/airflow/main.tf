@@ -43,6 +43,7 @@ resource "kubernetes_secret" "airflow_secret" {
     fernet-key       = var.airflow_fernet_key
     api-secret-key   = var.airflow_api_secret_key
     gitSshKey        = file("${var.git_ssh_key_path}")
+    basicAuth = var.airflow_flower_credential
   }
 
   type = "Opaque"
@@ -60,7 +61,7 @@ resource "helm_release" "airflow" {
       env = local.remote_logging_env
 
       cleanup = {
-        enabled  = true
+        enabled  = var.airflow_kubernetes_cleanup_enabled
         schedule = "*/15 * * * *"
         args     = [
           "bash",
@@ -88,7 +89,16 @@ resource "helm_release" "airflow" {
         service = {
           annotations = {
             "tailscale.com/expose" = tostring(var.tailscale_expose)
-            "tailscale.com/hostname" = "${local.prefix}-int"
+            "tailscale.com/hostname" = "${local.prefix}-web-int"
+          }
+        }
+      }
+
+      flower = {
+        service = {
+          annotations = {
+            "tailscale.com/expose" = tostring(var.tailscale_expose)
+            "tailscale.com/hostname" = "${local.prefix}-flower-int"
           }
         }
       }
@@ -114,7 +124,7 @@ resource "helm_release" "airflow" {
     },
     {
         name = "executor"
-        value = "KubernetesExecutor"
+        value = var.airflow_executor
     },
     {
         name = "data.metadataSecretName"
@@ -269,38 +279,45 @@ resource "helm_release" "airflow" {
       name = "webserver.defaultUser.password"
       value = var.airflow_default_password
     },
+    {
+      name = "workers.replicas"
+      value = var.airflow_worker_replicas
+    },
+    {
+      name = "workers.keda.enabled"
+      value = var.airflow_worker_keda_enabled
+    },
+    {
+      name = "workers.keda.minReplicaCount"
+      value = var.airflow_worker_keda_min_replicas
+    },
+    {
+      name = "workers.keda.maxReplicaCount"
+      value = var.airflow_worker_keda_max_replicas
+    },
+    {
+      name = "workers.persistence.enabled"
+      value = false
+    },
+    {
+      name = "workers.logGroomerSidecar.enabled"
+      value = var.enable_log_groomer_sidecar
+    },
+    {
+      name = "flower.enabled"
+      value = var.airflow_flower_enabled
+    },
+    {
+      name = "flower.secretName"
+      value = local.secret_name
+    },
+    {
+      name = "redis.persistence.enabled"
+      value = false
+    },
+    {
+      name = "multiNamespaceMode"
+      value = true
+    }
   ]
-}
-
-resource "kubernetes_ingress_v1" "airflow_tailscale_funnel" {
-  count = var.tailscale_funnel ? 1 : 0 
-
-  metadata {
-    name      = "${local.release_name}-funnel-ingress"
-    namespace = var.namespace
-
-    annotations = {
-      "tailscale.com/funnel" = "${var.tailscale_funnel}"
-    }
-  }
-
-  spec {
-    ingress_class_name = "tailscale"
-
-    default_backend {
-      service {
-        name = "${local.release_name}-api-server"
-
-        port {
-          name = "api-server"
-        }
-      }
-    }
-
-    tls {
-      hosts = ["${var.prefix}-ext"]
-    }
-  }
-
-  depends_on = [ helm_release.airflow ]
 }
