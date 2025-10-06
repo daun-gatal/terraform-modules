@@ -3,6 +3,12 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name = "${local.prefix}-secret"
 
+  # Validation: SSH authentication requires git_ssh_key_path
+  validate_ssh_auth = var.git_auth_method == "ssh" && var.git_ssh_key_path == null ? tobool("ERROR: git_ssh_key_path is required when git_auth_method is 'ssh'") : true
+
+  # Validation: PAT authentication requires both git_username and git_password
+  validate_pat_auth = var.git_auth_method == "pat" && (var.git_username == null || var.git_password == null) ? tobool("ERROR: git_username and git_password are required when git_auth_method is 'pat'") : true
+
   remote_logging_env = var.enable_remote_logging ? [
     {
       name  = "AIRFLOW__LOGGING__DELETE_LOCAL_LOGS"
@@ -38,13 +44,26 @@ resource "kubernetes_secret" "airflow_secret" {
     namespace = var.namespace
   }
 
-  data = {
-    connection       = var.airflow_metadata_db_conn
-    fernet-key       = var.airflow_fernet_key
-    api-secret-key   = var.airflow_api_secret_key
-    gitSshKey        = file("${var.git_ssh_key_path}")
-    basicAuth = var.airflow_flower_credential
-  }
+  data = merge(
+    {
+      connection     = var.airflow_metadata_db_conn
+      fernet-key     = var.airflow_fernet_key
+      api-secret-key = var.airflow_api_secret_key
+      basicAuth      = var.airflow_flower_credential
+    },
+    # SSH authentication
+    var.git_auth_method == "ssh" && var.git_ssh_key_path != null ? {
+      gitSshKey = file(var.git_ssh_key_path)
+    } : {},
+    # PAT authentication (git-sync v3)
+    var.git_auth_method == "pat" && var.git_username != null && var.git_password != null ? {
+      GIT_SYNC_USERNAME = var.git_username
+      GIT_SYNC_PASSWORD = var.git_password
+      # git-sync v4 credentials
+      GITSYNC_USERNAME  = var.git_username
+      GITSYNC_PASSWORD  = var.git_password
+    } : {}
+  )
 
   type = "Opaque"
 }
@@ -105,7 +124,7 @@ resource "helm_release" "airflow" {
     })
   ]
 
-  set = [
+  set = concat([
     {
         name = "fullnameOverride"
         value = "${local.release_name}"
@@ -209,10 +228,6 @@ resource "helm_release" "airflow" {
     {
         name = "dags.gitSync.subPath"
         value = var.airflow_dags_git_sync_subpath
-    },
-    {
-        name = "dags.gitSync.sshKeySecret"
-        value = local.secret_name
     },
     {
       name = "workers.logGroomerSidecar.enabled"
@@ -319,5 +334,20 @@ resource "helm_release" "airflow" {
       name = "multiNamespaceMode"
       value = true
     }
-  ]
+  ],
+  # Conditionally add SSH authentication configuration
+  var.git_auth_method == "ssh" ? [
+    {
+      name  = "dags.gitSync.sshKeySecret"
+      value = local.secret_name
+    }
+  ] : [],
+  # Conditionally add PAT authentication configuration
+  var.git_auth_method == "pat" ? [
+    {
+      name  = "dags.gitSync.credentialsSecret"
+      value = local.secret_name
+    }
+  ] : []
+  )
 }

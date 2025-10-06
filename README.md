@@ -134,7 +134,10 @@ Apache Airflow is a workflow orchestration platform that allows you to programma
 - `airflow_fernet_key` (required, sensitive) - Encryption key for secrets (32 characters)
 - `airflow_api_secret_key` (required, sensitive) - API authentication secret
 - `airflow_default_password` (required, sensitive) - Default password for Airflow login
-- `git_ssh_key_path` (required) - Path to SSH key for DAG repository access
+- `git_auth_method` (default: "ssh") - Git authentication method: 'ssh' or 'pat' (Personal Access Token)
+- `git_ssh_key_path` (optional, sensitive) - Path to SSH key for DAG repository access (required for SSH auth)
+- `git_username` (optional, sensitive) - Git username for PAT authentication (required for PAT auth)
+- `git_password` (optional, sensitive) - Git password/Personal Access Token (required for PAT auth)
 - `airflow_dags_git_sync_enabled` (default: true) - Enable git-sync for DAGs
 - `airflow_dags_git_sync_repo` (required) - Git repository URL for DAGs
 - `airflow_dags_git_sync_branch` (default: "main") - Git branch for DAG sync

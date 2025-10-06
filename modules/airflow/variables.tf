@@ -40,9 +40,35 @@ variable "airflow_api_secret_key" {
   sensitive   = true
 }
 
-variable "git_ssh_key_path" {
-  description = "Path to Git SSH key file for DAG sync"
+variable "git_auth_method" {
+  description = "Authentication method for git-sync: 'ssh' or 'pat' (Personal Access Token)"
   type        = string
+  default     = "ssh"
+
+  validation {
+    condition     = contains(["ssh", "pat"], var.git_auth_method)
+    error_message = "Invalid git authentication method. Must be either 'ssh' or 'pat'."
+  }
+}
+
+variable "git_ssh_key_path" {
+  description = "Path to Git SSH key file for DAG sync (required when git_auth_method is 'ssh')"
+  type        = string
+  default     = null
+}
+
+variable "git_username" {
+  description = "Git username for DAG sync (required when git_auth_method is 'pat')"
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "git_password" {
+  description = "Git password or Personal Access Token for DAG sync (required when git_auth_method is 'pat')"
+  type        = string
+  default     = null
+  sensitive   = true
 }
 
 variable "tailscale_expose" {
