@@ -45,9 +45,12 @@ module "airflow" {
   airflow_api_secret_key   = var.airflow_api_secret_key
   airflow_default_password = var.airflow_password
   
-  # Git DAGs configuration
-  git_ssh_key_path         = var.git_ssh_key_path
-  airflow_dags_git_sync_repo = var.dags_repo_url
+  # Git DAGs configuration with PAT authentication
+  git_auth_method              = "pat"
+  git_username                 = var.git_username
+  git_password                 = var.git_password
+  airflow_dags_git_sync_repo   = var.dags_repo_url
+  airflow_dags_git_sync_branch = var.dags_repo_branch
   
   # Connect to MinIO for remote logging
   enable_remote_logging    = true

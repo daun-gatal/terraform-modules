@@ -17,8 +17,14 @@ airflow_api_secret_key = "CHANGE_ME_API_SECRET_KEY"
 # Airflow admin password
 airflow_password = "CHANGE_ME_ADMIN_PASSWORD"
 
-# Git Repository for DAGs
-dags_repo_url = "git@github.com:your-org/airflow-dags.git"
+# Git Repository for DAGs (use HTTPS URL for PAT authentication)
+dags_repo_url = "https://github.com/your-org/airflow-dags.git"
 
-# SSH Key Path (optional, defaults to ~/.ssh/id_rsa)
-git_ssh_key_path = "~/.ssh/id_rsa"
+# Git branch (optional, defaults to main)
+dags_repo_branch = "main"
+
+# Git Authentication with Personal Access Token (PAT)
+# GitHub: Settings → Developer settings → Personal access tokens → Generate new token (need 'repo' scope)
+# GitLab: User Settings → Access Tokens → Add new token (need 'read_repository' scope)
+git_username = "your-github-username"
+git_password = "ghp_YOUR_GITHUB_PERSONAL_ACCESS_TOKEN_HERE"

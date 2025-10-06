@@ -35,12 +35,24 @@ variable "airflow_password" {
 
 # Git Configuration (required)
 variable "dags_repo_url" {
-  description = "Git repository URL for Airflow DAGs (e.g., git@github.com:your-org/airflow-dags.git)"
+  description = "Git repository URL for Airflow DAGs (use HTTPS format: https://github.com/your-org/airflow-dags.git)"
   type        = string
 }
 
-variable "git_ssh_key_path" {
-  description = "Path to SSH private key for Git DAG repository"
+variable "dags_repo_branch" {
+  description = "Git branch for Airflow DAGs"
   type        = string
-  default     = "~/.ssh/id_rsa"
+  default     = "main"
+}
+
+variable "git_username" {
+  description = "Git username for repository access (for PAT authentication)"
+  type        = string
+  sensitive   = true
+}
+
+variable "git_password" {
+  description = "Git Personal Access Token for repository access"
+  type        = string
+  sensitive   = true
 }
