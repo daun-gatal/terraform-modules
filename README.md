@@ -39,7 +39,22 @@ Before using this module, ensure you have the following:
      minikube start
      ```
 
-4. **Kubernetes Operators Installation (Install / Uninstall)**  
+4. **Create Kubernetes Namespaces**  
+   Before deploying services, create the required namespaces using the helper script:
+
+   ```bash
+   # Create namespaces for your services
+   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- database storage airflow
+   
+   # Or create custom namespaces
+   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- my-namespace-1 my-namespace-2
+   ```
+
+   **Common namespace sets:**
+   - **Minimal setup**: `database storage airflow`
+   - **Full data platform**: `database storage airflow kafka spark trino nessie gravitino metabase`
+
+5. **Kubernetes Operators Installation (Install / Uninstall)**  
    You can manage all the required operators using the helper script (`manage-operators.sh`) hosted on GitLab.
 
    ### ⚙️ Default Versions and Namespaces
@@ -108,15 +123,15 @@ This repository contains Terraform modules for deploying a complete data platfor
 
 Apache Airflow is a workflow orchestration platform that allows you to programmatically author, schedule, and monitor data pipelines.
 
-**Purpose:** Deploy Apache Airflow on Kubernetes with git-sync for DAG management, remote logging capabilities, and Tailscale networking integration.
+**Purpose:** Deploy Apache Airflow on Kubernetes with git-sync for DAG management, remote logging capabilities, and Tailscale networking integration. Supports both CeleryExecutor and KubernetesExecutor with KEDA auto-scaling.
 
 **Key Parameters:**
 - `namespace` (default: "airflow") - Kubernetes namespace for deployment
 - `prefix` (default: "airflow") - Resource naming prefix
 - `chart_name` (default: "airflow") - Helm chart name for Airflow
 - `chart_version` (default: "1.18.0") - Helm chart version
-- `airflow_metadata_db_conn` (required, sensitive) - PostgreSQL connection string
-- `airflow_fernet_key` (required, sensitive) - Encryption key for secrets
+- `airflow_metadata_db_conn` (required, sensitive) - PostgreSQL connection string (format: postgresql://user:pass@host:port/db)
+- `airflow_fernet_key` (required, sensitive) - Encryption key for secrets (32 characters)
 - `airflow_api_secret_key` (required, sensitive) - API authentication secret
 - `airflow_default_password` (required, sensitive) - Default password for Airflow login
 - `git_ssh_key_path` (required) - Path to SSH key for DAG repository access
@@ -126,12 +141,20 @@ Apache Airflow is a workflow orchestration platform that allows you to programma
 - `airflow_dags_git_sync_rev` (default: "HEAD") - Git revision for DAG sync
 - `airflow_dags_git_sync_ref` (default: "") - Git reference for DAG sync
 - `airflow_dags_git_sync_subpath` (default: "") - SubPath inside DAGs repo for sync
+- `airflow_executor` (default: "KubernetesExecutor") - Executor type (CeleryExecutor or KubernetesExecutor)
 - `airflow_scheduler_replicas` (default: 1) - Number of scheduler replicas
 - `airflow_log_retention_days` (default: 7) - Log retention in days for Airflow components
 - `airflow_enable_triggerer` (default: false) - Enable triggerer component
 - `airflow_triggerer_replicas` (default: 1) - Number of triggerer replicas
 - `airflow_dag_processor_enabled` (default: true) - Enable standalone DAG processor
 - `airflow_dag_processor_replicas` (default: 1) - Number of DAG processor replicas
+- `airflow_worker_replicas` (default: 1) - Number of Airflow worker replicas (CeleryExecutor only)
+- `airflow_worker_keda_enabled` (default: false) - Enable KEDA auto-scaling for workers
+- `airflow_worker_keda_min_replicas` (default: 0) - Minimum worker replicas with KEDA
+- `airflow_worker_keda_max_replicas` (default: 3) - Maximum worker replicas with KEDA
+- `airflow_flower_enabled` (default: false) - Enable Flower UI for CeleryExecutor monitoring
+- `airflow_flower_credential` (default: "admin:admin", sensitive) - Flower UI credentials (format: username:password)
+- `airflow_kubernetes_cleanup_enabled` (default: false) - Enable Kubernetes pod cleanup job
 - `enable_remote_logging` (default: false) - Enable S3/MinIO logging
 - `airflow_logs_bucket_name` - S3/MinIO bucket for logs
 - `enable_log_groomer_sidecar` (default: false) - Enable Airflow log groomer sidecar
@@ -141,7 +164,6 @@ Apache Airflow is a workflow orchestration platform that allows you to programma
 - `aws_region` (default: "us-east-1") - AWS region for S3 connection
 - `aws_endpoint_url` - Custom S3 endpoint for MinIO
 - `tailscale_expose` (default: false) - Expose via Tailscale network
-- `tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
 - `image_repository` (default: "apache/airflow") - Container image repository
 - `image_tag` (default: "3.0.6") - Container image tag
 - `cpu_allocation` (default: "1") - CPU allocation for namespace
@@ -206,8 +228,6 @@ MinIO is a high-performance, S3-compatible object storage system ideal for stori
 - `minio_service_port` - API service port (9000)
 - `minio_root_user` - Root username (sensitive)
 - `minio_root_password` - Root password (sensitive)
-- `minio_bucket_name` - Name of the first bucket
-- `minio_buckets_map` - Map of service names to bucket names (e.g., {"airflow": "bucket-name"})
 
 ---
 
@@ -245,7 +265,7 @@ Apache Gravitino is a high-performance, geo-distributed, and federated metadata 
 - `replicas` (default: 1) - Number of Gravitino replicas
 - `persistence_enabled` (default: false) - Enable persistent storage
 - `persistence_size` (default: "10Gi") - Persistent volume size
-- `persistence_storage_class` (default: "") - Storage class for persistent volume
+- `persistence_storage_class` (default: "standard") - Storage class for persistent volume
 - `gravitino_home` (default: "/root/gravitino") - Gravitino home directory
 - `gravitino_mem` (default: "-Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m") - JVM memory settings
 - `tailscale_expose` (default: false) - Expose via Tailscale network
@@ -304,7 +324,7 @@ Apache Kafka is a distributed event streaming platform capable of handling trill
 - `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
 **Outputs:**
-- `kafka_bootstrap_servers` - Kafka bootstrap servers connection string for client applications
+- `kafka_int_bootstrap_servers` - Kafka bootstrap servers connection string for client applications (internal cluster DNS)
 
 ---
 
@@ -348,19 +368,20 @@ Nessie is a Git-like data catalog that provides versioning, branching, and taggi
 
 PostgreSQL is a powerful, open-source relational database system managed by the CloudNativePG operator for production-ready deployment with high availability, automated backups, and self-healing capabilities.
 
-**Purpose:** Deploy PostgreSQL cluster using CloudNativePG operator with support for multiple instances, automated failover, read/write separation, and production-grade features for use by other services like Airflow, Metabase, and Nessie.
+**Purpose:** Deploy PostgreSQL cluster using CloudNativePG operator with support for multiple instances, automated failover, read/write separation, and production-grade features for use by other services like Airflow, Metabase, and Nessie. Supports creating multiple databases within the same cluster.
 
 **Key Parameters:**
 - `namespace` (default: "database") - Kubernetes namespace for deployment
 - `prefix` (default: "postgres") - Resource naming prefix
-- `db_user` (default: "postgres", sensitive) - Database username
+- `db_user` (default: "dev", sensitive) - Database username
 - `db_password` (required, sensitive) - Database password
-- `db_name` (default: "postgres") - Database name
+- `db_name` (default: "postgres") - Primary database name
 - `db_port` (default: 5432) - Database port
+- `extra_db_names` (default: []) - List of additional databases to create in the cluster
 - `postgres_replicas` (default: 1) - Number of PostgreSQL instances (1 for single, 3+ for HA)
 - `storage_size` (default: "10Gi") - Persistent volume size per instance
 - `storage_class_name` (default: "standard") - Storage class for persistent volumes
-- `postgresql_parameters` (default: {}) - Custom PostgreSQL configuration parameters
+- `postgresql_parameters` (default: {"max_connections": "300"}) - Custom PostgreSQL configuration parameters
 - `image_repository` (default: "ghcr.io/cloudnative-pg/postgresql") - Image repository for PostgreSQL
 - `image_tag` (default: "15.4") - Image version for PostgreSQL
 - `cpu_allocation` (default: "1") - CPU allocation for namespace
@@ -405,23 +426,28 @@ module "airflow_resources" {
 
 Apache Spark is a unified analytics engine for large-scale data processing with built-in modules for streaming, SQL, machine learning, and graph processing.
 
-**Purpose:** Deploy Apache Spark cluster with Spark Connect service for distributed data processing and analysis.
+**Purpose:** Deploy Apache Spark cluster with Spark Connect service (Spark 4.x) for distributed data processing and analysis. Automatically creates a Spark cluster and optionally a Spark Connect server for remote client connections.
 
 **Key Parameters:**
-- `namespace` (default: "spark") - Kubernetes namespace for deployment
+- `namespace` (default: "spark") - Kubernetes namespace for deployment (must match Spark operator namespace)
 - `prefix` (default: "spark") - Resource naming prefix
 - `image_repository` (default: "apache/spark") - Container image repository
 - `image_tag` (default: "4.0.0") - Container image tag (supports 3.5.x and 4.x.x)
 - `spark_k8s_opt_version` (default: "v1beta1") - Spark Kubernetes operator API version
-- `cluster_worker_count` (default: 1) - Number of worker nodes
-- `cluster_name` (default: "Spark Cluster") - Cluster display name
+- `cluster_worker_count` (default: 1) - Number of worker nodes in the cluster
+- `cluster_name` (default: "Spark Cluster") - Cluster display name in UI
 - `spark_connect_executor_memory` (default: "2g") - Memory per executor for Spark Connect
 - `spark_connect_executor_cores` (default: 1) - CPU cores per executor for Spark Connect
 - `spark_connect_max_cores` (default: 1) - Maximum total cores for Spark Connect
-- `tailscale_expose` (default: false) - Expose via Tailscale network
+- `extra_spark_conf` (default: {}) - Additional Spark configuration properties as key-value map
+- `tailscale_expose` (default: false) - Expose Spark UI and Connect via Tailscale network
 - `cpu_allocation` (default: "500m") - CPU allocation for namespace
 - `memory_allocation` (default: "512Mi") - Memory allocation for namespace
 - `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+
+**Notes:**
+- Spark Connect is only available for Spark 4.x and creates a stateful deployment for remote connections
+- The module exposes both the Spark Master UI (port 8080) and Spark Connect service (port 15002) when Tailscale is enabled
 
 ---
 
@@ -429,32 +455,88 @@ Apache Spark is a unified analytics engine for large-scale data processing with 
 
 Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query data from multiple sources including data lakes, databases, and object stores.
 
-**Purpose:** Deploy Trino cluster with flexible catalog configuration system supporting multiple data sources including PostgreSQL, Iceberg, Delta Lake, and many other connectors for federated data querying.
+**Purpose:** Deploy Trino cluster with flexible catalog configuration system supporting multiple data sources including PostgreSQL, Iceberg, Delta Lake, and many other connectors for federated data querying. Includes automatic internal communication security and support for custom configuration properties.
 
 **Key Parameters:**
 - `namespace` (default: "trino") - Kubernetes namespace for deployment
 - `prefix` (default: "trino") - Resource naming prefix
 - `chart_name` (default: "trino") - Helm chart name for Trino
 - `chart_version` (default: "1.40.0") - Helm chart version
+- `image_repository` (default: "trinodb/trino") - Container image repository
+- `image_tag` (default: "1.40.0") - Container image tag
 - `worker_count` (default: 1) - Number of worker replicas
-- `coordinator_as_worker` (default: false) - Whether coordinator acts as worker
-- `trino_shared_secret` (required, sensitive) - Internal communication secret
+- `coordinator_as_worker` (default: false) - Whether coordinator acts as worker (useful for single-node deployments)
+- `trino_shared_secret` (required, sensitive) - Shared secret for internal Trino communication
 - `trino_coordinator_jvm_max_heap_size` (default: "6G") - Coordinator JVM heap size
-- `trino_coordinator_query_max_memory` (default: "1GB") - Coordinator query memory limit
+- `trino_coordinator_query_max_memory` (default: "1GB") - Coordinator query memory limit per node
 - `trino_worker_jvm_max_heap_size` (default: "6G") - Worker JVM heap size
-- `trino_worker_query_max_memory` (default: "1GB") - Worker query memory limit
+- `trino_worker_query_max_memory` (default: "1GB") - Worker query memory limit per node
 - `enabled_catalogs` (default: []) - List of catalog configurations:
-  - `name` - Catalog name in Trino
-  - `params` - Map of catalog configuration parameters (connector-specific)
-- `tailscale_expose` (default: false) - Expose via Tailscale network
+  - `name` - Catalog name in Trino (e.g., "iceberg", "postgres", "delta")
+  - `params` - Map of catalog configuration parameters as key-value pairs (connector-specific)
+- `additional_config_properties` (default: []) - List of additional Trino server configuration properties (e.g., ["retry-policy=TASK", "query.max-execution-time=1h"])
+- `tailscale_expose` (default: false) - Expose Trino UI and API via Tailscale network
 - `cpu_allocation` (default: "2") - CPU allocation for namespace
 - `memory_allocation` (default: "2Gi") - Memory allocation for namespace
 - `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
 
-**Catalog Examples:**
-- **Memory**: `{"connector.name" = "memory"}` - For testing
-- **Iceberg with Nessie**: `{"connector.name" = "iceberg", "iceberg.catalog.type" = "nessie", "iceberg.nessie-catalog.uri" = "http://nessie:19120/api/v1", ...}`
-- **Delta Lake**: `{"connector.name" = "delta_lake", "hive.metastore.uri" = "thrift://hive-metastore:9083", ...}`
+**Catalog Configuration Examples:**
+
+1. **Memory Catalog** (for testing):
+   ```hcl
+   enabled_catalogs = [
+     {
+       name = "memory"
+       params = {
+         "connector.name" = "memory"
+       }
+     }
+   ]
+   ```
+
+2. **Iceberg with Nessie Catalog**:
+   ```hcl
+   enabled_catalogs = [
+     {
+       name = "iceberg"
+       params = {
+         "connector.name" = "iceberg"
+         "iceberg.catalog.type" = "rest"
+         "iceberg.rest-catalog.uri" = "http://nessie-release.nessie.svc.cluster.local:19120/api/v1"
+         "iceberg.rest-catalog.warehouse" = "warehouse"
+       }
+     }
+   ]
+   ```
+
+3. **PostgreSQL Catalog**:
+   ```hcl
+   enabled_catalogs = [
+     {
+       name = "postgresql"
+       params = {
+         "connector.name" = "postgresql"
+         "connection-url" = "jdbc:postgresql://postgres-cluster-rw.database.svc.cluster.local:5432/postgres"
+         "connection-user" = "postgres"
+         "connection-password" = "your-password"
+       }
+     }
+   ]
+   ```
+
+4. **Multiple Catalogs**:
+   ```hcl
+   enabled_catalogs = [
+     {
+       name = "iceberg"
+       params = { ... }
+     },
+     {
+       name = "postgres"
+       params = { ... }
+     }
+   ]
+   ```
 
 **Outputs:**
 - `trino_service_dns` - Internal DNS name for query access
