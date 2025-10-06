@@ -34,7 +34,7 @@ curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/ma
 ```
 
 6. **Git repository** with Airflow DAGs
-7. **SSH key** with access to your DAG repository
+7. **Personal Access Token (PAT)** with access to your DAG repository
 
 ## Quick Start
 
@@ -51,7 +51,24 @@ openssl rand -base64 32
 openssl rand -base64 16
 ```
 
-### 2. Configure
+### 2. Create Git Personal Access Token
+
+**GitHub:**
+1. Go to Settings → Developer settings → Personal access tokens → Generate new token
+2. Select scope: `repo` (Full control of private repositories)
+3. Copy the generated token (starts with `ghp_`)
+
+**GitLab:**
+1. Go to User Settings → Access Tokens → Add new token
+2. Select scope: `read_repository`
+3. Copy the generated token (starts with `glpat-`)
+
+**Bitbucket:**
+1. Go to Personal settings → App passwords → Create app password
+2. Select permission: `repository:read`
+3. Copy the generated password
+
+### 3. Configure
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
@@ -66,17 +83,19 @@ minio_password         = "your-minio-password"
 airflow_fernet_key     = "your-32-char-fernet-key="
 airflow_api_secret_key = "your-api-secret"
 airflow_password       = "your-admin-password"
-dags_repo_url          = "git@github.com:your-org/airflow-dags.git"
+dags_repo_url          = "https://github.com/your-org/airflow-dags.git"  # HTTPS URL
+git_username           = "your-github-username"
+git_password           = "ghp_YOUR_PERSONAL_ACCESS_TOKEN"  # Your PAT
 ```
 
-### 3. Deploy
+### 4. Deploy
 
 ```bash
 terraform init
 terraform apply
 ```
 
-### 4. Access
+### 5. Access
 
 ```bash
 # Airflow UI
@@ -127,10 +146,12 @@ All configuration uses sensible defaults. The only required variables are:
 | `airflow_fernet_key` | 32-char encryption key | `4RzJ9ABC...` |
 | `airflow_api_secret_key` | API authentication | `dGVzd...` |
 | `airflow_password` | Admin UI password | `adminPass123` |
-| `dags_repo_url` | Git repo for DAGs | `git@github.com:...` |
+| `dags_repo_url` | Git repo for DAGs (HTTPS) | `https://github.com/...` |
+| `git_username` | Git username | `your-username` |
+| `git_password` | Personal Access Token | `ghp_abc123...` |
 
 Optional:
-- `git_ssh_key_path` (default: `~/.ssh/id_rsa`)
+- `dags_repo_branch` (default: `main`)
 
 ## Default Resources
 
@@ -159,8 +180,11 @@ kubectl get events -n airflow --sort-by='.lastTimestamp'
 # Check git-sync logs
 kubectl logs -n airflow deployment/airflow-release-scheduler -c git-sync
 
-# Verify SSH key
-ssh -T git@github.com
+# Common issues:
+# - Invalid Personal Access Token (check if expired)
+# - Incorrect repository URL (must be HTTPS format)
+# - Token lacks required permissions (needs 'repo' or 'read_repository' scope)
+# - Wrong username or token value
 ```
 
 ### Worker not processing tasks
