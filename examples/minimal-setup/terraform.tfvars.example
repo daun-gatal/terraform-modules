@@ -1,41 +1,24 @@
 # Minimal Data Platform Configuration
-# Copy this file to terraform.tfvars and customize with your values
+# Copy this file to terraform.tfvars and fill in your values
 
-# Global Configuration
-namespace_prefix = "my-data-platform"
+# PostgreSQL Configuration
+postgres_password = "CHANGE_ME_STRONG_DB_PASSWORD"
 
-# PostgreSQL Configuration (Airflow metadata backend)
-postgres_password     = "CHANGE_ME_STRONG_DB_PASSWORD"
-postgres_storage_size = "20Gi"
-postgres_replicas     = 1  # Set to 3 for HA
+# MinIO Configuration (min 8 characters)
+minio_password = "CHANGE_ME_MIN_8_CHARS"
 
-# MinIO Configuration (Object storage for logs and data)
-minio_password      = "CHANGE_ME_MINIO_PASSWORD"  # Min 8 characters
-minio_storage_size  = "50Gi"
-logs_retention_days = 30  # Days to keep Airflow logs
+# Airflow Secrets
+# Generate Fernet key: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+airflow_fernet_key = "CHANGE_ME_32_CHAR_FERNET_KEY_HERE="
 
-# Airflow Configuration (Workflow orchestration)
-airflow_fernet_key       = "CHANGE_ME_32_CHAR_FERNET_KEY_HERE"  # Must be exactly 32 chars
-airflow_api_secret_key   = "CHANGE_ME_API_SECRET_KEY"
-airflow_password         = "CHANGE_ME_AIRFLOW_PASSWORD"
-git_ssh_key_path         = "~/.ssh/id_rsa"
-dags_repo_url           = "git@github.com:your-org/airflow-dags.git"
-dags_branch             = "main"
-airflow_scheduler_replicas = 1
-airflow_enable_triggerer   = false
+# Generate API secret: openssl rand -base64 32
+airflow_api_secret_key = "CHANGE_ME_API_SECRET_KEY"
 
-# Integration Settings
-enable_remote_logging = true   # Store Airflow logs in MinIO
+# Airflow admin password
+airflow_password = "CHANGE_ME_ADMIN_PASSWORD"
 
-# Networking (optional)
-enable_tailscale     = false  # Enable for private network access
-enable_public_access = false  # Enable for internet access via Tailscale Funnel
+# Git Repository for DAGs
+dags_repo_url = "git@github.com:your-org/airflow-dags.git"
 
-# Resource Management
-enable_resource_limits = true
-postgres_cpu          = "2"
-postgres_memory       = "4Gi"
-minio_cpu            = "1"
-minio_memory         = "2Gi"
-airflow_cpu          = "2"
-airflow_memory       = "4Gi"
+# SSH Key Path (optional, defaults to ~/.ssh/id_rsa)
+git_ssh_key_path = "~/.ssh/id_rsa"
