@@ -42,6 +42,30 @@ variable "cluster_worker_count" {
     default = 1
 }
 
+variable "master_cpu" {
+    description = "CPU allocation for Spark master (requests and limits)"
+    type = string
+    default = "1"
+}
+
+variable "master_memory" {
+    description = "Memory allocation for Spark master (requests and limits)"
+    type = string
+    default = "2Gi"
+}
+
+variable "worker_cpu" {
+    description = "CPU allocation for each Spark worker (requests and limits)"
+    type = string
+    default = "1"
+}
+
+variable "worker_memory" {
+    description = "Memory allocation for each Spark worker (requests and limits)"
+    type = string
+    default = "2Gi"
+}
+
 variable "cluster_name" {
     description = "The name of Spark cluster"
     type = string

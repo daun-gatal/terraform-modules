@@ -35,8 +35,54 @@ resource "kubernetes_manifest" "spark_cluster" {
       clusterTolerations = {
         instanceConfig = {
           initWorkers = var.cluster_worker_count
-          minWorkers  = var.cluster_worker_count
+          minWorkers  = 1
           maxWorkers  = var.cluster_worker_count
+        }
+      }
+      masterSpec = {
+        statefulSetSpec = {
+          template = {
+            spec = {
+              containers = [
+                {
+                  name = "master"
+                  resources = {
+                    requests = {
+                      cpu = var.master_cpu
+                      memory = var.master_memory
+                    }
+                    limits = {
+                      cpu = var.master_cpu
+                      memory = var.master_memory
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+      workerSpec = {
+        statefulSetSpec = {
+          template = {
+            spec = {
+              containers = [
+                {
+                  name = "worker"
+                  resources = {
+                    requests = {
+                      cpu = var.worker_cpu
+                      memory = var.worker_memory
+                    }
+                    limits = {
+                      cpu = var.worker_cpu
+                      memory = var.worker_memory
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       }
       sparkConf = merge(
