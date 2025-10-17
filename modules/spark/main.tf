@@ -120,7 +120,7 @@ resource "kubernetes_manifest" "spark_connect" {
       sparkConf = merge(
         {
           "spark.kubernetes.container.image"                         = local.spark_image
-          "spark.cores.max"                                      = tostring(var.spark_connect_executor_cores)
+          "spark.cores.max"                                      = tostring(var.spark_connect_max_cores)
           
           "spark.executor.memory"                                    = var.spark_connect_executor_memory
           "spark.executor.instances"                                = tostring(var.spark_connect_dynamic_allocation_min_executors)

@@ -90,12 +90,6 @@ variable "spark_connect_executor_memory" {
   default     = "8g"
 }
 
-variable "spark_connect_executor_cores" {
-  description = "Number of CPU cores allocated per Spark Connect executor"
-  type        = number
-  default     = 1
-}
-
 variable "spark_connect_max_cores" {
   description = "Maximum total cores allowed for Spark Connect"
   type        = number
