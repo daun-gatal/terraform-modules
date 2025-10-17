@@ -21,6 +21,8 @@ module "spark_resources" {
 }
 
 resource "kubernetes_manifest" "spark_cluster" {
+  count = var.create_spark_cluster ? 1 : 0
+
   manifest = {
     apiVersion = "spark.apache.org/${var.spark_k8s_opt_version}"
     kind       = "SparkCluster"
@@ -114,20 +116,33 @@ resource "kubernetes_manifest" "spark_connect" {
       runtimeVersions = {
         sparkVersion = var.image_tag
       }
-      sparkConf = merge({
-          "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
-          "spark.submit.deployMode" = "cluster"
-          "spark.executor.cores" = tostring(var.spark_connect_executor_cores)
-          "spark.cores.max" = tostring(var.spark_connect_max_cores)
-          "spark.kubernetes.authenticate.driver.serviceAccountName" = "spark"
-          "spark.kubernetes.container.image" = local.spark_image
-          "spark.ui.reverseProxy" = "true"
+
+      sparkConf = merge(
+        {
+          "spark.kubernetes.container.image"                         = local.spark_image
+          "spark.cores.max"                                      = tostring(var.spark_connect_executor_cores)
+          
+          "spark.executor.memory"                                    = var.spark_connect_executor_memory
+          "spark.executor.instances"                                = tostring(var.spark_connect_dynamic_allocation_min_executors)
+
+          "spark.kubernetes.authenticate.driver.serviceAccountName"  = "spark"
+          "spark.ui.reverseProxy"                                    = "true"
+          "spark.submit.deployMode"                                  = "cluster"
+
+          "spark.dynamicAllocation.enabled"                           = tostring(var.spark_connect_dynamic_allocation_enabled)
+          "spark.dynamicAllocation.shuffleTracking.enabled"            = tostring(var.spark_connect_dynamic_allocation_shuffle_tracking_enabled)
+          "spark.dynamicAllocation.minExecutors"                        = tostring(var.spark_connect_dynamic_allocation_min_executors)
+          "spark.dynamicAllocation.maxExecutors"                        = tostring(var.spark_connect_dynamic_allocation_max_executors)
         },
+        var.create_spark_cluster ? {
+          "spark.master" = "spark://${local.spark_cluster}-master-svc:7077"
+        } : {},
         var.extra_spark_conf
       )
     }
   }
 }
+
 
 resource "kubernetes_service" "spark_connect" {
   count = local.spark_v4 ? 1 : 0
@@ -160,7 +175,7 @@ resource "kubernetes_service" "spark_connect" {
 }
 
 resource "kubernetes_service" "spark_custom_service" {
-  count = var.tailscale_expose ? 1 : 0
+  count = var.create_spark_cluster ? 1 : 0
 
   metadata {
     name      = local.spark_cluster_custom_svc
