@@ -19,7 +19,7 @@ variable "image_repository" {
 variable "image_tag" {
   description = "The image tag of Spark"
   type = string
-  default = "4.0.0"
+  default = "4.0.1"
 
   validation {
     condition = (
@@ -40,6 +40,12 @@ variable "cluster_worker_count" {
     description = "The total of worker that will be assigned to Spark"
     type = number
     default = 1
+}
+
+variable "create_spark_cluster" {
+  description = "Whether to create the SparkCluster resource"
+  type        = bool
+  default     = false
 }
 
 variable "master_cpu" {
@@ -81,7 +87,7 @@ variable "tailscale_expose" {
 variable "spark_connect_executor_memory" {
   description = "Amount of memory allocated for Spark Connect executor"
   type        = string
-  default     = "2g"
+  default     = "8g"
 }
 
 variable "spark_connect_executor_cores" {
@@ -119,4 +125,28 @@ variable "extra_spark_conf" {
   description = "Extra SparkConf if necessary"
   type    = map(string)
   default = {}
+}
+
+variable "spark_connect_dynamic_allocation_enabled" {
+  description = "Enable dynamic allocation for Spark Connect"
+  type        = bool
+  default     = false
+}
+
+variable "spark_connect_dynamic_allocation_min_executors" {
+  description = "Minimum number of executors for Spark Connect dynamic allocation"
+  type        = number
+  default     = 1
+}
+
+variable "spark_connect_dynamic_allocation_max_executors" {
+  description = "Maximum number of executors for Spark Connect dynamic allocation"
+  type        = number
+  default     = 1
+}
+
+variable "spark_connect_dynamic_allocation_shuffle_tracking_enabled" {
+  description = "Enable shuffle tracking for Spark Connect dynamic allocation"
+  type        = bool
+  default     = false
 }
