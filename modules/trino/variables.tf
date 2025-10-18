@@ -112,6 +112,7 @@ variable "enable_resource_allocation" {
 # Catalog Variables
 variable "enabled_catalogs" {
   description = "List of catalogs to enable"
+  sensitive = true
   type = list(object({
     name      = string       # catalog name in Trino
     params    = map(string)  # raw key=value pairs
