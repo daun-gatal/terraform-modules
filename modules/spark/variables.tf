@@ -118,6 +118,7 @@ variable "enable_resource_allocation" {
 variable "extra_spark_conf" {
   description = "Extra SparkConf if necessary"
   type    = map(string)
+  sensitive = true
   default = {}
 }
 
