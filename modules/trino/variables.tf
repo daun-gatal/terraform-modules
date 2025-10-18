@@ -31,7 +31,7 @@ variable "image_repository" {
 variable "image_tag" {
   description = "The image tag for Trino"
   type        = string
-  default     = "1.40.0"
+  default     = "477"
 }
 
 variable "worker_count" {
