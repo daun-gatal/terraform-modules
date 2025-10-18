@@ -33,6 +33,38 @@ resource "helm_release" "trino" {
     annotations:
       tailscale.com/expose: "${var.tailscale_expose}"
       tailscale.com/hostname: "${var.prefix}-int"
+  accessControl:
+    type: configmap
+    refreshPeriod: 60s
+    configFile: "rules.json"
+    rules:
+      rules.json: |
+        {
+          "catalogs": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "allow": "read-only"
+            }
+          ],
+          "schemas": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "schema": ".*",
+              "owner": false
+            }
+          ],
+          "tables": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "schema": ".*",
+              "table": ".*",
+              "privileges": ["SELECT"]
+            }
+          ]
+        }
   EOF
   ]
 
