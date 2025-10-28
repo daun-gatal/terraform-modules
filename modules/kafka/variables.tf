@@ -217,3 +217,9 @@ variable "enable_resource_allocation" {
   type = bool
   default = false
 }
+
+variable "kafka_ui_secret_name" {
+  description = "Name of the Kubernetes Secret containing Kafka UI environment variables"
+  type        = string
+  default     = "kafka-ui-secret" # or override via tfvars
+}

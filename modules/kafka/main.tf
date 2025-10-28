@@ -6,7 +6,6 @@ locals {
   kafka_ui_service_name = "${local.prefix}-ui-service"
   kafka_ui_app_label = "${local.prefix}-ui-app"
   kafka_ui_image = "${var.kafka_ui_image}:${var.kafka_ui_image_tag}"
-  kafka_ui_secret_name = "${local.prefix}-ui-auth-secret"
 }
 
 module "kafka_resources" {
@@ -94,23 +93,6 @@ resource "kubernetes_manifest" "kafka_cluster" {
   }
 }
 
-# Kafka UI Resources
-resource "kubernetes_secret" "kafka_ui_auth" {
-  count = var.enable_kafka_ui && var.kafka_ui_auth_enabled ? 1 : 0
-
-  metadata {
-    name      = local.kafka_ui_secret_name
-    namespace = var.namespace
-  }
-
-  data = {
-    username = var.kafka_ui_auth_username
-    password = var.kafka_ui_auth_password
-  }
-
-  type = "Opaque"
-}
-
 resource "kubernetes_deployment" "kafka_ui" {
   count = var.enable_kafka_ui ? 1 : 0
 
@@ -148,64 +130,9 @@ resource "kubernetes_deployment" "kafka_ui" {
             name           = "http"
           }
 
-          env {
-            name  = "KAFKA_CLUSTERS_0_NAME"
-            value = "${local.prefix}"
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
-            value = "${local.prefix}-kafka-brokers.${var.namespace}.svc.cluster.local:9092"
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL"
-            value = "PLAINTEXT"
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_ZOOKEEPER"
-            value = ""
-          }
-
-          env {
-            name  = "DYNAMIC_CONFIG_ENABLED"
-            value = "true"
-          }
-
-          env {
-            name  = "SERVER_SERVLET_CONTEXT_PATH"
-            value = "/"
-          }
-
-          env {
-            name  = "AUTH_TYPE"
-            value = var.kafka_ui_auth_enabled ? "LOGIN_FORM" : "DISABLED"
-          }
-
-          dynamic "env" {
-            for_each = var.kafka_ui_auth_enabled ? [1] : []
-            content {
-              name = "SPRING_SECURITY_USER_NAME"
-              value_from {
-                secret_key_ref {
-                  name = local.kafka_ui_secret_name
-                  key  = "username"
-                }
-              }
-            }
-          }
-
-          dynamic "env" {
-            for_each = var.kafka_ui_auth_enabled ? [1] : []
-            content {
-              name = "SPRING_SECURITY_USER_PASSWORD"
-              value_from {
-                secret_key_ref {
-                  name = local.kafka_ui_secret_name
-                  key  = "password"
-                }
-              }
+          env_from {
+            secret_ref {
+              name = var.kafka_ui_secret_name
             }
           }
 
@@ -263,7 +190,7 @@ resource "kubernetes_service" "kafka_ui" {
 
     port {
       name        = "http"
-      port        = var.kafka_listener_type == "cluster-ip" ? 8081 : var.kafka_ui_port
+      port        = 80
       target_port = var.kafka_ui_port
     }
 
