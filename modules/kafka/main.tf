@@ -8,15 +8,6 @@ locals {
   kafka_ui_image = "${var.kafka_ui_image}:${var.kafka_ui_image_tag}"
 }
 
-module "kafka_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "kubernetes_manifest" "kafka_node_pool" {
   manifest = {
     apiVersion = "kafka.strimzi.io/v1beta2"
@@ -51,6 +42,16 @@ resource "kubernetes_manifest" "kafka_node_pool" {
             runAsGroup = var.pod_run_as_group
             fsGroup    = var.pod_fs_group
           }
+        }
+      }
+      resources = {
+        requests = {
+          cpu    = var.kafka_resources_config.requests.cpu
+          memory = var.kafka_resources_config.requests.memory
+        }
+        limits = {
+          cpu    = var.kafka_resources_config.limits.cpu
+          memory = var.kafka_resources_config.limits.memory
         }
       }
     }
@@ -119,7 +120,6 @@ resource "kubernetes_deployment" "kafka_ui" {
           app = local.kafka_ui_app_label
         }
       }
-
       spec {
         container {
           name  = "kafka-ui"
@@ -139,6 +139,17 @@ resource "kubernetes_deployment" "kafka_ui" {
           env {
             name  = "MANAGEMENT_HEALTH_LDAP_ENABLED"
             value = "FALSE"
+          }
+
+          resources {
+            limits = {
+              cpu = var.kafka_ui_resources_config.limits.cpu
+              memory = var.kafka_ui_resources_config.limits.memory
+            }
+            requests = {
+              cpu = var.kafka_ui_resources_config.requests.cpu
+              memory = var.kafka_ui_resources_config.requests.memory
+            }
           }
 
           liveness_probe {

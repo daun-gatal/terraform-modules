@@ -28,25 +28,6 @@ variable "tailscale_expose" {
   default     = false
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for Gravitino namespace (requests and limits)"
-  type        = string
-  default     = "1"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Gravitino namespace (requests and limits)"
-  type        = string
-  default     = "2Gi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type        = bool
-  default     = true
-}
-
 # Entity store configuration
 variable "entity_store" {
   description = "The entity store to use"
@@ -214,4 +195,28 @@ variable "gravitino_mem" {
   description = "JVM memory settings for Gravitino"
   type        = string
   default     = "-Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m"
+}
+
+variable "gravitino_resources_config" {
+  description = "Resource configuration for Gravitino pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "2"
+      memory = "3Gi"
+    }
+    requests = {
+      cpu    = "500m"
+      memory = "1Gi"
+    }
+  }
 }

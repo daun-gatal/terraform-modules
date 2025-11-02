@@ -2,6 +2,16 @@ locals {
   prefix = var.prefix
   release_name = "${local.prefix}-release"
 
+  coordinator_resources_requests_cpu = var.trino_resources_config["coordinator"].requests.cpu
+  coordinator_resources_requests_ram = var.trino_resources_config["coordinator"].requests.ram
+  coordinator_resources_limits_cpu   = var.trino_resources_config["coordinator"].limits.cpu
+  coordinator_resources_limits_ram   = var.trino_resources_config["coordinator"].limits.ram
+
+  worker_resources_requests_cpu = var.trino_resources_config["worker"].requests.cpu
+  worker_resources_requests_ram = var.trino_resources_config["worker"].requests.ram
+  worker_resources_limits_cpu   = var.trino_resources_config["worker"].limits.cpu
+  worker_resources_limits_ram   = var.trino_resources_config["worker"].limits.ram
+
   rendered_catalogs = {
     for catalog in var.enabled_catalogs :
     "catalogs.${catalog.name}" =>
@@ -9,16 +19,6 @@ locals {
       params = catalog.params
     })
   }
-}
-
-# Apply resource limits to the Trino namespace
-module "trino_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
 }
 
 resource "helm_release" "trino" {
@@ -33,6 +33,22 @@ resource "helm_release" "trino" {
     annotations:
       tailscale.com/expose: "${var.tailscale_expose}"
       tailscale.com/hostname: "${var.prefix}-int"
+  coordinator:
+    resources:
+      requests:
+        cpu: "${local.coordinator_resources_requests_cpu}"
+        memory: "${local.coordinator_resources_requests_ram}"
+      limits:
+        cpu: "${local.coordinator_resources_limits_cpu}"
+        memory: "${local.coordinator_resources_limits_ram}"
+  worker:
+    resources:
+      requests:
+        cpu: "${local.worker_resources_requests_cpu}"
+        memory: "${local.worker_resources_requests_ram}"
+      limits:
+        cpu: "${local.worker_resources_limits_cpu}"
+        memory: "${local.worker_resources_limits_ram}"
   accessControl:
     type: configmap
     refreshPeriod: 60s
