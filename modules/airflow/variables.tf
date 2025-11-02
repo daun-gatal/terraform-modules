@@ -300,8 +300,8 @@ variable "airflow_component_resources" {
         ram = "128Mi"
       }
       limits = {
-        cpu = "200m"
-        ram = "256Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -311,8 +311,8 @@ variable "airflow_component_resources" {
         ram = "256Mi"
       }
       limits = {
-        cpu = "400m"
-        ram = "512Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -322,8 +322,8 @@ variable "airflow_component_resources" {
         ram = "128Mi"
       }
       limits = {
-        cpu = "200m"
-        ram = "256Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -333,8 +333,8 @@ variable "airflow_component_resources" {
         ram = "128Mi"
       }
       limits = {
-        cpu = "200m"
-        ram = "256Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -355,8 +355,8 @@ variable "airflow_component_resources" {
         ram = "128Mi"
       }
       limits = {
-        cpu = "200m"
-        ram = "256Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -366,8 +366,8 @@ variable "airflow_component_resources" {
         ram = "64Mi"
       }
       limits = {
-        cpu = "100m"
-        ram = "128Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -377,8 +377,8 @@ variable "airflow_component_resources" {
         ram = "256Mi"
       }
       limits = {
-        cpu = "300m"
-        ram = "512Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
 
@@ -388,8 +388,8 @@ variable "airflow_component_resources" {
         ram = "64Mi"
       }
       limits = {
-        cpu = "150m"
-        ram = "128Mi"
+        cpu = "500m"
+        ram = "1024Mi"
       }
     }
   }
