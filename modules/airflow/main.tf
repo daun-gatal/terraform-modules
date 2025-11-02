@@ -29,15 +29,6 @@ locals {
   ] : []
 }
 
-module "airflow_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "kubernetes_secret" "airflow_secret" {
   metadata {
     name      = local.secret_name
@@ -89,6 +80,16 @@ resource "helm_release" "airflow" {
             namespace = var.namespace
           })
         ]
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["cleanup"].requests.cpu
+            memory = var.airflow_component_resources["cleanup"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["cleanup"].limits.cpu
+            memory = var.airflow_component_resources["cleanup"].limits.ram
+          }
+        }
       }
 
       scheduler = {
@@ -102,6 +103,16 @@ resource "helm_release" "airflow" {
             aws_endpoint_url     = var.aws_endpoint_url
           })
         ]
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["scheduler"].requests.cpu
+            memory = var.airflow_component_resources["scheduler"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["scheduler"].limits.cpu
+            memory = var.airflow_component_resources["scheduler"].limits.ram
+          }
+        }
       }
 
       apiServer = {
@@ -111,6 +122,16 @@ resource "helm_release" "airflow" {
             "tailscale.com/hostname" = "${local.prefix}-web-int"
           }
         }
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["apiServer"].requests.cpu
+            memory = var.airflow_component_resources["apiServer"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["apiServer"].limits.cpu
+            memory = var.airflow_component_resources["apiServer"].limits.ram
+          }
+        }
       }
 
       flower = {
@@ -118,6 +139,96 @@ resource "helm_release" "airflow" {
           annotations = {
             "tailscale.com/expose" = tostring(var.tailscale_expose)
             "tailscale.com/hostname" = "${local.prefix}-flower-int"
+          }
+        }
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["flower"].requests.cpu
+            memory = var.airflow_component_resources["flower"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["flower"].limits.cpu
+            memory = var.airflow_component_resources["flower"].limits.ram
+          }
+        }
+      }
+
+      workers = {
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["workers"].requests.cpu
+            memory = var.airflow_component_resources["workers"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["workers"].limits.cpu
+            memory = var.airflow_component_resources["workers"].limits.ram
+          }
+        }
+      }
+
+      triggerer = {
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["triggerer"].requests.cpu
+            memory = var.airflow_component_resources["triggerer"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["triggerer"].limits.cpu
+            memory = var.airflow_component_resources["triggerer"].limits.ram
+          }
+        }
+      }
+
+      dagProcessor = {
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["dagProcessor"].requests.cpu
+            memory = var.airflow_component_resources["dagProcessor"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["dagProcessor"].limits.cpu
+            memory = var.airflow_component_resources["dagProcessor"].limits.ram
+          }
+        }
+      }
+
+      dags = {
+        gitSync = {
+          resources = {
+            requests = {
+              cpu = var.airflow_component_resources["gitSync"].requests.cpu
+              memory = var.airflow_component_resources["gitSync"].requests.ram
+            }
+            limits = {
+              cpu = var.airflow_component_resources["gitSync"].limits.cpu
+              memory = var.airflow_component_resources["gitSync"].limits.ram
+            }
+          }
+        }
+      }
+
+      redis = {
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["redis"].requests.cpu
+            memory = var.airflow_component_resources["redis"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["redis"].limits.cpu
+            memory = var.airflow_component_resources["redis"].limits.ram
+          }
+        }
+      }
+
+      statsd = {
+        resources = {
+          requests = {
+            cpu = var.airflow_component_resources["statsd"].requests.cpu
+            memory = var.airflow_component_resources["statsd"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_component_resources["statsd"].limits.cpu
+            memory = var.airflow_component_resources["statsd"].limits.ram
           }
         }
       }

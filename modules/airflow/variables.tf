@@ -214,25 +214,6 @@ variable "enable_remote_logging" {
   default = false
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for Airflow namespace (requests and limits)"
-  type        = string
-  default     = "1"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Airflow namespace (requests and limits)"
-  type        = string
-  default     = "1Gi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
-}
-
 variable "airflow_executor" {
   description = "Executor type for Airflow. Supported: CeleryExecutor or KubernetesExecutor."
   type        = string
@@ -286,4 +267,130 @@ variable "airflow_kubernetes_cleanup_enabled" {
   description = "Enable Kubernetes pod cleanup"
   type        = bool
   default     = false
+}
+
+variable "airflow_component_resources" {
+  description = "Per-component resource configurations for Airflow components (requests and limits for CPU and RAM)"
+  type = map(object({
+    requests = object({
+      cpu = string
+      ram = string
+    })
+    limits = object({
+      cpu = string
+      ram = string
+    })
+  }))
+
+  default = {
+    scheduler = {
+      requests = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+      limits = {
+        cpu = "500m"
+        ram = "1024Mi"
+      }
+    }
+
+    cleanup = {
+      requests = {
+        cpu = "100m"
+        ram = "128Mi"
+      }
+      limits = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+    }
+
+    apiServer = {
+      requests = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+      limits = {
+        cpu = "400m"
+        ram = "512Mi"
+      }
+    }
+
+    triggerer = {
+      requests = {
+        cpu = "100m"
+        ram = "128Mi"
+      }
+      limits = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+    }
+
+    dagProcessor = {
+      requests = {
+        cpu = "100m"
+        ram = "128Mi"
+      }
+      limits = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+    }
+
+    workers = {
+      requests = {
+        cpu = "500m"
+        ram = "1024Mi"
+      }
+      limits = {
+        cpu = "1000m"
+        ram = "2048Mi"
+      }
+    }
+
+    flower = {
+      requests = {
+        cpu = "100m"
+        ram = "128Mi"
+      }
+      limits = {
+        cpu = "200m"
+        ram = "256Mi"
+      }
+    }
+
+    gitSync = {
+      requests = {
+        cpu = "50m"
+        ram = "64Mi"
+      }
+      limits = {
+        cpu = "100m"
+        ram = "128Mi"
+      }
+    }
+
+    redis = {
+      requests = {
+        cpu = "100m"
+        ram = "256Mi"
+      }
+      limits = {
+        cpu = "300m"
+        ram = "512Mi"
+      }
+    }
+
+    statsd = {
+      requests = {
+        cpu = "50m"
+        ram = "64Mi"
+      }
+      limits = {
+        cpu = "150m"
+        ram = "128Mi"
+      }
+    }
+  }
 }
