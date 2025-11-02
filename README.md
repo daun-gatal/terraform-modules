@@ -401,59 +401,6 @@ PostgreSQL is a powerful, open-source relational database system managed by the 
 
 ---
 
-### 📊 **Resource Module** (`modules/resource/`)
-
-The Resource module provides namespace-level resource allocation management, allowing you to set CPU and memory limits and requests for specific Kubernetes namespaces. This is essential for resource governance and preventing resource contention in multi-tenant environments.
-
-**Purpose:** Apply resource quotas and limits to Kubernetes namespaces to ensure fair resource distribution and prevent resource starvation across different services.
-
-**Key Parameters:**
-- `namespace` (required) - Kubernetes namespace to apply resource limits to
-- `cpu` (default: "2") - CPU limit and request for the namespace (format: "100m" or "2")
-- `memory` (default: "4Gi") - Memory limit and request for the namespace (format: "512Mi", "4Gi", etc.)
-
-**Usage Example:**
-```hcl
-module "airflow_resources" {
-  source = "./modules/resource"
-  
-  namespace = "airflow"
-  cpu       = "2"
-  memory    = "4Gi"
-}
-```
-
----
-
-### ⚡ **Spark Module** (`modules/spark/`)
-
-Apache Spark is a unified analytics engine for large-scale data processing with built-in modules for streaming, SQL, machine learning, and graph processing.
-
-**Purpose:** Deploy Apache Spark cluster with Spark Connect service (Spark 4.x) for distributed data processing and analysis. Automatically creates a Spark cluster and optionally a Spark Connect server for remote client connections.
-
-**Key Parameters:**
-- `namespace` (default: "spark") - Kubernetes namespace for deployment (must match Spark operator namespace)
-- `prefix` (default: "spark") - Resource naming prefix
-- `image_repository` (default: "apache/spark") - Container image repository
-- `image_tag` (default: "4.0.0") - Container image tag (supports 3.5.x and 4.x.x)
-- `spark_k8s_opt_version` (default: "v1beta1") - Spark Kubernetes operator API version
-- `cluster_worker_count` (default: 1) - Number of worker nodes in the cluster
-- `cluster_name` (default: "Spark Cluster") - Cluster display name in UI
-- `spark_connect_executor_memory` (default: "2g") - Memory per executor for Spark Connect
-- `spark_connect_executor_cores` (default: 1) - CPU cores per executor for Spark Connect
-- `spark_connect_max_cores` (default: 1) - Maximum total cores for Spark Connect
-- `extra_spark_conf` (default: {}) - Additional Spark configuration properties as key-value map
-- `tailscale_expose` (default: false) - Expose Spark UI and Connect via Tailscale network
-- `cpu_allocation` (default: "500m") - CPU allocation for namespace
-- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
-
-**Notes:**
-- Spark Connect is only available for Spark 4.x and creates a stateful deployment for remote connections
-- The module exposes both the Spark Master UI (port 8080) and Spark Connect service (port 15002) when Tailscale is enabled
-
----
-
 ### 🔍 **Trino Module** (`modules/trino/`)
 
 Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query data from multiple sources including data lakes, databases, and object stores.

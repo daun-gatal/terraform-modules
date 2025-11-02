@@ -64,21 +64,26 @@ variable "tailscale_funnel" {
   default     = false
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for Metabase namespace (requests and limits)"
-  type        = string
-  default     = "500m"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Metabase namespace (requests and limits)"
-  type        = string
-  default     = "512Mi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
+variable "metabase_resources_config" {
+  description = "Resource configuration for Metabase pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "2Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
 }

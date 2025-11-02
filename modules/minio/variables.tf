@@ -96,21 +96,26 @@ variable "enable_distributed" {
   default     = false
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for MinIO namespace (requests and limits)"
-  type        = string
-  default     = "1"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for MinIO namespace (requests and limits)"
-  type        = string
-  default     = "1Gi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
+variable "minio_resources_config" {
+  description = "Resource configuration for Minio pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "4Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
 }

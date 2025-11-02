@@ -8,15 +8,6 @@ locals {
   ingress_name = "${local.prefix}-ingress"
 }
 
-module "metabase_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "kubernetes_deployment" "metabase" {
   metadata {
     name      = local.deployment_name
@@ -43,6 +34,17 @@ resource "kubernetes_deployment" "metabase" {
         container {
           name  = local.container_name
           image = local.metabase_image
+
+          resources {
+            limits = {
+              cpu = var.metabase_resources_config.limits.cpu
+              memory = var.metabase_resources_config.limits.memory
+            }
+            requests = {
+              cpu = var.metabase_resources_config.requests.cpu
+              memory = var.metabase_resources_config.requests.memory
+            }
+          }
 
           env {
             name  = "MB_DB_TYPE"
