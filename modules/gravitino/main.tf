@@ -3,16 +3,6 @@ locals {
   release_name = "${local.prefix}-release"
 }
 
-# Apply resource limits to the Gravitino namespace
-module "gravitino_resources" {
-  count  = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "helm_release" "gravitino" {
   name       = local.release_name
   namespace  = var.namespace
@@ -26,6 +16,17 @@ resource "helm_release" "gravitino" {
         annotations = {
           "tailscale.com/expose"   = tostring(var.tailscale_expose)
           "tailscale.com/hostname" = "${var.prefix}-int"
+        }
+      }
+
+      resources = {
+        limits = {
+          cpu    = var.gravitino_resources_config.limits.cpu
+          memory = var.gravitino_resources_config.limits.memory
+        }
+        requests = {
+          cpu    = var.gravitino_resources_config.requests.cpu
+          memory = var.gravitino_resources_config.requests.memory
         }
       }
     })

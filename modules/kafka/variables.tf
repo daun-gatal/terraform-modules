@@ -200,26 +200,56 @@ variable "kafka_ui_auth_password" {
   }
 }
 
-variable "cpu_allocation" {
-  description = "CPU allocation for Kafka namespace (requests and limits)"
-  type        = string
-  default     = "1500m"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Kafka namespace (requests and limits)"
-  type        = string
-  default     = "2Gi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
-}
-
 variable "kafka_ui_secret_name" {
   description = "Name of the Kubernetes Secret containing Kafka UI environment variables"
   type        = string
   default     = "kafka-ui-secret" # or override via tfvars
+}
+
+variable "kafka_resources_config" {
+  description = "Resource configuration for Kafka pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "2"
+      memory = "8Gi"
+    }
+    requests = {
+      cpu    = "500m"
+      memory = "1Gi"
+    }
+  }
+}
+
+variable "kafka_ui_resources_config" {
+  description = "Resource configuration for Kafka UI pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "1Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
 }
