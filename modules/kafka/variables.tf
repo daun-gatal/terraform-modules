@@ -221,7 +221,7 @@ variable "kafka_resources_config" {
   default     = {
     limits = {
       cpu    = "2"
-      memory = "8Gi"
+      memory = "4Gi"
     }
     requests = {
       cpu    = "500m"
