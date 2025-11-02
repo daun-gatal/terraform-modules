@@ -82,27 +82,32 @@ variable "image_tag" {
   default = "15.4"
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for Postgres namespace (requests and limits)"
-  type        = string
-  default     = "1"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Postgres namespace (requests and limits)"
-  type        = string
-  default     = "1536Mi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
-}
-
 variable "extra_db_names" {
   description = "List of additional PostgreSQL databases to create"
   type        = list(string)
   default     = []
+}
+
+variable "postgres_resources_config" {
+  description = "Resource configuration for PostgreSQL pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "4Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
 }

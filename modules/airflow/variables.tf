@@ -269,7 +269,7 @@ variable "airflow_kubernetes_cleanup_enabled" {
   default     = false
 }
 
-variable "airflow_component_resources" {
+variable "airflow_resources_config" {
   description = "Per-component resource configurations for Airflow components (requests and limits for CPU and RAM)"
   type = map(object({
     requests = optional(object({

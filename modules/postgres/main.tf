@@ -5,16 +5,6 @@ locals {
   postgres_image = "${var.image_repository}:${var.image_tag}"
 }
 
-# Apply resource limits to the Postgres namespace
-module "postgres_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "kubernetes_manifest" "postgres_cluster" {
   manifest = {
     apiVersion = "postgresql.cnpg.io/v1"
@@ -31,6 +21,17 @@ resource "kubernetes_manifest" "postgres_cluster" {
     spec = {
       imageName = local.postgres_image
       instances = var.postgres_replicas
+
+      resources = {
+        requests = {
+          cpu    = var.postgres_resources_config.requests.cpu
+          memory = var.postgres_resources_config.requests.memory
+        }
+        limits = {
+          cpu    = var.postgres_resources_config.limits.cpu
+          memory = var.postgres_resources_config.limits.memory
+        }
+      }
 
       # Database initialization
       bootstrap = {

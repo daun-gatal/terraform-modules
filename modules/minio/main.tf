@@ -11,15 +11,6 @@ locals {
   volumes_per_server = 1
 }
 
-module "minio_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 # Create simple secret for credentials
 resource "kubernetes_secret" "minio_credentials" {
   metadata {
@@ -64,6 +55,17 @@ resource "kubernetes_manifest" "minio_tenant" {
           name             = "pool"
           servers          = local.servers
           volumesPerServer = local.volumes_per_server
+
+          resources = {
+            limits = {
+              cpu    = var.minio_resources_config.limits.cpu
+              memory = var.minio_resources_config.limits.memory
+            }
+            requests = {
+              cpu    = var.minio_resources_config.requests.cpu
+              memory = var.minio_resources_config.requests.memory
+            }
+          }
           
           # Storage
           volumeClaimTemplate = {

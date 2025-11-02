@@ -6,16 +6,6 @@ locals {
   s3_warehouse_location = "s3://${var.nessie_s3_bucket}/${var.nessie_default_warehouse}"
 }
 
-# Apply resource limits to the Nessie namespace
-module "nessie_resources" {
-  count = var.enable_resource_allocation ? 1 : 0
-  source = "../resource"
-  
-  namespace = var.namespace
-  cpu       = var.cpu_allocation
-  memory    = var.memory_allocation
-}
-
 resource "kubernetes_secret" "nessie_jdbc" {
   metadata {
     name      = local.secret_name
@@ -56,6 +46,13 @@ resource "helm_release" "nessie" {
     annotations:
       tailscale.com/expose: "${var.tailscale_expose}"
       tailscale.com/hostname: "${local.prefix}-int"
+  resources:
+    requests:
+      memory: "${var.nessie_resources_config.requests.memory}"
+      cpu: "${var.nessie_resources_config.requests.cpu}"
+    limits:
+      memory: "${var.nessie_resources_config.limits.memory}"
+      cpu: "${var.nessie_resources_config.limits.cpu}"
   EOF
   ]
 

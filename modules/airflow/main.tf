@@ -82,12 +82,12 @@ resource "helm_release" "airflow" {
         ]
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["cleanup"].requests.cpu
-            memory = var.airflow_component_resources["cleanup"].requests.ram
+            cpu = var.airflow_resources_config["cleanup"].requests.cpu
+            memory = var.airflow_resources_config["cleanup"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["cleanup"].limits.cpu
-            memory = var.airflow_component_resources["cleanup"].limits.ram
+            cpu = var.airflow_resources_config["cleanup"].limits.cpu
+            memory = var.airflow_resources_config["cleanup"].limits.ram
           }
         }
       }
@@ -105,12 +105,12 @@ resource "helm_release" "airflow" {
         ]
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["scheduler"].requests.cpu
-            memory = var.airflow_component_resources["scheduler"].requests.ram
+            cpu = var.airflow_resources_config["scheduler"].requests.cpu
+            memory = var.airflow_resources_config["scheduler"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["scheduler"].limits.cpu
-            memory = var.airflow_component_resources["scheduler"].limits.ram
+            cpu = var.airflow_resources_config["scheduler"].limits.cpu
+            memory = var.airflow_resources_config["scheduler"].limits.ram
           }
         }
       }
@@ -124,12 +124,12 @@ resource "helm_release" "airflow" {
         }
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["apiServer"].requests.cpu
-            memory = var.airflow_component_resources["apiServer"].requests.ram
+            cpu = var.airflow_resources_config["apiServer"].requests.cpu
+            memory = var.airflow_resources_config["apiServer"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["apiServer"].limits.cpu
-            memory = var.airflow_component_resources["apiServer"].limits.ram
+            cpu = var.airflow_resources_config["apiServer"].limits.cpu
+            memory = var.airflow_resources_config["apiServer"].limits.ram
           }
         }
       }
@@ -143,12 +143,12 @@ resource "helm_release" "airflow" {
         }
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["flower"].requests.cpu
-            memory = var.airflow_component_resources["flower"].requests.ram
+            cpu = var.airflow_resources_config["flower"].requests.cpu
+            memory = var.airflow_resources_config["flower"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["flower"].limits.cpu
-            memory = var.airflow_component_resources["flower"].limits.ram
+            cpu = var.airflow_resources_config["flower"].limits.cpu
+            memory = var.airflow_resources_config["flower"].limits.ram
           }
         }
       }
@@ -156,12 +156,12 @@ resource "helm_release" "airflow" {
       workers = {
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["workers"].requests.cpu
-            memory = var.airflow_component_resources["workers"].requests.ram
+            cpu = var.airflow_resources_config["workers"].requests.cpu
+            memory = var.airflow_resources_config["workers"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["workers"].limits.cpu
-            memory = var.airflow_component_resources["workers"].limits.ram
+            cpu = var.airflow_resources_config["workers"].limits.cpu
+            memory = var.airflow_resources_config["workers"].limits.ram
           }
         }
       }
@@ -169,12 +169,12 @@ resource "helm_release" "airflow" {
       triggerer = {
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["triggerer"].requests.cpu
-            memory = var.airflow_component_resources["triggerer"].requests.ram
+            cpu = var.airflow_resources_config["triggerer"].requests.cpu
+            memory = var.airflow_resources_config["triggerer"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["triggerer"].limits.cpu
-            memory = var.airflow_component_resources["triggerer"].limits.ram
+            cpu = var.airflow_resources_config["triggerer"].limits.cpu
+            memory = var.airflow_resources_config["triggerer"].limits.ram
           }
         }
       }
@@ -182,12 +182,12 @@ resource "helm_release" "airflow" {
       dagProcessor = {
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["dagProcessor"].requests.cpu
-            memory = var.airflow_component_resources["dagProcessor"].requests.ram
+            cpu = var.airflow_resources_config["dagProcessor"].requests.cpu
+            memory = var.airflow_resources_config["dagProcessor"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["dagProcessor"].limits.cpu
-            memory = var.airflow_component_resources["dagProcessor"].limits.ram
+            cpu = var.airflow_resources_config["dagProcessor"].limits.cpu
+            memory = var.airflow_resources_config["dagProcessor"].limits.ram
           }
         }
       }
@@ -196,12 +196,12 @@ resource "helm_release" "airflow" {
         gitSync = {
           resources = {
             requests = {
-              cpu = var.airflow_component_resources["gitSync"].requests.cpu
-              memory = var.airflow_component_resources["gitSync"].requests.ram
+              cpu = var.airflow_resources_config["gitSync"].requests.cpu
+              memory = var.airflow_resources_config["gitSync"].requests.ram
             }
             limits = {
-              cpu = var.airflow_component_resources["gitSync"].limits.cpu
-              memory = var.airflow_component_resources["gitSync"].limits.ram
+              cpu = var.airflow_resources_config["gitSync"].limits.cpu
+              memory = var.airflow_resources_config["gitSync"].limits.ram
             }
           }
         }
@@ -210,12 +210,12 @@ resource "helm_release" "airflow" {
       redis = {
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["redis"].requests.cpu
-            memory = var.airflow_component_resources["redis"].requests.ram
+            cpu = var.airflow_resources_config["redis"].requests.cpu
+            memory = var.airflow_resources_config["redis"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["redis"].limits.cpu
-            memory = var.airflow_component_resources["redis"].limits.ram
+            cpu = var.airflow_resources_config["redis"].limits.cpu
+            memory = var.airflow_resources_config["redis"].limits.ram
           }
         }
       }
@@ -223,12 +223,12 @@ resource "helm_release" "airflow" {
       statsd = {
         resources = {
           requests = {
-            cpu = var.airflow_component_resources["statsd"].requests.cpu
-            memory = var.airflow_component_resources["statsd"].requests.ram
+            cpu = var.airflow_resources_config["statsd"].requests.cpu
+            memory = var.airflow_resources_config["statsd"].requests.ram
           }
           limits = {
-            cpu = var.airflow_component_resources["statsd"].limits.cpu
-            memory = var.airflow_component_resources["statsd"].limits.ram
+            cpu = var.airflow_resources_config["statsd"].limits.cpu
+            memory = var.airflow_resources_config["statsd"].limits.ram
           }
         }
       }

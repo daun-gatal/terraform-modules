@@ -90,25 +90,6 @@ variable "coordinator_as_worker" {
   default     = false
 }
 
-# Resource allocation variables
-variable "cpu_allocation" {
-  description = "CPU allocation for Trino namespace (requests and limits)"
-  type        = string
-  default     = "2"
-}
-
-variable "memory_allocation" {
-  description = "Memory allocation for Trino namespace (requests and limits)"
-  type        = string
-  default     = "2Gi"
-}
-
-variable "enable_resource_allocation" {
-  description = "Enable resource allocation for namespace"
-  type = bool
-  default = false
-}
-
 # Catalog Variables
 variable "enabled_catalogs" {
   description = "List of catalogs to enable"
@@ -126,4 +107,42 @@ variable "additional_config_properties" {
   description = "List of additional configuration properties for Trino server (e.g., ['retry-policy=TASK', 'query.max-execution-time=1h'])"
   type        = list(string)
   default     = []
+}
+
+variable "trino_resources_config" {
+  description = "Resource configuration for Trino pods in YAML format"
+    type = map(object({
+    requests = optional(object({
+      cpu = optional(string)
+      ram = optional(string)
+    }))
+    limits = optional(object({
+      cpu = optional(string)
+      ram = optional(string)
+    }))
+  }))
+
+  default = {
+    coordinator = {
+      requests = {
+        cpu = "200m"
+        ram = "512Mi"
+      }
+      limits = {
+        cpu = "2000m"
+        ram = "8192Mi"
+      }
+    }
+
+    worker = {
+      requests = {
+        cpu = "200m"
+        ram = "512Mi"
+      }
+      limits = {
+        cpu = "2000m"
+        ram = "8192Mi"
+      }
+    }
+  }
 }
