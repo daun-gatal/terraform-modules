@@ -130,7 +130,7 @@ variable "trino_resources_config" {
       }
       limits = {
         cpu = "2000m"
-        ram = "8192Mi"
+        ram = "6144Mi"
       }
     }
 
@@ -141,7 +141,7 @@ variable "trino_resources_config" {
       }
       limits = {
         cpu = "2000m"
-        ram = "8192Mi"
+        ram = "6144Mi"
       }
     }
   }
