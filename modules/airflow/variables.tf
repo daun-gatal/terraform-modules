@@ -345,7 +345,7 @@ variable "airflow_component_resources" {
       }
       limits = {
         cpu = "1000m"
-        ram = "4096Mi"
+        ram = "8192Mi"
       }
     }
 
