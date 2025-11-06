@@ -289,8 +289,8 @@ variable "airflow_resources_config" {
         ram = "256Mi"
       }
       limits = {
-        cpu = "500m"
-        ram = "1024Mi"
+        cpu = "2000m"
+        ram = "4096Mi"
       }
     }
 
