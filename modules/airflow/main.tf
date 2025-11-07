@@ -80,16 +80,16 @@ resource "helm_release" "airflow" {
             namespace = var.namespace
           })
         ]
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["cleanup"].requests.cpu
-        #     memory = var.airflow_resources_config["cleanup"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["cleanup"].limits.cpu
-        #     memory = var.airflow_resources_config["cleanup"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["cleanup"].requests.cpu
+            memory = var.airflow_resources_config["cleanup"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["cleanup"].limits.cpu
+            memory = var.airflow_resources_config["cleanup"].limits.ram
+          }
+        }
       }
 
       scheduler = {
@@ -103,16 +103,16 @@ resource "helm_release" "airflow" {
             aws_endpoint_url     = var.aws_endpoint_url
           })
         ]
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["scheduler"].requests.cpu
-        #     memory = var.airflow_resources_config["scheduler"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["scheduler"].limits.cpu
-        #     memory = var.airflow_resources_config["scheduler"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["scheduler"].requests.cpu
+            memory = var.airflow_resources_config["scheduler"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["scheduler"].limits.cpu
+            memory = var.airflow_resources_config["scheduler"].limits.ram
+          }
+        }
       }
 
       apiServer = {
@@ -122,16 +122,16 @@ resource "helm_release" "airflow" {
             "tailscale.com/hostname" = "${local.prefix}-web-int"
           }
         }
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["apiServer"].requests.cpu
-        #     memory = var.airflow_resources_config["apiServer"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["apiServer"].limits.cpu
-        #     memory = var.airflow_resources_config["apiServer"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["apiServer"].requests.cpu
+            memory = var.airflow_resources_config["apiServer"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["apiServer"].limits.cpu
+            memory = var.airflow_resources_config["apiServer"].limits.ram
+          }
+        }
       }
 
       flower = {
@@ -141,96 +141,96 @@ resource "helm_release" "airflow" {
             "tailscale.com/hostname" = "${local.prefix}-flower-int"
           }
         }
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["flower"].requests.cpu
-        #     memory = var.airflow_resources_config["flower"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["flower"].limits.cpu
-        #     memory = var.airflow_resources_config["flower"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["flower"].requests.cpu
+            memory = var.airflow_resources_config["flower"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["flower"].limits.cpu
+            memory = var.airflow_resources_config["flower"].limits.ram
+          }
+        }
       }
 
       workers = {
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["workers"].requests.cpu
-        #     memory = var.airflow_resources_config["workers"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["workers"].limits.cpu
-        #     memory = var.airflow_resources_config["workers"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["workers"].requests.cpu
+            memory = var.airflow_resources_config["workers"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["workers"].limits.cpu
+            memory = var.airflow_resources_config["workers"].limits.ram
+          }
+        }
       }
 
       triggerer = {
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["triggerer"].requests.cpu
-        #     memory = var.airflow_resources_config["triggerer"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["triggerer"].limits.cpu
-        #     memory = var.airflow_resources_config["triggerer"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["triggerer"].requests.cpu
+            memory = var.airflow_resources_config["triggerer"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["triggerer"].limits.cpu
+            memory = var.airflow_resources_config["triggerer"].limits.ram
+          }
+        }
       }
 
       dagProcessor = {
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["dagProcessor"].requests.cpu
-        #     memory = var.airflow_resources_config["dagProcessor"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["dagProcessor"].limits.cpu
-        #     memory = var.airflow_resources_config["dagProcessor"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["dagProcessor"].requests.cpu
+            memory = var.airflow_resources_config["dagProcessor"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["dagProcessor"].limits.cpu
+            memory = var.airflow_resources_config["dagProcessor"].limits.ram
+          }
+        }
       }
 
       dags = {
         gitSync = {
-          # resources = {
-          #   requests = {
-          #     cpu = var.airflow_resources_config["gitSync"].requests.cpu
-          #     memory = var.airflow_resources_config["gitSync"].requests.ram
-          #   }
-          #   limits = {
-          #     cpu = var.airflow_resources_config["gitSync"].limits.cpu
-          #     memory = var.airflow_resources_config["gitSync"].limits.ram
-          #   }
-          # }
+          resources = {
+            requests = {
+              cpu = var.airflow_resources_config["gitSync"].requests.cpu
+              memory = var.airflow_resources_config["gitSync"].requests.ram
+            }
+            limits = {
+              cpu = var.airflow_resources_config["gitSync"].limits.cpu
+              memory = var.airflow_resources_config["gitSync"].limits.ram
+            }
+          }
         }
       }
 
       redis = {
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["redis"].requests.cpu
-        #     memory = var.airflow_resources_config["redis"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["redis"].limits.cpu
-        #     memory = var.airflow_resources_config["redis"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["redis"].requests.cpu
+            memory = var.airflow_resources_config["redis"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["redis"].limits.cpu
+            memory = var.airflow_resources_config["redis"].limits.ram
+          }
+        }
       }
 
       statsd = {
-        # resources = {
-        #   requests = {
-        #     cpu = var.airflow_resources_config["statsd"].requests.cpu
-        #     memory = var.airflow_resources_config["statsd"].requests.ram
-        #   }
-        #   limits = {
-        #     cpu = var.airflow_resources_config["statsd"].limits.cpu
-        #     memory = var.airflow_resources_config["statsd"].limits.ram
-        #   }
-        # }
+        resources = {
+          requests = {
+            cpu = var.airflow_resources_config["statsd"].requests.cpu
+            memory = var.airflow_resources_config["statsd"].requests.ram
+          }
+          limits = {
+            cpu = var.airflow_resources_config["statsd"].limits.cpu
+            memory = var.airflow_resources_config["statsd"].limits.ram
+          }
+        }
       }
     })
   ]

@@ -312,7 +312,7 @@ variable "airflow_resources_config" {
       }
       limits = {
         cpu = "500m"
-        ram = "1024Mi"
+        ram = "3072Mi"
       }
     }
 
@@ -334,7 +334,7 @@ variable "airflow_resources_config" {
       }
       limits = {
         cpu = "500m"
-        ram = "1024Mi"
+        ram = "2048Mi"
       }
     }
 
@@ -378,7 +378,7 @@ variable "airflow_resources_config" {
       }
       limits = {
         cpu = "500m"
-        ram = "1024Mi"
+        ram = "2048Mi"
       }
     }
 
