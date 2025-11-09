@@ -58,10 +58,4 @@ locals {
       }
     ]
   ])
-
-  access_control_json = templatefile("${path.module}/templates/acl.tpl", {
-    catalogs = local.catalogs_rules
-    schemas  = local.schemas_rules
-    tables   = local.tables_rules
-  })
 }

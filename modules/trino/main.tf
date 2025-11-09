@@ -86,7 +86,18 @@ resource "helm_release" "trino" {
       },
       {
       name  = "accessControl"
-      value = local.access_control_json
+      value = {
+          type          = "configmap"
+          refreshPeriod = "60s"
+          configFile    = "rules.json"
+          rules = {
+            "rules.json" = jsonencode({
+              catalogs = local.catalogs_rules
+              schemas  = local.schemas_rules
+              tables   = local.tables_rules
+            })
+          }
+        }
       }
     ],
     [
