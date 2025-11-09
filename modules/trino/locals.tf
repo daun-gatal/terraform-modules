@@ -22,40 +22,43 @@ locals {
 
   catalogs_rules = flatten([
     for entry in var.trino_access_control_entries : [
-      for c in entry.catalogs : {
-        user    = entry.user
-        role    = entry.role
-        group   = entry.group
-        catalog = lookup(c, "catalog", ".*")
-        allow   = c.allow
-      }
+      for cat in entry.catalogs : merge(
+        {},
+        entry.user  != null ? { user  = entry.user } : {},
+        entry.role  != null ? { role  = entry.role } : {},
+        entry.group != null ? { group = entry.group } : {},
+        cat.allow   != null ? { allow = cat.allow } : {},
+        cat.catalog != null ? { catalog = cat.catalog } : {}
+      )
     ]
   ])
 
   schemas_rules = flatten([
     for entry in var.trino_access_control_entries : [
-      for s in entry.schemas : {
-        user    = entry.user
-        role    = entry.role
-        group   = entry.group
-        catalog = lookup(s, "catalog", ".*")
-        schema  = lookup(s, "schema", ".*")
-        owner   = s.owner
-      }
+      for sch in entry.schemas : merge(
+        {},
+        entry.user  != null ? { user  = entry.user } : {},
+        entry.role  != null ? { role  = entry.role } : {},
+        entry.group != null ? { group = entry.group } : {},
+        sch.owner   != null ? { owner = sch.owner } : {},
+        sch.catalog != null ? { catalog = sch.catalog } : {},
+        sch.schema  != null ? { schema  = sch.schema } : {}
+      )
     ]
   ])
 
   tables_rules = flatten([
     for entry in var.trino_access_control_entries : [
-      for t in entry.tables : {
-        user               = entry.user
-        role               = entry.role
-        group              = entry.group
-        catalog            = lookup(t, "catalog", ".*")
-        schema             = lookup(t, "schema", ".*")
-        table              = lookup(t, "table", ".*")
-        privileges         = t.privileges
-      }
+      for tbl in entry.tables : merge(
+        {},
+        entry.user  != null ? { user  = entry.user } : {},
+        entry.role  != null ? { role  = entry.role } : {},
+        entry.group != null ? { group = entry.group } : {},
+        tbl.catalog    != null ? { catalog    = tbl.catalog } : {},
+        tbl.schema     != null ? { schema     = tbl.schema } : {},
+        tbl.table      != null ? { table      = tbl.table } : {},
+        tbl.privileges != null ? { privileges = tbl.privileges } : {}
+      )
     ]
   ])
 }
