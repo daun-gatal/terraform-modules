@@ -150,41 +150,39 @@ variable "trino_resources_config" {
 variable "trino_access_control_entries" {
   description = "List of access control entries for Trino with full fields for catalogs, schemas, and tables"
   type = list(object({
-    user     = optional(string, ".*")
-    role     = optional(string, ".*")
-    group    = optional(string, ".*")
+    user     = optional(string)
+    role     = optional(string)
+    group    = optional(string)
 
     catalogs = optional(list(object({
-      catalog = optional(string, ".*")
+      catalog = optional(string)
       allow   = string  # required
     })), [])
 
     schemas = optional(list(object({
-      catalog = optional(string, ".*")
-      schema  = optional(string, ".*")
+      catalog = optional(string)
+      schema  = optional(string)
       owner   = bool   # required
     })), [])
 
     tables = optional(list(object({
-      catalog = optional(string, ".*")
-      schema  = optional(string, ".*")
-      table   = optional(string, ".*")
+      catalog = optional(string)
+      schema  = optional(string)
+      table   = optional(string)
       privileges = list(string)  # required
     })), [])
   }))
   default = [
     {
       user  = "admin"
-      role  = ".*"
-      group = ".*"
       catalogs = [
-        { catalog = ".*", allow = "all" }
+        { allow = "all" }
       ]
       schemas = [
-        { catalog = ".*", schema = ".*", owner = true }
+        { owner = true }
       ]
       tables = [
-        { catalog = ".*", schema = ".*", table = ".*", privileges = ["SELECT"] }
+        { privileges = ["SELECT"] }
       ]
     }
   ]
