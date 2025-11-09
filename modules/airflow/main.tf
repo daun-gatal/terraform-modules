@@ -70,6 +70,12 @@ resource "helm_release" "airflow" {
     yamlencode({
       env = local.remote_logging_env
 
+      images = {
+        airflow = {
+          pullPolicy = "Always"
+        }
+      }
+
       cleanup = {
         enabled  = var.airflow_kubernetes_cleanup_enabled
         schedule = "*/15 * * * *"
