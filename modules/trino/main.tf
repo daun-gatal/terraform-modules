@@ -86,7 +86,7 @@ resource "helm_release" "trino" {
       },
       {
       name  = "accessControl"
-      value = {
+      value = yamlencode({
           type          = "configmap"
           refreshPeriod = "60s"
           configFile    = "rules.json"
@@ -97,7 +97,7 @@ resource "helm_release" "trino" {
               tables   = local.tables_rules
             })
           }
-        }
+        })
       }
     ],
     [
