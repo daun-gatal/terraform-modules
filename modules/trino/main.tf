@@ -1,26 +1,3 @@
-locals {
-  prefix = var.prefix
-  release_name = "${local.prefix}-release"
-
-  coordinator_resources_requests_cpu = var.trino_resources_config["coordinator"].requests.cpu
-  coordinator_resources_requests_ram = var.trino_resources_config["coordinator"].requests.ram
-  coordinator_resources_limits_cpu   = var.trino_resources_config["coordinator"].limits.cpu
-  coordinator_resources_limits_ram   = var.trino_resources_config["coordinator"].limits.ram
-
-  worker_resources_requests_cpu = var.trino_resources_config["worker"].requests.cpu
-  worker_resources_requests_ram = var.trino_resources_config["worker"].requests.ram
-  worker_resources_limits_cpu   = var.trino_resources_config["worker"].limits.cpu
-  worker_resources_limits_ram   = var.trino_resources_config["worker"].limits.ram
-
-  rendered_catalogs = {
-    for catalog in var.enabled_catalogs :
-    "catalogs.${catalog.name}" =>
-    templatefile("${path.module}/templates/catalog.tpl", {
-      params = catalog.params
-    })
-  }
-}
-
 resource "helm_release" "trino" {
   name       = local.release_name
   namespace  = var.namespace
