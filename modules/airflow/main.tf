@@ -408,10 +408,6 @@ resource "helm_release" "airflow" {
       value = false
     },
     {
-      name = "webserver.defaultUser.password"
-      value = var.airflow_default_password
-    },
-    {
       name = "workers.replicas"
       value = var.airflow_worker_replicas
     },
@@ -467,4 +463,11 @@ resource "helm_release" "airflow" {
     }
   ] : []
   )
+
+  set_sensitive = [
+    {
+      name = "webserver.defaultUser.password"
+      value = var.airflow_default_password
+    },
+  ]
 }
