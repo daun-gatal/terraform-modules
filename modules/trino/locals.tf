@@ -59,16 +59,9 @@ locals {
     ]
   ])
 
-  access_control_json = jsonencode({
-    type          = "configmap"
-    refreshPeriod = "60s"
-    configFile    = "rules.json"
-    rules = {
-      "rules.json" = jsonencode({
-        catalogs = local.catalogs_rules
-        schemas  = local.schemas_rules
-        tables   = local.tables_rules
-      })
-    }
+  access_control_json = templatefile("${path.module}/templates/access_control.tpl", {
+    catalogs = local.catalogs_rules
+    schemas  = local.schemas_rules
+    tables   = local.tables_rules
   })
 }
