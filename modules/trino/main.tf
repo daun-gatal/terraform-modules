@@ -1,3 +1,26 @@
+locals {
+  prefix = var.prefix
+  release_name = "${local.prefix}-release"
+
+  coordinator_resources_requests_cpu = var.trino_resources_config["coordinator"].requests.cpu
+  coordinator_resources_requests_ram = var.trino_resources_config["coordinator"].requests.ram
+  coordinator_resources_limits_cpu   = var.trino_resources_config["coordinator"].limits.cpu
+  coordinator_resources_limits_ram   = var.trino_resources_config["coordinator"].limits.ram
+
+  worker_resources_requests_cpu = var.trino_resources_config["worker"].requests.cpu
+  worker_resources_requests_ram = var.trino_resources_config["worker"].requests.ram
+  worker_resources_limits_cpu   = var.trino_resources_config["worker"].limits.cpu
+  worker_resources_limits_ram   = var.trino_resources_config["worker"].limits.ram
+
+  rendered_catalogs = {
+    for catalog in var.enabled_catalogs :
+    "catalogs.${catalog.name}" =>
+    templatefile("${path.module}/templates/catalog.tpl", {
+      params = catalog.params
+    })
+  }
+}
+
 resource "helm_release" "trino" {
   name       = local.release_name
   namespace  = var.namespace
@@ -33,9 +56,30 @@ resource "helm_release" "trino" {
     rules:
       rules.json: |
         {
-          "catalogs": ${jsonencode(local.catalogs_rules)},
-          "schemas": ${jsonencode(local.schemas_rules)},
-          "tables": ${jsonencode(local.tables_rules)}
+          "catalogs": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "allow": "read-only"
+            }
+          ],
+          "schemas": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "schema": ".*",
+              "owner": false
+            }
+          ],
+          "tables": [
+            {
+              "user": ".*",
+              "catalog": ".*",
+              "schema": ".*",
+              "table": ".*",
+              "privileges": ["SELECT"]
+            }
+          ]
         }
   EOF
   ]
