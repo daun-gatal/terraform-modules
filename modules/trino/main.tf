@@ -33,9 +33,9 @@ resource "helm_release" "trino" {
     rules:
       rules.json: |
         {
-          "catalogs": ${local.catalogs_rules},
-          "schemas": ${local.schemas_rules},
-          "tables": ${local.tables_rules}
+          "catalogs": ${jsonencode(local.catalogs_rules)},
+          "schemas": ${jsonencode(local.schemas_rules)},
+          "tables": ${jsonencode(local.tables_rules)}
         }
   EOF
   ]
