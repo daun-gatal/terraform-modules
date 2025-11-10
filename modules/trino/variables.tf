@@ -175,11 +175,6 @@ variable "trino_acl_config" {
         user    = "admin"
         catalog = ".*"
         allow   = "all"
-      },
-      {
-        user    = "viewer"
-        catalog = "datalake"
-        allow   = "read-only"
       }
     ]
 
@@ -188,12 +183,6 @@ variable "trino_acl_config" {
         user    = "admin"
         catalog = ".*"
         schema  = ".*"
-        owner   = false
-      },
-      {
-        user    = "viewer"
-        catalog = "datalake"
-        schema  = "(tmdb|refined)"
         owner   = false
       }
     ]
@@ -204,13 +193,6 @@ variable "trino_acl_config" {
         catalog    = ".*"
         schema     = ".*"
         table      = ".*"
-        privileges = ["SELECT"]
-      },
-      {
-        user       = "viewer"
-        catalog    = "datalake"
-        schema     = "(tmdb|refined)"
-        table      = "movies"
         privileges = ["SELECT"]
       }
     ]

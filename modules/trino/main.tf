@@ -20,11 +20,17 @@ locals {
     })
   }
 
-  trino_acl_config_rendered = jsonencode({
-    catalogs = var.trino_acl_config.catalogs
-    schemas  = var.trino_acl_config.schemas
-    tables   = var.trino_acl_config.tables
-  })
+  existing_acl = try(
+    jsondecode(lookup(data.kubernetes_config_map.trino_acl.data, "rules.json", "{}")),
+    {}
+  )
+  merged_acl = jsonencode(merge(
+    local.existing_acl,
+    {
+      for key, value in var.trino_acl_config :
+      key => concat(lookup(local.existing_acl, key, []), value)
+    }
+  ))
 }
 
 resource "helm_release" "trino" {
@@ -60,7 +66,7 @@ resource "helm_release" "trino" {
     refreshPeriod: 60s
     configFile: "rules.json"
     rules:
-      rules.json: ${jsonencode(local.trino_acl_config_rendered)}
+      rules.json: ${jsonencode(local.merged_acl)}
   EOF
   ]
 
@@ -127,4 +133,12 @@ resource "helm_release" "trino" {
       }
     ]
   )
+}
+
+data "kubernetes_config_map" "trino_acl" {
+  metadata {
+    name      = "${local.release_name}-access-control-volume-coordinator"
+    namespace = var.namespace
+  }
+  depends_on = [ helm_release.trino ]
 }
