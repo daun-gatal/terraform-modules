@@ -19,6 +19,12 @@ locals {
       params = catalog.params
     })
   }
+
+  trino_acl_config_rendered = jsonencode({
+    catalogs = var.trino_acl_config.catalogs
+    schemas  = var.trino_acl_config.schemas
+    tables   = var.trino_acl_config.tables
+  })
 }
 
 resource "helm_release" "trino" {
@@ -55,7 +61,7 @@ resource "helm_release" "trino" {
     configFile: "rules.json"
     rules:
       rules.json: | 
-        ${jsonencode(var.trino_acl_config)}
+        ${jsonencode(local.trino_acl_config_rendered)}
   EOF
   ]
 
