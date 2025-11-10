@@ -198,3 +198,9 @@ variable "trino_acl_config" {
     ]
   }
 }
+
+variable "trino_acl_path" {
+  description = "Path to the existing ACL JSON file"
+  type        = string
+  default     = "./rules.json"
+}

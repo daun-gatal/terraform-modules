@@ -20,17 +20,11 @@ locals {
     })
   }
 
-  existing_acl = try(
-    jsondecode(lookup(data.kubernetes_config_map.trino_acl.data, "rules.json", "{}")),
-    {}
-  )
-  trino_acl_config_rendered = jsonencode(merge(
-    local.existing_acl,
-    {
-      for key, value in var.trino_acl_config :
-      key => concat(lookup(local.existing_acl, key, []), value)
-    }
-  ))
+  trino_acl_config_rendered = jsonencode({
+    catalogs = var.trino_acl_config.catalogs
+    schemas  = var.trino_acl_config.schemas
+    tables   = var.trino_acl_config.tables
+  })
 }
 
 resource "helm_release" "trino" {
