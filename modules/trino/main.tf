@@ -24,7 +24,7 @@ locals {
     jsondecode(lookup(data.kubernetes_config_map.trino_acl.data, "rules.json", "{}")),
     {}
   )
-  merged_acl = jsonencode(merge(
+  trino_acl_config_rendered = jsonencode(merge(
     local.existing_acl,
     {
       for key, value in var.trino_acl_config :
@@ -66,7 +66,7 @@ resource "helm_release" "trino" {
     refreshPeriod: 60s
     configFile: "rules.json"
     rules:
-      rules.json: ${jsonencode(local.merged_acl)}
+      rules.json: ${jsonencode(local.trino_acl_config_rendered)}
   EOF
   ]
 
@@ -140,5 +140,6 @@ data "kubernetes_config_map" "trino_acl" {
     name      = "${local.release_name}-access-control-volume-coordinator"
     namespace = var.namespace
   }
+
   depends_on = [ helm_release.trino ]
 }
