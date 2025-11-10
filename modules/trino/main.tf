@@ -54,33 +54,7 @@ resource "helm_release" "trino" {
     refreshPeriod: 60s
     configFile: "rules.json"
     rules:
-      rules.json: |
-        {
-          "catalogs": [
-            {
-              "user": ".*",
-              "catalog": ".*",
-              "allow": "read-only"
-            }
-          ],
-          "schemas": [
-            {
-              "user": ".*",
-              "catalog": ".*",
-              "schema": ".*",
-              "owner": false
-            }
-          ],
-          "tables": [
-            {
-              "user": ".*",
-              "catalog": ".*",
-              "schema": ".*",
-              "table": ".*",
-              "privileges": ["SELECT"]
-            }
-          ]
-        }
+      rules.json: ${jsonencode(var.trino_acl_config)}
   EOF
   ]
 

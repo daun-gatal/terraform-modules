@@ -146,3 +146,54 @@ variable "trino_resources_config" {
     }
   }
 }
+
+variable "trino_acl_config" {
+  description = "Flexible ACL configuration for Trino"
+  type        = map(any)
+  default = {
+    catalogs = [
+      {
+        user    = "admin"
+        catalog = ".*"
+        allow   = "all"
+      },
+      {
+        user    = "viewer"
+        catalog = "datalake"
+        allow   = "read-only"
+      }
+    ]
+
+    schemas = [
+      {
+        user    = "admin"
+        catalog = ".*"
+        schema  = ".*"
+        owner   = false
+      },
+      {
+        user    = "viewer"
+        catalog = "datalake"
+        schema  = ".*"
+        owner   = false
+      }
+    ]
+
+    tables = [
+      {
+        user       = "admin"
+        catalog    = ".*"
+        schema     = ".*"
+        table      = ".*"
+        privileges = ["SELECT"]
+      },
+      {
+        user       = "viewer"
+        catalog    = "datalake"
+        schema     = ".*"
+        table      = ".*"
+        privileges = ["SELECT"]
+      }
+    ]
+  }
+}
