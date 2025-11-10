@@ -149,7 +149,26 @@ variable "trino_resources_config" {
 
 variable "trino_acl_config" {
   description = "Flexible ACL configuration for Trino"
-  type        = map(any)
+  type = object({
+    catalogs = list(object({
+      user    = string
+      catalog = string
+      allow   = string
+    }))
+    schemas = list(object({
+      user    = string
+      catalog = string
+      schema  = string
+      owner   = bool
+    }))
+    tables = list(object({
+      user       = string
+      catalog    = string
+      schema     = string
+      table      = string
+      privileges = list(string)
+    }))
+  })
   default = {
     catalogs = [
       {
