@@ -60,8 +60,7 @@ resource "helm_release" "trino" {
     refreshPeriod: 60s
     configFile: "rules.json"
     rules:
-      rules.json: | 
-        ${jsonencode(local.trino_acl_config_rendered)}
+      rules.json: ${jsonencode(local.trino_acl_config_rendered)}
   EOF
   ]
 
