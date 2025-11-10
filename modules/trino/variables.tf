@@ -174,7 +174,7 @@ variable "trino_acl_config" {
       {
         user    = "viewer"
         catalog = "datalake"
-        schema  = ".*"
+        schema  = "(tmdb|refined)"
         owner   = false
       }
     ]
@@ -190,8 +190,8 @@ variable "trino_acl_config" {
       {
         user       = "viewer"
         catalog    = "datalake"
-        schema     = ".*"
-        table      = ".*"
+        schema     = "(tmdb|refined)"
+        table      = "movies"
         privileges = ["SELECT"]
       }
     ]
