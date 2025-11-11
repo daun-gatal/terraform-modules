@@ -19,12 +19,6 @@ locals {
       params = catalog.params
     })
   }
-
-  trino_acl_config_rendered = jsonencode({
-    catalogs = var.trino_acl_config.catalogs
-    schemas  = var.trino_acl_config.schemas
-    tables   = var.trino_acl_config.tables
-  })
 }
 
 resource "helm_release" "trino" {
@@ -60,7 +54,33 @@ resource "helm_release" "trino" {
     refreshPeriod: 60s
     configFile: "rules.json"
     rules:
-      rules.json: ${jsonencode(local.trino_acl_config_rendered)}
+      rules.json: |
+        {
+          "catalogs": [
+            {
+              "user": "admin",
+              "catalog": ".*",
+              "allow": "read-only"
+            }
+          ],
+          "schemas": [
+            {
+              "user": "admin",
+              "catalog": ".*",
+              "schema": ".*",
+              "owner": false
+            }
+          ],
+          "tables": [
+            {
+              "user": "admin",
+              "catalog": ".*",
+              "schema": ".*",
+              "table": ".*",
+              "privileges": ["SELECT"]
+            }
+          ]
+        }
   EOF
   ]
 
