@@ -35,7 +35,7 @@ variable "tailscale_expose" {
 variable "server_storage_secret_name" {
   type        = string
   default     = "openbao-storage-config"
-  description = "Name of the Kubernetes secret containing OpenBao server config (config.hcl)"
+  description = "Name of the Kubernetes secret containing OpenBao server config (config.hcl). Check on this https://openbao.org/docs/platform/k8s/helm/run/#protecting-sensitive-openbao-configurations for more details."
 }
 
 # -------------------------------
