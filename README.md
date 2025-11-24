@@ -121,391 +121,251 @@ This repository contains Terraform modules for deploying a complete data platfor
 
 ### 🌬️ **Airflow Module** (`modules/airflow/`)
 
-Apache Airflow is a workflow orchestration platform that allows you to programmatically author, schedule, and monitor data pipelines.
+Deploy Apache Airflow for workflow orchestration with git-sync DAG management, multiple executor support (CeleryExecutor/KubernetesExecutor), and KEDA auto-scaling.
 
-**Purpose:** Deploy Apache Airflow on Kubernetes with git-sync for DAG management, remote logging capabilities, and Tailscale networking integration. Supports both CeleryExecutor and KubernetesExecutor with KEDA auto-scaling.
+**Key Features:**
+- Git-sync for automatic DAG synchronization (SSH or PAT authentication)
+- Flexible executor options: CeleryExecutor with Flower UI or KubernetesExecutor
+- KEDA auto-scaling for dynamic worker scaling
+- Remote logging to S3/MinIO
+- Standalone DAG processor for improved performance
+- PostgreSQL metadata backend (external)
+- Tailscale networking integration
 
-**Key Parameters:**
-- `namespace` (default: "airflow") - Kubernetes namespace for deployment
-- `prefix` (default: "airflow") - Resource naming prefix
-- `chart_name` (default: "airflow") - Helm chart name for Airflow
-- `chart_version` (default: "1.18.0") - Helm chart version
-- `airflow_metadata_db_conn` (required, sensitive) - PostgreSQL connection string (format: postgresql://user:pass@host:port/db)
-- `airflow_fernet_key` (required, sensitive) - Encryption key for secrets (32 characters)
-- `airflow_api_secret_key` (required, sensitive) - API authentication secret
-- `airflow_default_password` (required, sensitive) - Default password for Airflow login
-- `git_auth_method` (default: "ssh") - Git authentication method: 'ssh' or 'pat' (Personal Access Token)
-- `git_ssh_key_path` (optional, sensitive) - Path to SSH key for DAG repository access (required for SSH auth)
-- `git_username` (optional, sensitive) - Git username for PAT authentication (required for PAT auth)
-- `git_password` (optional, sensitive) - Git password/Personal Access Token (required for PAT auth)
-- `airflow_dags_git_sync_enabled` (default: true) - Enable git-sync for DAGs
-- `airflow_dags_git_sync_repo` (required) - Git repository URL for DAGs
-- `airflow_dags_git_sync_branch` (default: "main") - Git branch for DAG sync
-- `airflow_dags_git_sync_rev` (default: "HEAD") - Git revision for DAG sync
-- `airflow_dags_git_sync_ref` (default: "") - Git reference for DAG sync
-- `airflow_dags_git_sync_subpath` (default: "") - SubPath inside DAGs repo for sync
-- `airflow_executor` (default: "KubernetesExecutor") - Executor type (CeleryExecutor or KubernetesExecutor)
-- `airflow_scheduler_replicas` (default: 1) - Number of scheduler replicas
-- `airflow_log_retention_days` (default: 7) - Log retention in days for Airflow components
-- `airflow_enable_triggerer` (default: false) - Enable triggerer component
-- `airflow_triggerer_replicas` (default: 1) - Number of triggerer replicas
-- `airflow_dag_processor_enabled` (default: true) - Enable standalone DAG processor
-- `airflow_dag_processor_replicas` (default: 1) - Number of DAG processor replicas
-- `airflow_worker_replicas` (default: 1) - Number of Airflow worker replicas (CeleryExecutor only)
-- `airflow_worker_keda_enabled` (default: false) - Enable KEDA auto-scaling for workers
-- `airflow_worker_keda_min_replicas` (default: 0) - Minimum worker replicas with KEDA
-- `airflow_worker_keda_max_replicas` (default: 3) - Maximum worker replicas with KEDA
-- `airflow_flower_enabled` (default: false) - Enable Flower UI for CeleryExecutor monitoring
-- `airflow_flower_credential` (default: "admin:admin", sensitive) - Flower UI credentials (format: username:password)
-- `airflow_kubernetes_cleanup_enabled` (default: false) - Enable Kubernetes pod cleanup job
-- `enable_remote_logging` (default: false) - Enable S3/MinIO logging
-- `airflow_logs_bucket_name` - S3/MinIO bucket for logs
-- `enable_log_groomer_sidecar` (default: false) - Enable Airflow log groomer sidecar
-- `enable_statsd` (default: false) - Enable statsd metrics collection
-- `aws_access_key_id` (sensitive) - S3/MinIO access credentials
-- `aws_secret_access_key` (sensitive) - S3/MinIO secret credentials
-- `aws_region` (default: "us-east-1") - AWS region for S3 connection
-- `aws_endpoint_url` - Custom S3 endpoint for MinIO
-- `tailscale_expose` (default: false) - Expose via Tailscale network
-- `image_repository` (default: "apache/airflow") - Container image repository
-- `image_tag` (default: "3.0.6") - Container image tag
-- `cpu_allocation` (default: "1") - CPU allocation for namespace
-- `memory_allocation` (default: "1Gi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `airflow_metadata_db_conn` - PostgreSQL connection string (required, sensitive)
+- `airflow_fernet_key`, `airflow_api_secret_key`, `airflow_default_password` - Security credentials (required, sensitive)
+- `airflow_dags_git_sync_repo` - Git repository for DAGs (required)
+- `git_auth_method` - Authentication: 'ssh' or 'pat' (default: "ssh")
+- `airflow_executor` - Executor type (default: "KubernetesExecutor")
+- `airflow_worker_keda_enabled` - Enable auto-scaling (default: false)
+- Chart version: 1.18.0, Image: apache/airflow:3.0.6
 
 ---
 
 ### 📊 **Metabase Module** (`modules/metabase/`)
 
-Metabase is an open-source business intelligence and data visualization platform that connects to databases to create dashboards and insights.
+Deploy Metabase for business intelligence and data visualization with PostgreSQL metadata storage.
 
-**Purpose:** Deploy Metabase as a web-based analytics tool with PostgreSQL backend and Tailscale networking.
+**Key Features:**
+- Open-source BI platform for creating dashboards and insights
+- PostgreSQL backend for metadata persistence
+- Tailscale networking with optional Funnel for public access
+- Simple single-replica deployment
 
-**Key Parameters:**
-- `namespace` (default: "metabase") - Kubernetes namespace for deployment
-- `prefix` (default: "metabase") - Resource naming prefix
-- `metabase_db_host` (required) - PostgreSQL database host
-- `metabase_db_user` (default: "postgres", sensitive) - Database username
-- `metabase_db_password` (required, sensitive) - Database password
-- `metabase_db_name` (default: "postgres") - Database name
-- `metabase_db_port` (default: 5432) - Database port
-- `image` (default: "metabase/metabase") - Container image
-- `image_tag` (default: "v0.56.x") - Container image tag
-- `tailscale_expose` (default: false) - Expose via Tailscale network
-- `tailscale_funnel` (default: false) - Enable internet access via Tailscale Funnel
-- `cpu_allocation` (default: "500m") - CPU allocation for namespace
-- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `metabase_db_host`, `metabase_db_password` - PostgreSQL connection (required, password sensitive)
+- `metabase_db_user`, `metabase_db_name`, `metabase_db_port` - Database details
+- `tailscale_expose`, `tailscale_funnel` - Network exposure options
+- Image: metabase/metabase:v0.56.x
 
 ---
 
 ### 🪣 **MinIO Module** (`modules/minio/`)
 
-MinIO is a high-performance, S3-compatible object storage system ideal for storing unstructured data like logs, artifacts, and data lake files. This module uses the MinIO Operator for enterprise-grade deployment with high availability, auto-scaling, and advanced monitoring capabilities.
+Deploy MinIO object storage using the MinIO Operator for S3-compatible storage with enterprise features.
 
-**Purpose:** Deploy MinIO object storage cluster using the MinIO Operator with automatic bucket creation, lifecycle management, and optional Tailscale networking integration.
+**Key Features:**
+- S3-compatible object storage for data lakes, backups, and artifacts
+- MinIO Operator for production-grade deployment
+- Automatic bucket creation with lifecycle policies
+- Support for single-node or distributed mode (4+ servers)
+- Declarative bucket lifecycle management (expiration, versioning)
+- Tailscale networking for API and Console
 
-**Key Parameters:**
-- `namespace` (default: "minio") - Kubernetes namespace for deployment
-- `tenant_name` (default: "dev-minio") - MinIO tenant name
-- `minio_root_user` (default: "minio", sensitive) - Root username
-- `minio_root_password` (default: "minio123", sensitive) - Root password (minimum 8 characters)
-- `storage_size` (default: "5Gi") - Storage size per volume
-- `storage_class_name` (default: "standard") - Storage class for persistent volumes
-- `buckets` - List of buckets with lifecycle configuration:
-  - `name` - Bucket name
-  - `region` (default: "us-east-1") - AWS region for bucket
-  - `expire_days` (optional) - Auto-delete objects after N days
-  - `noncurrent_expire_days` (optional) - Auto-delete old versions after N days
-- `enable_tls` (default: false) - Enable TLS certificates
-- `enable_distributed` (default: false) - Enable distributed mode (4+ servers)
-- `tailscale_expose` (default: false) - Expose MinIO API via Tailscale network
-- `image_repository` (default: "quay.io/minio/minio") - Image repository for MinIO
-- `image_tag` (default: "RELEASE.2025-04-08T15-41-24Z") - Image version for MinIO
-- `cpu_allocation` (default: "1") - CPU allocation for namespace
-- `memory_allocation` (default: "1Gi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `tenant_name` - MinIO tenant identifier (default: "dev-minio")
+- `minio_root_user`, `minio_root_password` - Admin credentials (sensitive, min 8 chars)
+- `storage_size` - Storage per volume (default: "5Gi")
+- `buckets` - List of buckets with lifecycle policies: `name`, `expire_days`, `noncurrent_expire_days`
+- `enable_distributed` - Enable 4-server distributed mode (default: false)
+- Image: quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z
 
-**Outputs:**
-- `minio_service_dns` - Internal DNS name for API access
-- `minio_service_port` - API service port (9000)
-- `minio_root_user` - Root username (sensitive)
-- `minio_root_password` - Root password (sensitive)
+**Outputs:** `minio_service_dns`, `minio_service_port`, credentials
 
 ---
 
 ### 🌌 **Gravitino Module** (`modules/gravitino/`)
 
-Apache Gravitino is a high-performance, geo-distributed, and federated metadata lake management system. It provides a unified interface to manage metadata across different storage systems and compute engines, particularly optimized for Apache Iceberg table formats.
+Deploy Apache Gravitino for federated metadata lake management with unified interface across storage systems and compute engines.
 
-**Purpose:** Deploy Gravitino metadata lake management system with Iceberg REST service integration, S3/MinIO storage support, and PostgreSQL backend for managing distributed data lake metadata and catalogs.
+**Key Features:**
+- Federated metadata management for data lakes
+- Iceberg REST service integration for Iceberg table formats
+- S3/MinIO storage backend support
+- PostgreSQL metadata persistence (entity store & Iceberg catalog)
+- Unified catalog interface for multiple storage systems
+- Supports memory or relational catalog backends
 
-**Key Parameters:**
-- `namespace` (default: "gravitino") - Kubernetes namespace for deployment
-- `prefix` (default: "gravitino") - Resource naming prefix
-- `chart_name` (default: "gravitino") - Helm chart name for Gravitino
-- `chart_version` (default: "1.0.3") - Helm chart version
-- `entity_store` (default: "relational") - The entity store type to use
-- `entity_jdbc_url` (default: "jdbc:h2") - JDBC URL for the entity store
-- `entity_jdbc_driver` (default: "org.h2.Driver") - JDBC driver class name
-- `entity_jdbc_user` (default: "gravitino") - JDBC username
-- `entity_jdbc_password` (default: "gravitino", sensitive) - JDBC password
-- `entity_storage_path` (default: "/root/gravitino/data/jdbc") - Storage path for entity data
-- `aux_service_names` (default: "iceberg-rest") - Auxiliary service names (comma-separated)
-- `iceberg_rest_catalog_backend` (default: "memory") - Catalog backend for Iceberg REST service
-- `iceberg_rest_warehouse` (required) - S3/MinIO warehouse directory (format: s3://bucket/path)
-- `iceberg_rest_jdbc_user` (default: "gravitino") - JDBC user for Iceberg REST service
-- `iceberg_rest_jdbc_password` (required, sensitive) - JDBC password for Iceberg REST service
-- `iceberg_rest_jdbc_driver` (default: "org.postgresql.Driver") - JDBC driver for Iceberg REST
-- `iceberg_rest_jdbc_initialize` (default: true) - Initialize Iceberg meta tables in RDBMS
-- `iceberg_rest_io_impl` (default: "org.apache.iceberg.aws.s3.S3FileIO") - File I/O implementation class
-- `iceberg_rest_credential_providers` (default: "s3-token") - Credential providers (comma-separated)
-- `iceberg_rest_s3_access_key_id` (required, sensitive) - S3/MinIO access key ID
-- `iceberg_rest_s3_secret_access_key` (required, sensitive) - S3/MinIO secret access key
-- `iceberg_rest_s3_endpoint` (required) - S3/MinIO endpoint URL
-- `iceberg_rest_s3_region` (default: "us-east-1") - S3/MinIO region
-- `iceberg_rest_s3_path_style_access` (default: true) - Use path-style access for S3
-- `replicas` (default: 1) - Number of Gravitino replicas
-- `persistence_enabled` (default: false) - Enable persistent storage
-- `persistence_size` (default: "10Gi") - Persistent volume size
-- `persistence_storage_class` (default: "standard") - Storage class for persistent volume
-- `gravitino_home` (default: "/root/gravitino") - Gravitino home directory
-- `gravitino_mem` (default: "-Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m") - JVM memory settings
-- `tailscale_expose` (default: false) - Expose via Tailscale network
-- `cpu_allocation` (default: "1") - CPU allocation for namespace
-- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: true) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `iceberg_rest_warehouse` - S3 warehouse location: s3://bucket/path (required)
+- `iceberg_rest_jdbc_password` - PostgreSQL password for Iceberg catalog (required, sensitive)
+- `iceberg_rest_s3_access_key_id`, `iceberg_rest_s3_secret_access_key` - S3 credentials (required, sensitive)
+- `iceberg_rest_s3_endpoint` - S3/MinIO endpoint URL (required)
+- `entity_store` - Entity store type (default: "relational")
+- `iceberg_rest_catalog_backend` - Catalog backend: memory/jdbc (default: "memory")
+- Chart version: 1.0.3, JVM memory: 1Gi heap
 
-**Outputs:**
-- `gravitino_service_dns` - Internal DNS name for API access
-- `gravitino_service_port` - Main service port (8090)
-- `gravitino_iceberg_rest_port` - Iceberg REST service port (9001)
+**Outputs:** `gravitino_service_dns`, `gravitino_service_port` (8090), `gravitino_iceberg_rest_port` (9001)
 
 ---
 
 ### 🌊 **Kafka Module** (`modules/kafka/`)
 
-Apache Kafka is a distributed event streaming platform capable of handling trillions of events a day, designed for high-throughput, fault-tolerant, and real-time data streaming. This module uses the Strimzi operator to deploy Kafka with KRaft mode (no Zookeeper dependency) and includes declarative topic management through Entity Operators.
-
-**Purpose:** Deploy Apache Kafka cluster using Strimzi operator with KRaft mode for event streaming, message queuing, and real-time data pipelines. Includes Entity Operators for declarative topic/user management and optional Kafka UI for web-based cluster administration.
+Deploy Apache Kafka using Strimzi operator with KRaft mode (no Zookeeper) for distributed event streaming and real-time data pipelines.
 
 **Prerequisites:** Strimzi Kafka Operator must be installed (see Prerequisites section above).
 
-**Key Parameters:**
-- `namespace` (default: "kafka") - Kubernetes namespace for deployment (must match Strimzi installation namespace)
-- `prefix` (default: "kafka") - Resource naming prefix
-- `kafka_version` (default: "4.0.0") - Kafka version to deploy
-- `kafka_metadata_version` (default: "4.0-IV3") - Kafka metadata version (KRaft)
-- `kafka_replicas` (default: 3) - Number of Kafka broker replicas
-- `kafka_roles` (default: ["controller", "broker"]) - Roles for Kafka nodes
-- `storage_type` (default: "ephemeral") - Storage type (persistent-claim, ephemeral)
-- `storage_size` (default: "10Gi") - Persistent volume size for Kafka logs
-- `storage_class` (default: "standard") - Storage class for persistent volumes
-- `storage_delete_claim` (default: false) - Whether to delete PVCs when scaling down
-- `kafka_port` (default: 9092) - Kafka broker port
-- `kafka_tls_enabled` (default: false) - Enable TLS for Kafka listeners
-- `kafka_listener_type` (default: "internal") - Listener type (internal, nodeport, loadbalancer)
-- `offsets_topic_replication_factor` (default: 3) - Replication factor for offsets topic
-- `transaction_state_log_replication_factor` (default: 3) - Replication factor for transaction state log
-- `transaction_state_log_min_isr` (default: 2) - Minimum in-sync replicas for transaction state log
-- `default_replication_factor` (default: 3) - Default replication factor for new topics
-- `min_insync_replicas` (default: 2) - Minimum number of in-sync replicas
-- `pod_run_as_user` (default: 1001) - User ID to run Kafka pods as
-- `pod_run_as_group` (default: 1001) - Group ID to run Kafka pods as
-- `pod_fs_group` (default: 1001) - File system group ID for Kafka pods
-- `enable_kafka_ui` (default: false) - Enable Kafka UI for web-based management
-- `kafka_ui_image` (default: "ghcr.io/kafbat/kafka-ui") - Kafka UI container image
-- `kafka_ui_image_tag` (default: "e3ba25f") - Kafka UI image tag
-- `kafka_ui_port` (default: 8080) - Kafka UI service port
-- `kafka_ui_auth_enabled` (default: false) - Enable basic authentication for UI
-- `kafka_ui_auth_username` (default: "admin", sensitive) - UI authentication username
-- `kafka_ui_auth_password` (required if auth enabled, sensitive) - UI authentication password (min 8 chars)
-- `kafka_ui_tailscale_expose` (default: false) - Expose UI via Tailscale network
-- `tailscale_expose` (default: false) - Expose Kafka brokers via Tailscale network
-- `cpu_allocation` (default: "1500m") - CPU allocation for namespace
-- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Key Features:**
+- Kafka 4.0 with KRaft mode (no Zookeeper dependency)
+- Strimzi operator for declarative cluster management
+- Optional Kafka UI (Kafbat) for web-based administration
+- Configurable storage: ephemeral or persistent
+- Combined controller+broker nodes for simplified deployment
+- High availability with configurable replication factors
+- Basic authentication for Kafka UI
 
-**Outputs:**
-- `kafka_int_bootstrap_servers` - Kafka bootstrap servers connection string for client applications (internal cluster DNS)
+**Essential Configuration:**
+- `kafka_replicas` - Number of broker/controller nodes (default: 3)
+- `kafka_roles` - Node roles: ["controller", "broker"] (default: both)
+- `storage_type` - Storage: ephemeral or persistent-claim (default: "ephemeral")
+- `storage_size` - Log storage per broker (default: "10Gi")
+- `enable_kafka_ui` - Enable web UI (default: false)
+- `kafka_ui_auth_enabled`, `kafka_ui_auth_password` - UI authentication (optional, sensitive)
+- Kafka version: 4.0.0, Metadata version: 4.0-IV3
+- Image: ghcr.io/kafbat/kafka-ui for UI
+
+**Outputs:** `kafka_int_bootstrap_servers` - Bootstrap servers for client connections
 
 ---
 
 ### 🌊 **Nessie Module** (`modules/nessie/`)
 
-Nessie is a Git-like data catalog that provides versioning, branching, and tagging capabilities for data lake tables, particularly with Apache Iceberg.
+Deploy Nessie catalog service for Git-like version control of data lake tables with branching and tagging capabilities.
 
-**Purpose:** Deploy Nessie catalog service with PostgreSQL backend and S3/MinIO integration for managing data lake metadata with version control.
+**Key Features:**
+- Git-like version control for Iceberg tables (branches, tags, commits)
+- JDBC2 version store with PostgreSQL backend
+- S3/MinIO integration for warehouse storage
+- Iceberg catalog with path-style S3 access
+- Built-in catalog service for warehouse management
 
-**Key Parameters:**
-- `namespace` (default: "nessie") - Kubernetes namespace for deployment
-- `prefix` (default: "nessie") - Resource naming prefix
-- `chart_version` (default: "0.104.10") - Helm chart version
-- `nessie_jdbc_url` (required) - PostgreSQL host for metadata storage
-- `nessie_jdbc_port` (required) - PostgreSQL port
-- `nessie_jdbc_username` (required, sensitive) - Database username
-- `nessie_jdbc_password` (required, sensitive) - Database password
-- `nessie_database_name` (required) - Database name
-- `nessie_default_warehouse` (default: "warehouse") - Default warehouse path
-- `nessie_s3_bucket` (required) - S3/MinIO bucket for data storage
-- `nessie_s3_endpoint` (required) - S3/MinIO endpoint URL
-- `nessie_s3_region` (default: "us-east-1") - S3/MinIO region
-- `nessie_s3_access_key_name` (required, sensitive) - S3/MinIO access key
-- `nessie_s3_access_key_secret` (required, sensitive) - S3/MinIO secret key
-- `tailscale_expose` (default: false) - Expose via Tailscale network
-- `chart_name` (default: "nessie") - Helm chart name for Nessie
-- `cpu_allocation` (default: "500m") - CPU allocation for namespace
-- `memory_allocation` (default: "512Mi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `nessie_jdbc_url`, `nessie_jdbc_port`, `nessie_database_name` - PostgreSQL connection (all required)
+- `nessie_jdbc_username`, `nessie_jdbc_password` - Database credentials (required, sensitive)
+- `nessie_s3_bucket`, `nessie_s3_endpoint` - S3 storage (both required)
+- `nessie_s3_access_key_name`, `nessie_s3_access_key_secret` - S3 credentials (required, sensitive)
+- `nessie_default_warehouse` - Warehouse path (default: "warehouse")
+- Chart version: 0.104.10
 
-**Outputs:**
-- `nessie_service_dns` - Internal DNS name for API access
-- `nessie_service_port` - Service port (19120)
-- `nessie_default_warehouse` - Full S3 warehouse location
-- `nessie_s3_endpoint` - S3 endpoint URL
-- `nessie_s3_region` - S3 region
+**Outputs:** `nessie_service_dns`, `nessie_service_port` (19120), `nessie_default_warehouse` (full S3 path)
+
+---
+
+### 🔐 **OpenBao Module** (`modules/openbao/`)
+
+Deploy OpenBao for secrets management and secure credential storage (open-source Vault alternative).
+
+**Key Features:**
+- HashiCorp Vault fork for secrets management
+- Support for standalone or HA (High Availability) mode with Raft
+- Configurable storage backend (file, raft, cloud storage)
+- Web UI for secrets management
+- Tailscale networking integration
+- Persistent storage for data and audit logs
+
+**Essential Configuration:**
+- `server_storage_secret_name` - Kubernetes secret with storage config (required)
+- `openbao_namespace` - Deployment namespace (default: "openbao")
+- `server_standalone_enabled` - Enable standalone mode (default: true)
+- `server_ha_enabled` - Enable HA mode with Raft (default: false)
+- `server_ha_replicas` - Number of HA replicas (default: 3)
+- `ui_enabled` - Enable web UI (default: true)
+- `tailscale_expose` - Expose via Tailscale (default: false)
+
+**Note:** Requires pre-created Kubernetes secret with storage configuration (HCL format).
 
 ---
 
 ### 🐘 **PostgreSQL Module** (`modules/postgres/`)
 
-PostgreSQL is a powerful, open-source relational database system managed by the CloudNativePG operator for production-ready deployment with high availability, automated backups, and self-healing capabilities.
+Deploy PostgreSQL cluster using CloudNativePG operator with high availability, automated failover, and production-grade features.
 
-**Purpose:** Deploy PostgreSQL cluster using CloudNativePG operator with support for multiple instances, automated failover, read/write separation, and production-grade features for use by other services like Airflow, Metabase, and Nessie. Supports creating multiple databases within the same cluster.
+**Key Features:**
+- CloudNativePG operator for production-ready deployment
+- Support for single-node or HA (3+ replicas) clusters
+- Automated failover and self-healing
+- Read/write separation with dedicated endpoints
+- Multiple database creation within same cluster
+- Custom PostgreSQL configuration parameters
+- Persistent storage with configurable size and storage class
 
-**Key Parameters:**
-- `namespace` (default: "database") - Kubernetes namespace for deployment
-- `prefix` (default: "postgres") - Resource naming prefix
-- `db_user` (default: "dev", sensitive) - Database username
-- `db_password` (required, sensitive) - Database password
-- `db_name` (default: "postgres") - Primary database name
-- `db_port` (default: 5432) - Database port
-- `extra_db_names` (default: []) - List of additional databases to create in the cluster
-- `postgres_replicas` (default: 1) - Number of PostgreSQL instances (1 for single, 3+ for HA)
-- `storage_size` (default: "10Gi") - Persistent volume size per instance
-- `storage_class_name` (default: "standard") - Storage class for persistent volumes
-- `postgresql_parameters` (default: {"max_connections": "300"}) - Custom PostgreSQL configuration parameters
-- `image_repository` (default: "ghcr.io/cloudnative-pg/postgresql") - Image repository for PostgreSQL
-- `image_tag` (default: "15.4") - Image version for PostgreSQL
-- `cpu_allocation` (default: "1") - CPU allocation for namespace
-- `memory_allocation` (default: "1536Mi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `db_password` - Database password (required, sensitive)
+- `db_user`, `db_name` - Database credentials and name (defaults: "dev", "postgres")
+- `extra_db_names` - Additional databases to create (default: [])
+- `postgres_replicas` - Number of instances: 1 for single-node, 3+ for HA (default: 1)
+- `storage_size` - Storage per instance (default: "10Gi")
+- `postgresql_parameters` - Custom config (default: {"max_connections": "300"})
+- Image: ghcr.io/cloudnative-pg/postgresql:15.4
 
-**Outputs:**
-- `postgres_rw_dns` - Read-write DNS endpoint (primary instance)
-- `postgres_ro_dns` - Read-only DNS endpoint (replicas only)
-- `postgres_database_name` - The name of the default database
-- `postgres_username` (sensitive) - The username for the Postgres database
-- `postgres_password` (sensitive) - The password for the Postgres database
-- `postgres_port` - The port of the Postgres service
+**Outputs:** `postgres_rw_dns` (read-write), `postgres_ro_dns` (read-only), credentials, `postgres_port` (5432)
 
 ---
 
 ### 🔍 **Trino Module** (`modules/trino/`)
 
-Trino (formerly PrestoSQL) is a distributed SQL query engine designed to query data from multiple sources including data lakes, databases, and object stores.
+Deploy Trino distributed SQL query engine for federated querying across multiple data sources (data lakes, databases, object stores).
 
-**Purpose:** Deploy Trino cluster with flexible catalog configuration system supporting multiple data sources including PostgreSQL, Iceberg, Delta Lake, and many other connectors for federated data querying. Includes automatic internal communication security and support for custom configuration properties.
+**Key Features:**
+- Distributed SQL engine for federated queries
+- Flexible catalog system: Iceberg, PostgreSQL, Delta Lake, Memory, and many more
+- Support for single-node or multi-worker deployments
+- Coordinator can act as worker for development
+- Internal communication security with shared secret
+- Built-in access control with configurable rules
+- Persistent storage for spooling
 
-**Key Parameters:**
-- `namespace` (default: "trino") - Kubernetes namespace for deployment
-- `prefix` (default: "trino") - Resource naming prefix
-- `chart_name` (default: "trino") - Helm chart name for Trino
-- `chart_version` (default: "1.40.0") - Helm chart version
-- `image_repository` (default: "trinodb/trino") - Container image repository
-- `image_tag` (default: "1.40.0") - Container image tag
-- `worker_count` (default: 1) - Number of worker replicas
-- `coordinator_as_worker` (default: false) - Whether coordinator acts as worker (useful for single-node deployments)
-- `trino_shared_secret` (required, sensitive) - Shared secret for internal Trino communication
-- `trino_coordinator_jvm_max_heap_size` (default: "6G") - Coordinator JVM heap size
-- `trino_coordinator_query_max_memory` (default: "1GB") - Coordinator query memory limit per node
-- `trino_worker_jvm_max_heap_size` (default: "6G") - Worker JVM heap size
-- `trino_worker_query_max_memory` (default: "1GB") - Worker query memory limit per node
-- `enabled_catalogs` (default: []) - List of catalog configurations:
-  - `name` - Catalog name in Trino (e.g., "iceberg", "postgres", "delta")
-  - `params` - Map of catalog configuration parameters as key-value pairs (connector-specific)
-- `additional_config_properties` (default: []) - List of additional Trino server configuration properties (e.g., ["retry-policy=TASK", "query.max-execution-time=1h"])
-- `tailscale_expose` (default: false) - Expose Trino UI and API via Tailscale network
-- `cpu_allocation` (default: "2") - CPU allocation for namespace
-- `memory_allocation` (default: "2Gi") - Memory allocation for namespace
-- `enable_resource_allocation` (default: false) - Enable resource allocation for namespace
+**Essential Configuration:**
+- `trino_shared_secret` - Internal communication secret (required, sensitive)
+- `enabled_catalogs` - List of catalogs with `name` and `params` (connector-specific key-value pairs)
+- `worker_count` - Number of workers (default: 1)
+- `coordinator_as_worker` - Single-node mode (default: false)
+- `trino_coordinator_jvm_max_heap_size`, `trino_worker_jvm_max_heap_size` - JVM heap (default: "6G")
+- `additional_config_properties` - Extra Trino config (e.g., retry policy, query timeouts)
+- Chart version: 1.40.0, Image: trinodb/trino:1.40.0
 
-**Catalog Configuration Examples:**
+**Catalog Examples:**
+- **Memory:** `{"connector.name" = "memory"}`
+- **Iceberg+Nessie:** `{"connector.name" = "iceberg", "iceberg.catalog.type" = "rest", "iceberg.rest-catalog.uri" = "http://nessie:19120/api/v1"}`
+- **PostgreSQL:** `{"connector.name" = "postgresql", "connection-url" = "jdbc:postgresql://host:5432/db", ...}`
 
-1. **Memory Catalog** (for testing):
-   ```hcl
-   enabled_catalogs = [
-     {
-       name = "memory"
-       params = {
-         "connector.name" = "memory"
-       }
-     }
-   ]
-   ```
-
-2. **Iceberg with Nessie Catalog**:
-   ```hcl
-   enabled_catalogs = [
-     {
-       name = "iceberg"
-       params = {
-         "connector.name" = "iceberg"
-         "iceberg.catalog.type" = "rest"
-         "iceberg.rest-catalog.uri" = "http://nessie-release.nessie.svc.cluster.local:19120/api/v1"
-         "iceberg.rest-catalog.warehouse" = "warehouse"
-       }
-     }
-   ]
-   ```
-
-3. **PostgreSQL Catalog**:
-   ```hcl
-   enabled_catalogs = [
-     {
-       name = "postgresql"
-       params = {
-         "connector.name" = "postgresql"
-         "connection-url" = "jdbc:postgresql://postgres-cluster-rw.database.svc.cluster.local:5432/postgres"
-         "connection-user" = "postgres"
-         "connection-password" = "your-password"
-       }
-     }
-   ]
-   ```
-
-4. **Multiple Catalogs**:
-   ```hcl
-   enabled_catalogs = [
-     {
-       name = "iceberg"
-       params = { ... }
-     },
-     {
-       name = "postgres"
-       params = { ... }
-     }
-   ]
-   ```
-
-**Outputs:**
-- `trino_service_dns` - Internal DNS name for query access
-- `trino_service_port` - Service port (8080)
+**Outputs:** `trino_service_dns`, `trino_service_port` (8080)
 
 ---
 
 ## **Architecture Overview**
 
-This terraform module collection creates a modern data platform with the following typical data flow:
+This terraform module collection creates a modern data platform on Kubernetes with the following components:
 
-1. **Data Ingestion**: Use Airflow to orchestrate data pipelines
-2. **Real-time Streaming**: Stream real-time data through Apache Kafka for event-driven architectures
-3. **Data Storage**: Store raw data in MinIO (S3-compatible object storage)
-4. **Metadata Lake Management**: Use Gravitino to provide federated metadata management across different storage systems and compute engines
-5. **Data Cataloging**: Use Nessie to version and manage table metadata with Git-like capabilities
-6. **Data Processing**: Process batch and streaming data using Apache Spark
-7. **Data Querying**: Query data using Trino with Iceberg tables through Gravitino's unified metadata interface
-8. **Data Visualization**: Create dashboards and insights with Metabase
-9. **Metadata Storage**: PostgreSQL serves as the backend database for metadata and application state
+### **Core Services**
+1. **PostgreSQL** - Metadata storage for all services (Airflow, Metabase, Nessie, Gravitino)
+2. **MinIO** - S3-compatible object storage for data lakes, logs, and artifacts
+3. **OpenBao** - Secrets management and credential storage
 
-All services can be integrated with Tailscale for secure networking and optionally exposed to the internet via Tailscale Funnel.
+### **Data Platform Stack**
+4. **Airflow** - Workflow orchestration and pipeline scheduling
+5. **Kafka** - Real-time event streaming and message queuing
+6. **Nessie** - Git-like catalog with version control for Iceberg tables
+7. **Gravitino** - Federated metadata management with Iceberg REST service
+8. **Trino** - Distributed SQL query engine for federated data access
+9. **Metabase** - Business intelligence and data visualization
+
+### **Typical Data Flow**
+```
+Ingestion (Airflow) → Streaming (Kafka) → Storage (MinIO/S3) 
+    ↓
+Cataloging (Nessie/Gravitino) → Querying (Trino) → Visualization (Metabase)
+```
+
+**Security & Networking:** All services support Tailscale for secure networking and can be optionally exposed via Tailscale Funnel. Secrets are managed by OpenBao, and metadata is stored in PostgreSQL.
