@@ -1,7 +1,14 @@
-# -------------------------------
-# Check if OpenBao storage secret exists
-# -------------------------------
+data "kubernetes_secret" "openbao_unseal_keys" {
+  metadata {
+    name      = var.server_unseal_secret_name
+    namespace = var.openbao_namespace
+  }
+}
+
 data "kubernetes_secret" "openbao_storage_config" {
+
+  depends_on = [ data.kubernetes_secret.openbao_unseal_keys ]
+
   metadata {
     name      = var.server_storage_secret_name
     namespace = var.openbao_namespace
@@ -52,6 +59,13 @@ resource "helm_release" "openbao" {
               secretName  = data.kubernetes_secret.openbao_storage_config.metadata[0].name
               defaultMode = 420
             }
+          },
+          {
+            name = "unseal-keys"
+            secret = {
+              secretName  = data.kubernetes_secret.openbao_unseal_keys.metadata[0].name
+              defaultMode = 420
+            }
           }
         ]
 
@@ -59,6 +73,11 @@ resource "helm_release" "openbao" {
           {
             mountPath = "/openbao/userconfig/openbao-storage-config"
             name      = "userconfig-openbao-storage-config"
+            readOnly  = true
+          },
+          {
+            mountPath = "/openbao/secrets"
+            name      = "unseal-keys"
             readOnly  = true
           }
         ]

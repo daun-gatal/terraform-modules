@@ -38,6 +38,12 @@ variable "server_storage_secret_name" {
   description = "Name of the Kubernetes secret containing OpenBao server config (config.hcl). Check on this https://openbao.org/docs/platform/k8s/helm/run/#protecting-sensitive-openbao-configurations for more details."
 }
 
+variable "server_unseal_secret_name" {
+  type        = string
+  default     = "openbao-unseal-key"
+  description = "Name of the Kubernetes secret containing OpenBao unseal keys."
+}
+
 # -------------------------------
 # OpenBao Server Variables
 # -------------------------------
