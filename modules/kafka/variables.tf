@@ -175,31 +175,6 @@ variable "kafka_ui_tailscale_expose" {
   default     = false
 }
 
-variable "kafka_ui_auth_enabled" {
-  description = "Enable basic authentication for Kafka UI"
-  type        = bool
-  default     = false
-}
-
-variable "kafka_ui_auth_username" {
-  description = "Username for Kafka UI basic authentication"
-  type        = string
-  default     = "admin"
-  sensitive   = true
-}
-
-variable "kafka_ui_auth_password" {
-  description = "Password for Kafka UI basic authentication"
-  type        = string
-  default     = ""
-  sensitive   = true
-
-  validation {
-    condition     = var.kafka_ui_auth_password == "" || length(var.kafka_ui_auth_password) >= 8
-    error_message = "Password must be at least 8 characters long when provided."
-  }
-}
-
 variable "kafka_ui_secret_name" {
   description = "Name of the Kubernetes Secret containing Kafka UI environment variables"
   type        = string
