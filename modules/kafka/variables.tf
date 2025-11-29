@@ -253,3 +253,39 @@ variable "kafka_ui_resources_config" {
     }
   }
 }
+
+variable "kafka_schema_registry_resources_config" {
+  description = "Resource configuration for Kafka Schema Registry pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "1Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
+}
+
+variable "enable_schema_registry" {
+  description = "Enable Kafka Schema Registry"
+  type        = bool
+  default     = false
+}
+
+variable "schema_registry_version" {
+  description = "Kafka Schema Registry version"
+  type        = string
+  default     = "8.0.0"
+}

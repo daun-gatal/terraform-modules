@@ -94,6 +94,107 @@ resource "kubernetes_manifest" "kafka_cluster" {
   }
 }
 
+resource "kubernetes_deployment" "schema_registry" {
+  count = var.enable_schema_registry ? 1 : 0
+  depends_on = [ kubernetes_manifest.kafka_cluster ]
+
+  metadata {
+    name      = "${var.prefix}-schema-registry"
+    namespace = var.namespace
+    labels = {
+      app = "${var.prefix}-schema-registry"
+    }
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "${var.prefix}-schema-registry"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "${var.prefix}-schema-registry"
+        }
+      }
+
+      spec {
+        container {
+          name  = "schema-registry"
+          image = "confluentinc/cp-schema-registry:${var.schema_registry_version}"
+
+          port {
+            container_port = 8081
+          }
+
+          resources {
+            limits = {
+              cpu = var.kafka_schema_registry_resources_config.limits.cpu
+              memory = var.kafka_schema_registry_resources_config.limits.memory
+            }
+            requests = {
+              cpu = var.kafka_schema_registry_resources_config.requests.cpu
+              memory = var.kafka_schema_registry_resources_config.requests.memory
+            }
+          }
+
+          env {
+            name  = "SCHEMA_REGISTRY_LISTENERS"
+            value = "http://0.0.0.0:8081"
+          }
+
+          env {
+            name  = "SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS"
+            value = "PLAINTEXT://${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
+          }
+
+          env {
+            name  = "SCHEMA_REGISTRY_HOST_NAME"
+            value = "${var.prefix}-schema-registry"
+          }
+
+          env {
+            name  = "SCHEMA_REGISTRY_KAFKASTORE_TOPIC"
+            value = "_schemas"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "schema_registry" {
+  metadata {
+    name      = "${var.prefix}-schema-registry-service"
+    namespace = var.namespace
+    annotations = {
+      "tailscale.com/expose"   = "false"
+      "tailscale.com/hostname" = "${local.prefix}-schema-registry-int"
+    }
+    labels = {
+      app = "${var.prefix}-schema-registry"
+    }
+  }
+
+  spec {
+    type = "ClusterIP"
+
+    selector = {
+      app = "${var.prefix}-schema-registry"
+    }
+
+    port {
+      name        = "http"
+      port        = 8081
+      target_port = 8081
+    }
+  }
+}
+
 resource "kubernetes_deployment" "kafka_ui" {
   count = var.enable_kafka_ui ? 1 : 0
 
