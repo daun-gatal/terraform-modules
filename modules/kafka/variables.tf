@@ -264,3 +264,45 @@ variable "schema_registry_version" {
   type        = string
   default     = "8.0.0"
 }
+
+variable "kafka_ksqldb_resources_config" {
+  description = "Resource configuration for Kafka KSQLDB pods in YAML format"
+  type        = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    }) 
+  })
+  default     = {
+    limits = {
+      cpu    = "1"
+      memory = "4Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "256Mi"
+    }
+  }
+}
+
+variable "enable_ksqldb" {
+  description = "Enable Kafka KSQLDB"
+  type        = bool
+  default     = false
+}
+
+variable "ksqldb_storage_size" {
+  description = "Persistent volume size for KSQLDB"
+  type        = string
+  default     = "10Gi"
+}
+
+variable "ksqldb_version" {
+  description = "Kafka KSQLDB version"
+  type        = string
+  default     = "8.0.0"
+}

@@ -7,3 +7,8 @@ output "schema_registry_url" {
   description = "Schema Registry URL"
   value       = "http://${var.prefix}-schema-registry-service.${var.namespace}.svc.cluster.local:8081"
 }
+
+output "ksqldb_url" {
+  description = "KSQLDB service URL"
+  value       = "http://${var.prefix}-ksqldb-service.${var.namespace}.svc.cluster.local:8088"
+}

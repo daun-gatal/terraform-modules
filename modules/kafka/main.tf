@@ -195,6 +195,157 @@ resource "kubernetes_service" "schema_registry" {
   }
 }
 
+resource "kubernetes_stateful_set" "ksqldb" {
+  count = var.enable_ksqldb ? 1 : 0
+  depends_on = [ kubernetes_manifest.schema_registry ]
+
+  metadata {
+    name      = "${var.prefix}-ksqldb-server"
+    namespace = var.namespace
+    labels = {
+      app = "${var.prefix}-ksqldb-server"
+    }
+  }
+
+  spec {
+    service_name = "${var.prefix}-ksqldb-headless"
+    replicas     = 1
+
+    selector {
+      match_labels = {
+        app = "${var.prefix}-ksqldb-server"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "${var.prefix}-ksqldb-server"
+        }
+      }
+
+      spec {
+
+        init_container {
+          name  = "fix-permissions"
+          image = "busybox"
+
+          command = ["sh", "-c", "chmod -R 777 /etc/ksql"]
+
+          volume_mount {
+            name       = "ksqldb-data"
+            mount_path = "/etc/ksql"
+          }
+        }
+
+        container {
+          name  = "${var.prefix}-ksqldb-server"
+          image = "confluentinc/cp-ksqldb-server:${var.ksqldb_version}"
+
+          env {
+            name  = "KSQL_CONFIG_DIR"
+            value = "/etc/ksql"
+          }
+          env {
+            name  = "KSQL_BOOTSTRAP_SERVERS"
+            value = "PLAINTEXT://${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
+          }
+          env {
+            name  = "KSQL_HOST_NAME"
+            value = "${var.prefix}-ksqldb-server"
+          }
+          env {
+            name  = "KSQL_LISTENERS"
+            value = "http://0.0.0.0:8088"
+          }
+          env {
+            name  = "KSQL_CACHE_MAX_BYTES_BUFFERING"
+            value = "0"
+          }
+          env {
+            name  = "KSQL_KSQL_SCHEMA_REGISTRY_URL"
+            value = "http://${kubernetes_service.schema_registry.metadata[0].name}.${var.namespace}.svc.cluster.local:8081"
+          }
+          env {
+            name  = "KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR"
+            value = "1"
+          }
+          env {
+            name  = "KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE"
+            value = "true"
+          }
+          env {
+            name  = "KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE"
+            value = "true"
+          }
+
+          port {
+            container_port = 8088
+          }
+
+          resources {
+            limits = {
+              cpu = var.kafka_ksqldb_resources_config.limits.cpu
+              memory = var.kafka_ksqldb_resources_config.limits.memory
+            }
+            requests = {
+              cpu = var.kafka_ksqldb_resources_config.requests.cpu
+              memory = var.kafka_ksqldb_resources_config.requests.memory
+            }
+          }
+
+          volume_mount {
+            name       = "ksqldb-data"
+            mount_path = "/etc/ksql"
+          }
+        }
+      }
+    }
+
+    volume_claim_template {
+      metadata {
+        name = "ksqldb-data"
+      }
+
+      spec {
+        access_modes      = ["ReadWriteOnce"]
+        storage_class_name = var.storage_class
+
+        resources {
+          requests = {
+            storage = var.ksqldb_storage_size
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "ksqldb" {
+  metadata {
+    name      =  "${var.prefix}-ksqldb-service"
+    namespace = var.namespace
+
+    annotations = {
+      "tailscale.com/expose"   = "false"
+      "tailscale.com/hostname" = "ksqldb-int"
+    }
+  }
+
+  spec {
+    selector = {
+      app = "${var.prefix}-ksqldb-server"
+    }
+
+    port {
+      port        = 8088
+      target_port = 8088
+      protocol    = "TCP"
+    }
+  }
+}
+
+
 resource "kubernetes_deployment" "kafka_ui" {
   count = var.enable_kafka_ui ? 1 : 0
 
