@@ -197,7 +197,7 @@ resource "kubernetes_service" "schema_registry" {
 
 resource "kubernetes_stateful_set" "ksqldb" {
   count = var.enable_ksqldb ? 1 : 0
-  depends_on = [ kubernetes_manifest.schema_registry ]
+  depends_on = [ kubernetes_deployment.schema_registry ]
 
   metadata {
     name      = "${var.prefix}-ksqldb-server"
