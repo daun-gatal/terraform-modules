@@ -389,12 +389,12 @@ resource "kubernetes_deployment" "kafka_ui" {
 
           env {
             name = "KAFKA_CLUSTERS_0_SCHEMAREGISTRY"
-            value = var.enable_schema_registry ? "${kubernetes_service.schema_registry.metadata[0].name}.${var.namespace}.svc.cluster.local:8081" : ""
+            value = var.enable_schema_registry ? "http://${kubernetes_service.schema_registry.metadata[0].name}.${var.namespace}.svc.cluster.local:8081" : ""
           }
 
           env {
             name  = "KAFKA_CLUSTERS_0_KSQLDBSERVER"
-            value = var.enable_ksqldb ? "${kubernetes_service.ksqldb.metadata[0].name}.${var.namespace}.svc.cluster.local:8088" : ""
+            value = var.enable_ksqldb ? "http://${kubernetes_service.ksqldb.metadata[0].name}.${var.namespace}.svc.cluster.local:8088" : ""
           }
 
           env_from {
