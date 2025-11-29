@@ -382,6 +382,21 @@ resource "kubernetes_deployment" "kafka_ui" {
             name           = "http"
           }
 
+          env {
+            name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
+            value = "${local.prefix}-kafka-bootstrap.${var.namespace}.svc.cluster.local:${var.kafka_port}"
+          }
+
+          env {
+            name = "KAFKA_CLUSTERS_0_SCHEMAREGISTRY"
+            value = var.enable_schema_registry ? "${kubernetes_service.schema_registry.metadata[0].name}.${var.namespace}.svc.cluster.local:8081" : ""
+          }
+
+          env {
+            name  = "KAFKA_CLUSTERS_0_KSQLDBSERVER"
+            value = var.enable_ksqldb ? "${kubernetes_service.ksqldb.metadata[0].name}.${var.namespace}.svc.cluster.local:8088" : ""
+          }
+
           env_from {
             secret_ref {
               name = var.kafka_ui_secret_name
