@@ -1,6 +1,6 @@
 output "ksqldb_internal_dns" {
   description = "KSQLDB service URL"
-  value       = "${kubernetes_service.ksqldb.metadata[0].name}.${var.namespace}.svc.cluster.local:8088"
+  value       = "${kubernetes_service.ksqldb.metadata[0].name}.${var.namespace}.svc.cluster.local"
 }
 
 output "ksqldb_port" {
