@@ -10,12 +10,6 @@ variable "kafka_ui_name" {
   default     = "kafka-ui"
 }
 
-variable "kafka_cluster_name" {
-  description = "Name of the Kafka cluster to be used in Kafka UI"
-  type        = string
-  default     = "kafka-cluster"
-}
-
 variable "kafka_ui_version" {
   description = "Version of Kafka UI to deploy"
   type        = string
@@ -25,36 +19,7 @@ variable "kafka_ui_version" {
 variable "kafka_ui_secret_name" {
   description = "Name of the Kubernetes secret containing Kafka UI environment variables"
   type        = string
-  default     = "kafka-ui-secret"
-}
-
-variable "kafka_bootstrap_servers" {
-  description = "Kafka bootstrap servers list"
-  type        = list(string)
-}
-
-variable "kafka_schema_registry_url" {
-  description = "URL for the Kafka Schema Registry"
-  type        = string
-  default     = ""
-}
-
-variable "kafka_connect_url" {
-  description = "URL for the Kafka Connect"
-  type        = string
-  default     = ""
-}
-
-variable "kafka_connect_cluster_name" {
-  description = "Name of the Kafka Connect cluster to be used in Kafka UI"
-  type        = string
-  default     = "kafka-connect-cluster"
-}
-
-variable "kafka_ksqldb_url" {
-  description = "URL for the Kafka ksqlDB server"
-  type        = string
-  default     = ""
+  default     = "kafka-config-secret"
 }
 
 variable "kafka_ui_resources_config" {

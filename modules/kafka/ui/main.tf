@@ -33,44 +33,13 @@ resource "kubernetes_deployment" "kafka_ui" {
           }
 
           env {
-            name  = "KAFKA_CLUSTERS_0_NAME"
-            value = var.kafka_cluster_name
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
-            value = join(",", var.kafka_bootstrap_servers)
-          }
-
-          env {
-            name = "KAFKA_CLUSTERS_0_SCHEMAREGISTRY"
-            value = var.kafka_schema_registry_url
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME"
-            value = var.kafka_connect_cluster_name
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS"
-            value = var.kafka_connect_url
-          }
-
-          env {
-            name  = "KAFKA_CLUSTERS_0_KSQLDBSERVER"
-            value = var.kafka_ksqldb_url
-          }
-
-          env_from {
-            secret_ref {
-              name = var.kafka_ui_secret_name
-            }
-          }
-
-          env {
             name  = "MANAGEMENT_HEALTH_LDAP_ENABLED"
             value = "FALSE"
+          }
+
+          env {
+            name = "SPRING_CONFIG_ADDITIONAL-LOCATION"
+            value = "/tmp/config.yml"
           }
 
           resources {
@@ -104,6 +73,18 @@ resource "kubernetes_deployment" "kafka_ui" {
             period_seconds        = 10
             timeout_seconds       = 5
             failure_threshold     = 3
+          }
+          volume_mount {
+            name       = "kafka-ui-config"
+            mount_path = "/tmp/config.yml"
+            sub_path   = "config.yml"
+            read_only  = true
+          }
+        }
+        volume {
+          name = "kafka-ui-config"
+          secret {
+            secret_name = var.kafka_ui_secret_name
           }
         }
       }
