@@ -48,7 +48,12 @@ resource "kubernetes_deployment" "kafka_ui" {
           }
 
           env {
-            name  = "KAFKA_CLUSTERS_0_KAFKACONNECT"
+            name  = "KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME"
+            value = var.kafka_connect_cluster_name
+          }
+
+          env {
+            name  = "KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS"
             value = var.kafka_connect_url
           }
 

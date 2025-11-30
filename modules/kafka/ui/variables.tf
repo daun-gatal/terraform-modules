@@ -45,6 +45,12 @@ variable "kafka_connect_url" {
   default     = ""
 }
 
+variable "kafka_connect_cluster_name" {
+  description = "Name of the Kafka Connect cluster to be used in Kafka UI"
+  type        = string
+  default     = "kafka-connect-cluster"
+}
+
 variable "kafka_ksqldb_url" {
   description = "URL for the Kafka ksqlDB server"
   type        = string
