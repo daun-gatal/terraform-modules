@@ -74,6 +74,7 @@ resource "kubernetes_deployment" "kafka_ui" {
             timeout_seconds       = 5
             failure_threshold     = 3
           }
+
           volume_mount {
             name       = "kafka-ui-config"
             mount_path = "/tmp/config.yml"
@@ -81,6 +82,7 @@ resource "kubernetes_deployment" "kafka_ui" {
             read_only  = true
           }
         }
+        
         volume {
           name = "kafka-ui-config"
           secret {
