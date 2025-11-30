@@ -39,6 +39,12 @@ variable "kafka_schema_registry_url" {
   default     = ""
 }
 
+variable "kafka_connect_url" {
+  description = "URL for the Kafka Connect"
+  type        = string
+  default     = ""
+}
+
 variable "kafka_ksqldb_url" {
   description = "URL for the Kafka ksqlDB server"
   type        = string
