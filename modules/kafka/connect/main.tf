@@ -27,6 +27,7 @@ resource "kubernetes_deployment" "kafka_connect" {
         container {
           name  = "kafka-connect"
           image = var.kafka_connect_image
+          image_pull_policy = "Always"
 
           port {
             container_port = 8083
