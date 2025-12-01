@@ -101,10 +101,12 @@ Event streaming with Strimzi operator (KRaft mode, no Zookeeper).
 ### Data Lake & Catalogs
 
 #### 🌌 Gravitino (`modules/gravitino/`)
-Federated metadata management with Iceberg REST service.
-- **Features:** Multi-storage support, PostgreSQL backend, memory/JDBC catalog
-- **Key vars:** `iceberg_rest_warehouse`*(required)*, `iceberg_rest_s3_endpoint`*, S3 credentials*
-- **Outputs:** `gravitino_service_dns` (port 8090), `gravitino_iceberg_rest_port` (9001)
+Unified metadata lake with auto-downloading Helm charts. Two modules:
+- **`gravitino/server/`** - Full Gravitino server with metadata management
+- **`gravitino/iceberg-rest/`** - Lightweight Iceberg REST catalog server
+- **Features:** Auto chart download, built-in MySQL/PostgreSQL, external JDBC, S3/OSS/Azure storage
+- **Key vars:** `image_tag`, `mysql_enabled`, `entity_jdbc_config`, `catalog_backend`, `warehouse`, `s3_config`, `values`
+- **Outputs:** `service_dns` (server: 8090, iceberg-rest: 9001)
 
 #### 🌊 Nessie (`modules/nessie/`)
 Git-like version control for Iceberg tables.
@@ -175,107 +177,7 @@ module "postgres" {
 
 ### Practical: Multiple Modules
 
-```hcl
-# 1. PostgreSQL for metadata
-module "postgres" {
-  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
-  
-  namespace   = "database"
-  db_password = var.postgres_password
-}
-
-# 2. MinIO for storage
-module "minio" {
-  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/minio?ref=main"
-  
-  namespace           = "storage"
-  minio_root_password = var.minio_password
-  
-  buckets = [
-    { name = "airflow-logs", expire_days = 30 }
-  ]
-}
-
-# 3. Airflow connected to PostgreSQL & MinIO
-module "airflow" {
-  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/airflow?ref=main"
-  
-  namespace = "airflow"
-  
-  # Connect to PostgreSQL
-  airflow_metadata_db_conn = "postgresql://dev:${var.postgres_password}@${module.postgres.postgres_rw_dns}:5432/airflow"
-  
-  # Security keys
-  airflow_fernet_key       = var.airflow_fernet_key
-  airflow_api_secret_key   = var.airflow_api_secret_key
-  airflow_default_password = var.airflow_password
-  
-  # Git DAGs (Personal Access Token method)
-  airflow_dags_git_sync_repo = "https://github.com/your-org/dags.git"
-  git_auth_method            = "pat"
-  git_username               = var.git_username
-  git_password               = var.git_pat_token
-  
-  # Connect to MinIO for logs
-  enable_remote_logging    = true
-  airflow_logs_bucket_name = "airflow-logs"
-  aws_access_key_id        = module.minio.minio_root_user
-  aws_secret_access_key    = module.minio.minio_root_password
-  aws_endpoint_url         = "http://${module.minio.minio_service_dns}:${module.minio.minio_service_port}"
-  
-  depends_on = [module.postgres, module.minio]
-}
-```
-
-### Full Working Example
-
-See **[examples/minimal-setup](examples/minimal-setup/)** for a complete, ready-to-deploy setup:
-- PostgreSQL + MinIO + Airflow
-- All configuration included
-- Just update `terraform.tfvars` and deploy
-
-## 🔧 Common Operations
-
-### Port Forwarding
-
-```bash
-# Airflow UI
-kubectl port-forward -n airflow svc/airflow-release-webserver 8080:8080
-
-# MinIO Console
-kubectl port-forward -n storage svc/dev-minio-console 9001:9001
-
-# Trino
-kubectl port-forward -n trino svc/trino 8080:8080
-```
-
-### Scaling
-
-```bash
-# Scale Airflow workers
-kubectl scale deployment airflow-release-worker -n airflow --replicas=5
-
-# Scale PostgreSQL (for HA)
-# Edit Cluster resource, update spec.instances to 3
-```
-
-### Troubleshooting
-
-```bash
-# Check pods
-kubectl get pods -n <namespace>
-
-# View logs
-kubectl logs -n <namespace> <pod-name>
-
-# Check operators
-kubectl get pods -n cnpg
-kubectl get pods -n minio-operator
-kubectl get pods -n kafka
-
-# Describe resource
-kubectl describe pod -n <namespace> <pod-name>
-```
+See **[examples/minimal-setup](examples/minimal-setup/)** for a complete working example with multiple modules (PostgreSQL + MinIO + Airflow) connected together.
 
 ## 📚 Additional Resources
 
