@@ -5,7 +5,7 @@
 variable "gravitino_version" {
   description = "Gravitino version to download (git tag, e.g., v0.7.0)"
   type        = string
-  default     = "1.1.0-SNAPSHOT"
+  default     = "v1.0.1"
 }
 
 variable "release_name" {
@@ -23,7 +23,7 @@ variable "namespace" {
 variable "image_tag" {
   description = "Docker image tag"
   type        = string
-  default     = "1.1.0-SNAPSHOT"
+  default     = "1.0.1"
 }
 
 variable "replicas" {
