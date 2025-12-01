@@ -1,47 +1,47 @@
 variable "namespace" {
-  description = "The namespace to deploy Kafka service into"
+  description = "Namespace for Kafka node pool"
   type        = string
   default     = "kafka"
 }
 
 variable "kafka_node_pool_name" {
-  description = "Name of the Kafka Node Pool"
+  description = "Kafka node pool name"
   type        = string
   default     = "kafka-node-pool"
 }
 
 variable "kafka_cluster_name" {
-  description = "Name of the Kafka cluster"
+  description = "Kafka cluster name"
   type        = string
   default     = "kafka-cluster"
 }
 
 variable "kafka_replicas" {
-  description = "Number of Kafka broker replicas"
+  description = "Number of broker replicas"
   type        = number
   default     = 1
 }
 
 variable "kafka_roles" {
-  description = "Roles for Kafka nodes (controller, broker, or both)"
+  description = "Node roles (controller, broker, or both)"
   type        = list(string)
   default     = ["broker", "controller"]
 }
 
 variable "storage_size" {
-  description = "Persistent volume size for Kafka logs"
+  description = "Storage size for Kafka logs"
   type        = string
   default     = "10Gi"
 }
 
 variable "storage_type" {
-  description = "Storage type for persistent volumes (persistent-claim, ephemeral)"
+  description = "Storage type (persistent-claim or ephemeral)"
   type        = string
   default     = "ephemeral"
-  
+
   validation {
     condition     = contains(["persistent-claim", "ephemeral"], var.storage_type)
-    error_message = "Storage type must be either 'persistent-claim' or 'ephemeral'."
+    error_message = "Must be 'persistent-claim' or 'ephemeral'"
   }
 }
 
@@ -52,32 +52,32 @@ variable "storage_class" {
 }
 
 variable "storage_delete_claim" {
-  description = "Whether to delete persistent volume claims when scaling down"
+  description = "Delete PVCs when scaling down"
   type        = bool
   default     = false
 }
 
 variable "pod_run_as_user" {
-  description = "User ID to run Kafka pods as"
+  description = "Pod user ID"
   type        = number
   default     = 1001
 }
 
 variable "pod_run_as_group" {
-  description = "Group ID to run Kafka pods as"
+  description = "Pod group ID"
   type        = number
   default     = 1001
 }
 
 variable "pod_fs_group" {
-  description = "File system group ID for Kafka pods"
+  description = "Pod filesystem group ID"
   type        = number
   default     = 1001
 }
 
 variable "kafka_node_resources_config" {
-  description = "Resource configuration for Kafka pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -85,9 +85,9 @@ variable "kafka_node_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "2"
       memory = "4Gi"

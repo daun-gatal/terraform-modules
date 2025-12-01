@@ -1,34 +1,34 @@
 variable "namespace" {
-  description = "The namespace to deploy Kafka service into"
+  description = "Namespace for ksqlDB deployment"
   type        = string
   default     = "kafka"
 }
 
 variable "kafka_ksqldb_name" {
-  description = "KSQLDB stateful set name"
+  description = "ksqlDB StatefulSet name"
   type        = string
   default     = "kafka-ksqldb-server"
 }
 
 variable "ksqldb_version" {
-  description = "KSQLDB version"
+  description = "ksqlDB version"
   type        = string
   default     = "8.0.0"
 }
 
 variable "kafka_bootstrap_servers" {
-  description = "Kafka bootstrap servers list"
+  description = "Kafka bootstrap servers (list)"
   type        = list(string)
 }
 
 variable "kafka_schema_registry_url" {
-  description = "Kafka Schema Registry URL"
+  description = "Schema Registry URL"
   type        = string
 }
 
 variable "kafka_ksqldb_resources_config" {
-  description = "Resource configuration for Kafka KSQLDB pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -36,9 +36,9 @@ variable "kafka_ksqldb_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "1"
       memory = "4Gi"
@@ -51,19 +51,19 @@ variable "kafka_ksqldb_resources_config" {
 }
 
 variable "kafka_ksqldb_storage_size" {
-  description = "Persistent volume size for KSQLDB"
+  description = "Persistent volume size"
   type        = string
   default     = "5Gi"
 }
 
 variable "ksqldb_storage_class_name" {
-  description = "Persistent volume storage class name for KSQLDB"
+  description = "Storage class for persistent volume"
   type        = string
   default     = "standard"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Kafka via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }

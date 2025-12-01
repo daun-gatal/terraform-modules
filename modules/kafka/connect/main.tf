@@ -51,37 +51,37 @@ resource "kubernetes_deployment" "kafka_connect" {
 
           env {
             name  = "CONNECT_GROUP_ID"
-            value = "compose-connect-group"
+            value = var.connect_group_id
           }
 
           env {
             name  = "CONNECT_CONFIG_STORAGE_TOPIC"
-            value = "_connect_configs"
+            value = var.connect_config_storage_topic
           }
 
           env {
             name  = "CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"
-            value = "1"
+            value = tostring(var.connect_config_storage_replication_factor)
           }
 
           env {
             name  = "CONNECT_OFFSET_STORAGE_TOPIC"
-            value = "_connect_offset"
+            value = var.connect_offset_storage_topic
           }
 
           env {
             name  = "CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR"
-            value = "1"
+            value = tostring(var.connect_offset_storage_replication_factor)
           }
 
           env {
             name  = "CONNECT_STATUS_STORAGE_TOPIC"
-            value = "_connect_status"
+            value = var.connect_status_storage_topic
           }
 
           env {
             name  = "CONNECT_STATUS_STORAGE_REPLICATION_FACTOR"
-            value = "1"
+            value = tostring(var.connect_status_storage_replication_factor)
           }
 
           env {

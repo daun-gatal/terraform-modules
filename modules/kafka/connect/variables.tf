@@ -1,23 +1,23 @@
 variable "namespace" {
-  description = "The namespace to deploy Kafka service into"
+  description = "Namespace for Kafka Connect deployment"
   type        = string
   default     = "kafka"
 }
 
 variable "kafka_connect_name" {
-  description = "Name of the schema registry deployment"
+  description = "Kafka Connect deployment name"
   type        = string
-  default    = "kafka-connect"
+  default     = "kafka-connect"
 }
 
 variable "kafka_connect_replicas" {
-  description = "Number of Kafka Schema Registry replicas"
+  description = "Number of replicas"
   type        = number
   default     = 1
 }
 
 variable "kafka_bootstrap_servers" {
-  description = "Kafka bootstrap servers list"
+  description = "Kafka bootstrap servers (list)"
   type        = list(string)
 }
 
@@ -27,8 +27,8 @@ variable "schema_registry_url" {
 }
 
 variable "kafka_connect_resources_config" {
-  description = "Resource configuration for Kafka Schema Registry pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -36,9 +36,9 @@ variable "kafka_connect_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "1"
       memory = "4Gi"
@@ -51,13 +51,55 @@ variable "kafka_connect_resources_config" {
 }
 
 variable "kafka_connect_image" {
-  description = "Kafka Connect Docker image"
+  description = "Container image"
   type        = string
   default     = "registry.gitlab.com/daun-gatal/image-repo/kafka-connect:8.0.0"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Kafka via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
+}
+
+variable "connect_group_id" {
+  description = "Connect cluster group ID"
+  type        = string
+  default     = "compose-connect-group"
+}
+
+variable "connect_config_storage_topic" {
+  description = "Config storage topic name"
+  type        = string
+  default     = "_connect_configs"
+}
+
+variable "connect_config_storage_replication_factor" {
+  description = "Config topic replication factor"
+  type        = number
+  default     = 1
+}
+
+variable "connect_offset_storage_topic" {
+  description = "Offset storage topic name"
+  type        = string
+  default     = "_connect_offset"
+}
+
+variable "connect_offset_storage_replication_factor" {
+  description = "Offset topic replication factor"
+  type        = number
+  default     = 1
+}
+
+variable "connect_status_storage_topic" {
+  description = "Status storage topic name"
+  type        = string
+  default     = "_connect_status"
+}
+
+variable "connect_status_storage_replication_factor" {
+  description = "Status topic replication factor"
+  type        = number
+  default     = 1
 }

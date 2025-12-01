@@ -1,5 +1,5 @@
 variable "namespace" {
-  description = "The namespace to deploy Gravitino service into"
+  description = "Namespace for Gravitino deployment"
   type        = string
   default     = "gravitino"
 }
@@ -11,169 +11,169 @@ variable "prefix" {
 }
 
 variable "chart_name" {
-  description = "The Helm chart name for Gravitino"
+  description = "Helm chart name"
   type        = string
   default     = "gravitino"
 }
 
 variable "chart_version" {
-  description = "The Helm chart version for Gravitino"
+  description = "Helm chart version"
   type        = string
   default     = "1.0.3"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Gravitino via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
 
 # Entity store configuration
 variable "entity_store" {
-  description = "The entity store to use"
+  description = "Entity store type"
   type        = string
   default     = "relational"
 }
 
 variable "entity_jdbc_url" {
-  description = "The JDBC URL for the entity store"
+  description = "JDBC URL for entity store"
   type        = string
   default     = "jdbc:h2"
 }
 
 variable "entity_jdbc_driver" {
-  description = "The JDBC driver class name"
+  description = "JDBC driver class"
   type        = string
   default     = "org.h2.Driver"
 }
 
 variable "entity_jdbc_user" {
-  description = "The JDBC user name"
+  description = "JDBC username"
   type        = string
   default     = "gravitino"
 }
 
 variable "entity_jdbc_password" {
-  description = "The JDBC password"
+  description = "JDBC password"
   type        = string
   default     = "gravitino"
   sensitive   = true
 }
 
 variable "entity_storage_path" {
-  description = "The storage path for entity data"
+  description = "Entity data storage path"
   type        = string
   default     = "/root/gravitino/data/jdbc"
 }
 
 # Auxiliary service configuration
 variable "aux_service_names" {
-  description = "Auxiliary service names, separate by ','"
+  description = "Auxiliary services (comma-separated)"
   type        = string
   default     = "iceberg-rest"
 }
 
 variable "iceberg_rest_catalog_backend" {
-  description = "The catalog backend for Iceberg REST service"
+  description = "Iceberg REST catalog backend"
   type        = string
   default     = "memory"
 }
 
 # Iceberg REST service configuration
 variable "iceberg_rest_warehouse" {
-  description = "The warehouse directory of Iceberg in S3 bucket/Minio with format s3://bucket/path"
+  description = "Iceberg warehouse location (s3://bucket/path)"
   type        = string
   default     = "s3://default/warehouse"
 }
 
 # Iceberg REST JDBC configuration
 variable "iceberg_rest_jdbc_user" {
-  description = "JDBC user for Iceberg REST service"
+  description = "Iceberg REST JDBC username"
   type        = string
   default     = "gravitino"
 }
 
 variable "iceberg_rest_jdbc_password" {
-  description = "JDBC password for Iceberg REST service"
+  description = "Iceberg REST JDBC password"
   type        = string
   default     = "gravitino"
   sensitive   = true
 }
 
 variable "iceberg_rest_jdbc_driver" {
-  description = "JDBC driver class name for Iceberg REST service"
+  description = "Iceberg REST JDBC driver class"
   type        = string
   default     = "org.postgresql.Driver"
 }
 
 variable "iceberg_rest_jdbc_initialize" {
-  description = "Whether to initialize the Iceberg meta tables in RDBMS"
+  description = "Initialize Iceberg meta tables"
   type        = bool
   default     = true
 }
 
 # Iceberg REST I/O configuration
 variable "iceberg_rest_io_impl" {
-  description = "Implementation class for Iceberg file I/O operations"
+  description = "Iceberg FileIO implementation class"
   type        = string
   default     = "org.apache.iceberg.aws.s3.S3FileIO"
 }
 
 variable "iceberg_rest_credential_providers" {
-  description = "Comma-separated list of credential providers"
+  description = "Credential providers (comma-separated)"
   type        = string
   default     = "s3-token"
 }
 
 # Iceberg REST S3 configuration
 variable "iceberg_rest_s3_access_key_id" {
-  description = "S3 access key ID for Iceberg REST service"
+  description = "S3 access key ID"
   type        = string
   default     = ""
   sensitive   = true
 }
 
 variable "iceberg_rest_s3_secret_access_key" {
-  description = "S3 secret access key for Iceberg REST service"
+  description = "S3 secret access key"
   type        = string
   default     = ""
   sensitive   = true
 }
 
 variable "iceberg_rest_s3_endpoint" {
-  description = "S3 endpoint for Iceberg REST service"
-  default     = ""
+  description = "S3 endpoint URL"
   type        = string
+  default     = ""
 }
 
 variable "iceberg_rest_s3_region" {
-  description = "S3 region for Iceberg REST service"
+  description = "S3 region"
   type        = string
   default     = "us-east-1"
 }
 
 variable "iceberg_rest_s3_path_style_access" {
-  description = "Whether to use path-style access instead of virtual hosted-style access"
+  description = "Use S3 path-style access"
   type        = bool
   default     = true
 }
 
 # Deployment configuration
 variable "replicas" {
-  description = "Number of Gravitino replicas"
+  description = "Number of replicas"
   type        = number
   default     = 1
 }
 
 # Persistence configuration
 variable "persistence_enabled" {
-  description = "Enable persistence for Gravitino"
+  description = "Enable persistent storage"
   type        = bool
   default     = false
 }
 
 variable "persistence_size" {
-  description = "Size of persistent volume"
+  description = "Persistent volume size"
   type        = string
   default     = "10Gi"
 }
@@ -192,13 +192,13 @@ variable "gravitino_home" {
 }
 
 variable "gravitino_mem" {
-  description = "JVM memory settings for Gravitino"
+  description = "JVM memory settings"
   type        = string
   default     = "-Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m"
 }
 
 variable "gravitino_resources_config" {
-  description = "Resource configuration for Gravitino pods in YAML format"
+  description = "Resource requests/limits"
   type        = object({
     limits = object({
       cpu    = string

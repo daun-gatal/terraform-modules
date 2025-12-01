@@ -1,5 +1,5 @@
 variable "namespace" {
-  description = "The namespace to deploy the Metabase service into"
+  description = "Namespace for Metabase deployment"
   type        = string
   default     = "metabase"
 }
@@ -11,62 +11,62 @@ variable "prefix" {
 }
 
 variable "metabase_db_password" {
-  description = "The password for the Metabase database"
+  description = "Database password"
   type        = string
   sensitive   = true
 }
 
 variable "metabase_db_user" {
-  description = "The username for the Metabase database"
+  description = "Database username"
   type        = string
   default     = "postgres"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "metabase_db_name" {
-  description = "The name of the Metabase database"
+  description = "Database name"
   type        = string
   default     = "postgres"
 }
 
 variable "metabase_db_port" {
-  description = "The port for the Metabase database"
+  description = "Database port"
   type        = number
   default     = 5432
 }
 
 variable "metabase_db_host" {
-  description = "The host for the Metabase database"
+  description = "Database host"
   type        = string
 }
 
 variable "image_tag" {
-  description = "The tag of the Metabase image to use"
+  description = "Container image tag"
   type        = string
-  default     = "v0.56.x" 
+  default     = "v0.56.x"
 }
 
 variable "image" {
-  description = "The Metabase image to use"
+  description = "Container image"
   type        = string
   default     = "metabase/metabase"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose the Metabase service via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
 
 variable "tailscale_funnel" {
-  description = "Whether to enable Tailscale funnel"
+  description = "Enable Tailscale funnel"
   type        = bool
   default     = false
 }
 
 variable "metabase_resources_config" {
-  description = "Resource configuration for Metabase pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -74,9 +74,9 @@ variable "metabase_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "1"
       memory = "2Gi"

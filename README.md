@@ -1,371 +1,292 @@
-# Terraform Module
+# Terraform Modules for Kubernetes Data Platform
 
-This Terraform module deploys resources to a Kubernetes cluster (i.e., Minikube).
+Modular Terraform configurations for deploying production-ready data platform services on Kubernetes. Built for Minikube, K3s, or any Kubernetes cluster.
 
----
+## 🚀 Quick Start
 
-## **Prerequisites**
+### Prerequisites
 
-Before using this module, ensure you have the following:
+- **Terraform** ≥ 1.0 ([install](https://developer.hashicorp.com/terraform/downloads))
+- **Kubernetes cluster** (Minikube, K3s, or cloud)
+- **kubectl** configured
 
-1. **Terraform >= 1.0**
-   - **Terraform version 1.0 or higher is required** for all modules
-   - Install Terraform: https://developer.hashicorp.com/terraform/downloads
-   - Verify your version: `terraform version`
+### Setup (3 steps)
 
-2. **Terraform Providers**
-   - This module requires the following Terraform providers:
-     ```hcl
-     terraform {
-       required_version = ">= 1.0"
-       
-       required_providers {
-         kubernetes = {
-           source  = "hashicorp/kubernetes"
-           version = "~> 2.30.0"
-         }
-         helm = {
-           source  = "hashicorp/helm"
-           version = "~> 3.0.2"
-         }
-       }
-     }
-     ```
+```bash
+# 1. Create namespaces
+curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | \
+  bash -s -- database storage airflow
 
-3. **Minikube running**
-   - Install Minikube: https://minikube.sigs.k8s.io/docs/start/
-   - Start a cluster:
-     ```bash
-     minikube start
-     ```
+# 2. Install operators (CloudNativePG, MinIO, Strimzi)
+curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
 
-4. **Create Kubernetes Namespaces**  
-   Before deploying services, create the required namespaces using the helper script:
-
-   ```bash
-   # Create namespaces for your services
-   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- database storage airflow
-   
-   # Or create custom namespaces
-   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- my-namespace-1 my-namespace-2
-   ```
-
-   **Common namespace sets:**
-   - **Minimal setup**: `database storage airflow`
-   - **Full data platform**: `database storage airflow kafka spark trino nessie gravitino metabase`
-
-5. **Kubernetes Operators Installation (Install / Uninstall)**  
-   You can manage all the required operators using the helper script (`manage-operators.sh`) hosted on GitLab.
-
-   ### ⚙️ Default Versions and Namespaces
-
-    | Operator          | Default Version | Default Namespace  |
-    |-------------------|-----------------|--------------------|
-    | **Tailscale**     | `1.86.5`        | `tailscale`        |
-    | **Spark**         | `1.2.0`        | `spark`            |
-    | **CloudNativePG** | `0.26.0`        | `cnpg`             |
-    | **MinIO**         | `7.1.1`        | `minio-operator`   |
-    | **Strimzi Kafka** | `0.47.0`        | `kafka`            |
-
-   ### 👉 Install Operators
-
-   - **Install all operators with defaults:**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
-     ```
-
-   - **Install including Tailscale (with namespace and OAuth):**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- \
-       --with-tailscale \
-       --tailscale-namespace tailscale \
-       --oauth-client-id "<OAUTH_CLIENT_ID>" \
-       --oauth-client-secret "<OAUTH_CLIENT_SECRET>"
-     ```
-     > If `--oauth-client-id` and `--oauth-client-secret` are not provided (or not set in environment variables), the script will prompt you to enter them interactively.
-
-   - **Install with custom namespaces and versions:**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- \
-       --spark-namespace my-spark --spark-version 1.3.0 \
-       --cnpg-namespace my-db --cnpg-version 0.27.0 \
-       --minio-namespace my-minio --minio-version 7.2.0 \
-       --strimzi-namespace my-kafka --strimzi-version 0.48.0 \
-       --flink-namespace my-flink --flink-version 1.12.1
-     ```
-
-   ### 🧹 Uninstall Operators
-
-   - **Uninstall all operators:**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --uninstall
-     ```
-
-   - **Uninstall including Tailscale:**
-     ```bash
-     curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --uninstall --with-tailscale
-     ```
-
-   ### 📖 Help
-
-   You can see all available options and defaults by running:
-   ```bash
-   curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash -s -- --help
-   ```
-
----
-
-## **Modules Overview**
-
-This repository contains Terraform modules for deploying a complete data platform on Kubernetes. Each module is designed to work independently or as part of an integrated data stack.
-
-### 🌬️ **Airflow Module** (`modules/airflow/`)
-
-Deploy Apache Airflow for workflow orchestration with git-sync DAG management, multiple executor support (CeleryExecutor/KubernetesExecutor), and KEDA auto-scaling.
-
-**Key Features:**
-- Git-sync for automatic DAG synchronization (SSH or PAT authentication)
-- Flexible executor options: CeleryExecutor with Flower UI or KubernetesExecutor
-- KEDA auto-scaling for dynamic worker scaling
-- Remote logging to S3/MinIO
-- Standalone DAG processor for improved performance
-- PostgreSQL metadata backend (external)
-- Tailscale networking integration
-
-**Essential Configuration:**
-- `airflow_metadata_db_conn` - PostgreSQL connection string (required, sensitive)
-- `airflow_fernet_key`, `airflow_api_secret_key`, `airflow_default_password` - Security credentials (required, sensitive)
-- `airflow_dags_git_sync_repo` - Git repository for DAGs (required)
-- `git_auth_method` - Authentication: 'ssh' or 'pat' (default: "ssh")
-- `airflow_executor` - Executor type (default: "KubernetesExecutor")
-- `airflow_worker_keda_enabled` - Enable auto-scaling (default: false)
-- Chart version: 1.18.0, Image: apache/airflow:3.0.6
-
----
-
-### 📊 **Metabase Module** (`modules/metabase/`)
-
-Deploy Metabase for business intelligence and data visualization with PostgreSQL metadata storage.
-
-**Key Features:**
-- Open-source BI platform for creating dashboards and insights
-- PostgreSQL backend for metadata persistence
-- Tailscale networking with optional Funnel for public access
-- Simple single-replica deployment
-
-**Essential Configuration:**
-- `metabase_db_host`, `metabase_db_password` - PostgreSQL connection (required, password sensitive)
-- `metabase_db_user`, `metabase_db_name`, `metabase_db_port` - Database details
-- `tailscale_expose`, `tailscale_funnel` - Network exposure options
-- Image: metabase/metabase:v0.56.x
-
----
-
-### 🪣 **MinIO Module** (`modules/minio/`)
-
-Deploy MinIO object storage using the MinIO Operator for S3-compatible storage with enterprise features.
-
-**Key Features:**
-- S3-compatible object storage for data lakes, backups, and artifacts
-- MinIO Operator for production-grade deployment
-- Automatic bucket creation with lifecycle policies
-- Support for single-node or distributed mode (4+ servers)
-- Declarative bucket lifecycle management (expiration, versioning)
-- Tailscale networking for API and Console
-
-**Essential Configuration:**
-- `tenant_name` - MinIO tenant identifier (default: "dev-minio")
-- `minio_root_user`, `minio_root_password` - Admin credentials (sensitive, min 8 chars)
-- `storage_size` - Storage per volume (default: "5Gi")
-- `buckets` - List of buckets with lifecycle policies: `name`, `expire_days`, `noncurrent_expire_days`
-- `enable_distributed` - Enable 4-server distributed mode (default: false)
-- Image: quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z
-
-**Outputs:** `minio_service_dns`, `minio_service_port`, credentials
-
----
-
-### 🌌 **Gravitino Module** (`modules/gravitino/`)
-
-Deploy Apache Gravitino for federated metadata lake management with unified interface across storage systems and compute engines.
-
-**Key Features:**
-- Federated metadata management for data lakes
-- Iceberg REST service integration for Iceberg table formats
-- S3/MinIO storage backend support
-- PostgreSQL metadata persistence (entity store & Iceberg catalog)
-- Unified catalog interface for multiple storage systems
-- Supports memory or relational catalog backends
-
-**Essential Configuration:**
-- `iceberg_rest_warehouse` - S3 warehouse location: s3://bucket/path (required)
-- `iceberg_rest_jdbc_password` - PostgreSQL password for Iceberg catalog (required, sensitive)
-- `iceberg_rest_s3_access_key_id`, `iceberg_rest_s3_secret_access_key` - S3 credentials (required, sensitive)
-- `iceberg_rest_s3_endpoint` - S3/MinIO endpoint URL (required)
-- `entity_store` - Entity store type (default: "relational")
-- `iceberg_rest_catalog_backend` - Catalog backend: memory/jdbc (default: "memory")
-- Chart version: 1.0.3, JVM memory: 1Gi heap
-
-**Outputs:** `gravitino_service_dns`, `gravitino_service_port` (8090), `gravitino_iceberg_rest_port` (9001)
-
----
-
-### 🌊 **Kafka Module** (`modules/kafka/`)
-
-Deploy Apache Kafka using Strimzi operator with KRaft mode (no Zookeeper) for distributed event streaming and real-time data pipelines.
-
-**Prerequisites:** Strimzi Kafka Operator must be installed (see Prerequisites section above).
-
-**Key Features:**
-- Kafka 4.0 with KRaft mode (no Zookeeper dependency)
-- Strimzi operator for declarative cluster management
-- Optional Kafka UI (Kafbat) for web-based administration
-- Configurable storage: ephemeral or persistent
-- Combined controller+broker nodes for simplified deployment
-- High availability with configurable replication factors
-- Basic authentication for Kafka UI
-
-**Essential Configuration:**
-- `kafka_replicas` - Number of broker/controller nodes (default: 3)
-- `kafka_roles` - Node roles: ["controller", "broker"] (default: both)
-- `storage_type` - Storage: ephemeral or persistent-claim (default: "ephemeral")
-- `storage_size` - Log storage per broker (default: "10Gi")
-- `enable_kafka_ui` - Enable web UI (default: false)
-- `kafka_ui_auth_enabled`, `kafka_ui_auth_password` - UI authentication (optional, sensitive)
-- Kafka version: 4.0.0, Metadata version: 4.0-IV3
-- Image: ghcr.io/kafbat/kafka-ui for UI
-
-**Outputs:** `kafka_int_bootstrap_servers` - Bootstrap servers for client connections
-
----
-
-### 🌊 **Nessie Module** (`modules/nessie/`)
-
-Deploy Nessie catalog service for Git-like version control of data lake tables with branching and tagging capabilities.
-
-**Key Features:**
-- Git-like version control for Iceberg tables (branches, tags, commits)
-- JDBC2 version store with PostgreSQL backend
-- S3/MinIO integration for warehouse storage
-- Iceberg catalog with path-style S3 access
-- Built-in catalog service for warehouse management
-
-**Essential Configuration:**
-- `nessie_jdbc_url`, `nessie_jdbc_port`, `nessie_database_name` - PostgreSQL connection (all required)
-- `nessie_jdbc_username`, `nessie_jdbc_password` - Database credentials (required, sensitive)
-- `nessie_s3_bucket`, `nessie_s3_endpoint` - S3 storage (both required)
-- `nessie_s3_access_key_name`, `nessie_s3_access_key_secret` - S3 credentials (required, sensitive)
-- `nessie_default_warehouse` - Warehouse path (default: "warehouse")
-- Chart version: 0.104.10
-
-**Outputs:** `nessie_service_dns`, `nessie_service_port` (19120), `nessie_default_warehouse` (full S3 path)
-
----
-
-### 🔐 **OpenBao Module** (`modules/openbao/`)
-
-Deploy OpenBao for secrets management and secure credential storage (open-source Vault alternative).
-
-**Key Features:**
-- HashiCorp Vault fork for secrets management
-- Support for standalone or HA (High Availability) mode with Raft
-- Configurable storage backend (file, raft, cloud storage)
-- Web UI for secrets management
-- Tailscale networking integration
-- Persistent storage for data and audit logs
-
-**Essential Configuration:**
-- `server_storage_secret_name` - Kubernetes secret with storage config (required)
-- `openbao_namespace` - Deployment namespace (default: "openbao")
-- `server_standalone_enabled` - Enable standalone mode (default: true)
-- `server_ha_enabled` - Enable HA mode with Raft (default: false)
-- `server_ha_replicas` - Number of HA replicas (default: 3)
-- `ui_enabled` - Enable web UI (default: true)
-- `tailscale_expose` - Expose via Tailscale (default: false)
-
-**Note:** Requires pre-created Kubernetes secret with storage configuration (HCL format).
-
----
-
-### 🐘 **PostgreSQL Module** (`modules/postgres/`)
-
-Deploy PostgreSQL cluster using CloudNativePG operator with high availability, automated failover, and production-grade features.
-
-**Key Features:**
-- CloudNativePG operator for production-ready deployment
-- Support for single-node or HA (3+ replicas) clusters
-- Automated failover and self-healing
-- Read/write separation with dedicated endpoints
-- Multiple database creation within same cluster
-- Custom PostgreSQL configuration parameters
-- Persistent storage with configurable size and storage class
-
-**Essential Configuration:**
-- `db_password` - Database password (required, sensitive)
-- `db_user`, `db_name` - Database credentials and name (defaults: "dev", "postgres")
-- `extra_db_names` - Additional databases to create (default: [])
-- `postgres_replicas` - Number of instances: 1 for single-node, 3+ for HA (default: 1)
-- `storage_size` - Storage per instance (default: "10Gi")
-- `postgresql_parameters` - Custom config (default: {"max_connections": "300"})
-- Image: ghcr.io/cloudnative-pg/postgresql:15.4
-
-**Outputs:** `postgres_rw_dns` (read-write), `postgres_ro_dns` (read-only), credentials, `postgres_port` (5432)
-
----
-
-### 🔍 **Trino Module** (`modules/trino/`)
-
-Deploy Trino distributed SQL query engine for federated querying across multiple data sources (data lakes, databases, object stores).
-
-**Key Features:**
-- Distributed SQL engine for federated queries
-- Flexible catalog system: Iceberg, PostgreSQL, Delta Lake, Memory, and many more
-- Support for single-node or multi-worker deployments
-- Coordinator can act as worker for development
-- Internal communication security with shared secret
-- Built-in access control with configurable rules
-- Persistent storage for spooling
-
-**Essential Configuration:**
-- `trino_shared_secret` - Internal communication secret (required, sensitive)
-- `enabled_catalogs` - List of catalogs with `name` and `params` (connector-specific key-value pairs)
-- `worker_count` - Number of workers (default: 1)
-- `coordinator_as_worker` - Single-node mode (default: false)
-- `trino_coordinator_jvm_max_heap_size`, `trino_worker_jvm_max_heap_size` - JVM heap (default: "6G")
-- `additional_config_properties` - Extra Trino config (e.g., retry policy, query timeouts)
-- Chart version: 1.40.0, Image: trinodb/trino:1.40.0
-
-**Catalog Examples:**
-- **Memory:** `{"connector.name" = "memory"}`
-- **Iceberg+Nessie:** `{"connector.name" = "iceberg", "iceberg.catalog.type" = "rest", "iceberg.rest-catalog.uri" = "http://nessie:19120/api/v1"}`
-- **PostgreSQL:** `{"connector.name" = "postgresql", "connection-url" = "jdbc:postgresql://host:5432/db", ...}`
-
-**Outputs:** `trino_service_dns`, `trino_service_port` (8080)
-
----
-
-## **Architecture Overview**
-
-This terraform module collection creates a modern data platform on Kubernetes with the following components:
-
-### **Core Services**
-1. **PostgreSQL** - Metadata storage for all services (Airflow, Metabase, Nessie, Gravitino)
-2. **MinIO** - S3-compatible object storage for data lakes, logs, and artifacts
-3. **OpenBao** - Secrets management and credential storage
-
-### **Data Platform Stack**
-4. **Airflow** - Workflow orchestration and pipeline scheduling
-5. **Kafka** - Real-time event streaming and message queuing
-6. **Nessie** - Git-like catalog with version control for Iceberg tables
-7. **Gravitino** - Federated metadata management with Iceberg REST service
-8. **Trino** - Distributed SQL query engine for federated data access
-9. **Metabase** - Business intelligence and data visualization
-
-### **Typical Data Flow**
-```
-Ingestion (Airflow) → Streaming (Kafka) → Storage (MinIO/S3) 
-    ↓
-Cataloging (Nessie/Gravitino) → Querying (Trino) → Visualization (Metabase)
+# 3. Deploy from examples
+cd examples/minimal-setup
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your values
+terraform init && terraform apply
 ```
 
-**Security & Networking:** All services support Tailscale for secure networking and can be optionally exposed via Tailscale Funnel. Secrets are managed by OpenBao, and metadata is stored in PostgreSQL.
+See [examples/minimal-setup](examples/minimal-setup/) for a working Airflow + PostgreSQL + MinIO setup.
+
+### Required Providers
+
+```hcl
+terraform {
+  required_providers {
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.30.0" }
+    helm       = { source = "hashicorp/helm", version = "~> 3.0.2" }
+  }
+}
+```
+
+### Operators
+
+Default versions managed by `manage-operators.sh`:
+
+| Operator | Version | Namespace |
+|----------|---------|-----------|
+| CloudNativePG | 0.26.0 | cnpg |
+| MinIO | 7.1.1 | minio-operator |
+| Strimzi Kafka | 0.47.0 | kafka |
+| Spark | 1.2.0 | spark |
+| Tailscale | 1.86.5 | tailscale |
+
+**Custom install:**
+```bash
+curl -sSL "https://gitlab.com/.../manage-operators.sh" | bash -s -- \
+  --cnpg-version 0.27.0 --strimzi-version 0.48.0
+```
+
+**Uninstall:**
+```bash
+curl -sSL "https://gitlab.com/.../manage-operators.sh" | bash -s -- --uninstall
+```
+
+## 📦 Available Modules
+
+### Core Infrastructure
+
+#### 🐘 PostgreSQL (`modules/postgres/`)
+Production-ready PostgreSQL using CloudNativePG operator.
+- **Features:** HA with auto-failover, read/write separation, multi-database support
+- **Key vars:** `db_password`*(required)*, `postgres_replicas`(1), `storage_size`(10Gi)
+- **Outputs:** `postgres_rw_dns`, `postgres_ro_dns`
+
+#### 🪣 MinIO (`modules/minio/`)
+S3-compatible object storage with operator-based deployment.
+- **Features:** Distributed mode, bucket lifecycle policies, Tailscale support
+- **Key vars:** `minio_root_password`*(required, 8+ chars)*, `buckets`, `storage_size`(5Gi)
+- **Outputs:** `minio_service_dns`, `minio_service_port`, credentials
+
+#### 🔐 OpenBao (`modules/openbao/`)
+Secrets management (Vault fork).
+- **Features:** Standalone/HA mode, web UI, Tailscale integration
+- **Key vars:** `server_storage_secret_name`*(required)*, `server_ha_enabled`(false)
+
+### Orchestration & Processing
+
+#### 🌬️ Airflow (`modules/airflow/`)
+Workflow orchestration with git-sync DAG management.
+- **Features:** CeleryExecutor/KubernetesExecutor, KEDA auto-scaling, remote logging, Flower UI
+- **Key vars:** `airflow_metadata_db_conn`*(required)*, `airflow_fernet_key`*, `airflow_dags_git_sync_repo`*, `git_auth_method`(ssh)
+- **Version:** Chart 1.18.0, Image apache/airflow:3.0.6
+
+#### 🌊 Kafka (`modules/kafka/`)
+Event streaming with Strimzi operator (KRaft mode, no Zookeeper).
+- **Features:** Kafka 4.0, optional UI (Kafbat), ephemeral/persistent storage
+- **Key vars:** `kafka_replicas`(3), `storage_type`(ephemeral), `enable_kafka_ui`(false)
+- **Outputs:** `kafka_int_bootstrap_servers`
+
+### Data Lake & Catalogs
+
+#### 🌌 Gravitino (`modules/gravitino/`)
+Federated metadata management with Iceberg REST service.
+- **Features:** Multi-storage support, PostgreSQL backend, memory/JDBC catalog
+- **Key vars:** `iceberg_rest_warehouse`*(required)*, `iceberg_rest_s3_endpoint`*, S3 credentials*
+- **Outputs:** `gravitino_service_dns` (port 8090), `gravitino_iceberg_rest_port` (9001)
+
+#### 🌊 Nessie (`modules/nessie/`)
+Git-like version control for Iceberg tables.
+- **Features:** Branches/tags/commits, PostgreSQL backend, S3 integration
+- **Key vars:** `nessie_jdbc_url`*, `nessie_jdbc_password`*, `nessie_s3_bucket`*, S3 credentials*
+- **Outputs:** `nessie_service_dns` (port 19120), `nessie_default_warehouse`
+
+### Query & Analytics
+
+#### 🔍 Trino (`modules/trino/`)
+Distributed SQL query engine for federated data access.
+- **Features:** Multi-catalog support (Iceberg, PostgreSQL, Delta Lake), single/multi-node
+- **Key vars:** `trino_shared_secret`*(required)*, `enabled_catalogs`, `worker_count`(1)
+- **Catalog example:** `[{name="iceberg", params={"connector.name"="iceberg", ...}}]`
+- **Outputs:** `trino_service_dns` (port 8080)
+
+#### 📊 Metabase (`modules/metabase/`)
+Business intelligence and visualization.
+- **Features:** Dashboards, PostgreSQL backend, Tailscale/Funnel support
+- **Key vars:** `metabase_db_host`*, `metabase_db_password`*
+- **Version:** metabase/metabase:v0.56.x
+
+> *Variables marked with asterisk (*) are required
+
+## 🏗️ Architecture
+
+Build a modern data platform with modular components:
+
+```
+┌─────────────┐    ┌──────────┐    ┌─────────┐
+│  PostgreSQL │◄───┤ Airflow  │───►│  MinIO  │
+│  (Metadata) │    │(Workflow)│    │(Storage)│
+└─────────────┘    └──────────┘    └─────────┘
+       ▲                │                │
+       │                ▼                ▼
+┌──────┴───────┐   ┌────────────────────┐
+│ Nessie/      │◄──┤      Kafka         │
+│ Gravitino    │   │   (Streaming)      │
+│ (Catalog)    │   └────────────────────┘
+└──────┬───────┘            
+       │                    
+       ▼                    
+   ┌───────┐    ┌──────────┐
+   │ Trino │───►│ Metabase │
+   │ (SQL) │    │   (BI)   │
+   └───────┘    └──────────┘
+```
+
+**Data Flow:** Airflow orchestrates → Kafka streams → MinIO stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
+
+**Security:** OpenBao for secrets, Tailscale for networking, PostgreSQL for shared metadata
+
+## 💡 Usage Examples
+
+### Simple: Single Module
+
+```hcl
+# Just PostgreSQL
+module "postgres" {
+  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
+  
+  namespace   = "database"
+  db_password = "your-secure-password"
+}
+
+# Access: kubectl port-forward -n database svc/postgres-rw 5432:5432
+```
+
+### Practical: Multiple Modules
+
+```hcl
+# 1. PostgreSQL for metadata
+module "postgres" {
+  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
+  
+  namespace   = "database"
+  db_password = var.postgres_password
+}
+
+# 2. MinIO for storage
+module "minio" {
+  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/minio?ref=main"
+  
+  namespace           = "storage"
+  minio_root_password = var.minio_password
+  
+  buckets = [
+    { name = "airflow-logs", expire_days = 30 }
+  ]
+}
+
+# 3. Airflow connected to PostgreSQL & MinIO
+module "airflow" {
+  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/airflow?ref=main"
+  
+  namespace = "airflow"
+  
+  # Connect to PostgreSQL
+  airflow_metadata_db_conn = "postgresql://dev:${var.postgres_password}@${module.postgres.postgres_rw_dns}:5432/airflow"
+  
+  # Security keys
+  airflow_fernet_key       = var.airflow_fernet_key
+  airflow_api_secret_key   = var.airflow_api_secret_key
+  airflow_default_password = var.airflow_password
+  
+  # Git DAGs (Personal Access Token method)
+  airflow_dags_git_sync_repo = "https://github.com/your-org/dags.git"
+  git_auth_method            = "pat"
+  git_username               = var.git_username
+  git_password               = var.git_pat_token
+  
+  # Connect to MinIO for logs
+  enable_remote_logging    = true
+  airflow_logs_bucket_name = "airflow-logs"
+  aws_access_key_id        = module.minio.minio_root_user
+  aws_secret_access_key    = module.minio.minio_root_password
+  aws_endpoint_url         = "http://${module.minio.minio_service_dns}:${module.minio.minio_service_port}"
+  
+  depends_on = [module.postgres, module.minio]
+}
+```
+
+### Full Working Example
+
+See **[examples/minimal-setup](examples/minimal-setup/)** for a complete, ready-to-deploy setup:
+- PostgreSQL + MinIO + Airflow
+- All configuration included
+- Just update `terraform.tfvars` and deploy
+
+## 🔧 Common Operations
+
+### Port Forwarding
+
+```bash
+# Airflow UI
+kubectl port-forward -n airflow svc/airflow-release-webserver 8080:8080
+
+# MinIO Console
+kubectl port-forward -n storage svc/dev-minio-console 9001:9001
+
+# Trino
+kubectl port-forward -n trino svc/trino 8080:8080
+```
+
+### Scaling
+
+```bash
+# Scale Airflow workers
+kubectl scale deployment airflow-release-worker -n airflow --replicas=5
+
+# Scale PostgreSQL (for HA)
+# Edit Cluster resource, update spec.instances to 3
+```
+
+### Troubleshooting
+
+```bash
+# Check pods
+kubectl get pods -n <namespace>
+
+# View logs
+kubectl logs -n <namespace> <pod-name>
+
+# Check operators
+kubectl get pods -n cnpg
+kubectl get pods -n minio-operator
+kubectl get pods -n kafka
+
+# Describe resource
+kubectl describe pod -n <namespace> <pod-name>
+```
+
+## 📚 Additional Resources
+
+- **[Examples](examples/)** - Working configurations
+- **[Module Documentation](modules/)** - Detailed module variables and outputs
+- **[Scripts](scripts/)** - Helper scripts for namespace/operator management
+
+## 🤝 Contributing
+
+Issues and contributions welcome at [GitLab repository](https://gitlab.com/daun-gatal/terraform-modules).
+
+## 📄 License
+
+This project is open source. Check individual modules for specific licenses.

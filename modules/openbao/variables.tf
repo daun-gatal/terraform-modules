@@ -1,60 +1,38 @@
-# ===============================================
-# OpenBao Helm Chart Terraform Variables
-# ===============================================
-
-# -------------------------------
-# General / Global Variables
-# -------------------------------
-
+# General Configuration
 variable "openbao_fullname_override" {
+  description = "Helm release fullname override"
   type        = string
   default     = "openbao"
-  description = "Override for the fullname of the Helm release"
 }
 
 variable "openbao_namespace" {
+  description = "Namespace for OpenBao deployment"
   type        = string
   default     = "openbao"
-  description = "Namespace to deploy OpenBao"
 }
-
-# -------------------------------
-# Tailscale Variable
-# -------------------------------
 
 variable "tailscale_expose" {
+  description = "Expose service via Tailscale"
   type        = string
   default     = "false"
-  description = "Set the Tailscale expose annotation for services"
 }
 
-# -------------------------------
-# OpenBao Secret Variable
-# -------------------------------
-
+# Secrets Configuration
 variable "server_storage_secret_name" {
+  description = "Secret name for server config (config.hcl)"
   type        = string
   default     = "openbao-storage-config"
-  description = "Name of the Kubernetes secret containing OpenBao server config (config.hcl). Check on this https://openbao.org/docs/platform/k8s/helm/run/#protecting-sensitive-openbao-configurations for more details."
 }
 
 variable "server_unseal_secret_name" {
+  description = "Secret name for unseal keys"
   type        = string
   default     = "openbao-unseal-key"
-  description = "Name of the Kubernetes secret containing OpenBao unseal keys."
 }
 
-# -------------------------------
-# OpenBao Server Variables
-# -------------------------------
-
-# variable "server_resources" {
-#   type        = map(any)
-#   default     = {}
-#   description = "Resource limits/requests for OpenBao server pods"
-# }
-
+# Server Storage Configuration
 variable "server_data_storage" {
+  description = "Server data storage configuration"
   type = object({
     enabled      = bool
     size         = string
@@ -65,10 +43,10 @@ variable "server_data_storage" {
     size         = "5Gi"
     storageClass = "standard"
   }
-  description = "Configuration for server data storage"
 }
 
 variable "server_audit_storage" {
+  description = "Server audit storage configuration"
   type = object({
     enabled      = bool
     size         = string
@@ -79,16 +57,17 @@ variable "server_audit_storage" {
     size         = "5Gi"
     storageClass = "standard"
   }
-  description = "Configuration for server audit storage"
 }
 
+# Standalone Mode
 variable "server_standalone_enabled" {
+  description = "Enable standalone mode"
   type        = bool
   default     = false
-  description = "Enable standalone mode for OpenBao server"
 }
 
 variable "server_standalone_config" {
+  description = "Standalone server config (HCL)"
   type        = string
   default     = <<-EOT
     ui = true
@@ -99,34 +78,35 @@ variable "server_standalone_config" {
       cluster_address = "[::]:8201"
     }
   EOT
-  description = "Standalone server configuration (HCL format)"
 }
 
+# High Availability Mode
 variable "server_ha_enabled" {
+  description = "Enable HA mode"
   type        = bool
   default     = true
-  description = "Enable HA mode for OpenBao server"
 }
 
 variable "server_ha_replicas" {
+  description = "Number of HA replicas"
   type        = number
   default     = 2
-  description = "Number of replicas in HA mode"
 }
 
 variable "server_ha_raft_enabled" {
+  description = "Enable Raft storage for HA"
   type        = bool
   default     = false
-  description = "Enable Raft integrated storage for HA"
 }
 
 variable "server_ha_raft_set_node_id" {
+  description = "Set Raft node ID to pod name"
   type        = bool
   default     = false
-  description = "Set Node Raft ID to pod name"
 }
 
 variable "server_ha_config" {
+  description = "HA server config (HCL)"
   type        = string
   default     = <<-EOT
     ui = true
@@ -139,21 +119,17 @@ variable "server_ha_config" {
 
     service_registration "kubernetes" {}
   EOT
-  description = "HA server configuration (HCL format)"
 }
 
-# -------------------------------
-# OpenBao UI Variables
-# -------------------------------
-
+# UI Configuration
 variable "ui_enabled" {
+  description = "Enable web UI"
   type        = bool
   default     = true
-  description = "Enable OpenBao UI"
 }
 
 variable "ui_external_port" {
+  description = "External UI port"
   type        = number
   default     = 80
-  description = "External port for OpenBao UI"
 }

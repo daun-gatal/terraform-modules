@@ -1,30 +1,30 @@
 variable "namespace" {
-  description = "The namespace to deploy Kafka service into"
+  description = "Namespace for Kafka UI deployment"
   type        = string
   default     = "kafka"
 }
 
 variable "kafka_ui_name" {
-  description = "Name for the Kafka UI deployment and service"
+  description = "Kafka UI deployment name"
   type        = string
   default     = "kafka-ui"
 }
 
 variable "kafka_ui_version" {
-  description = "Version of Kafka UI to deploy"
+  description = "Kafka UI version"
   type        = string
   default     = "e3ba25f"
 }
 
 variable "kafka_ui_secret_name" {
-  description = "Name of the Kubernetes secret containing Kafka UI environment variables"
+  description = "Secret name for environment variables"
   type        = string
   default     = "kafka-config-secret"
 }
 
 variable "kafka_ui_resources_config" {
-  description = "Resource configuration for Kafka UI pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -32,9 +32,9 @@ variable "kafka_ui_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "1"
       memory = "1Gi"
@@ -47,7 +47,7 @@ variable "kafka_ui_resources_config" {
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Kafka via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }

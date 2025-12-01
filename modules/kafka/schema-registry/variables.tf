@@ -1,29 +1,29 @@
 variable "namespace" {
-  description = "The namespace to deploy Kafka service into"
+  description = "Namespace for Schema Registry deployment"
   type        = string
   default     = "kafka"
 }
 
 variable "kafka_schema_registry_name" {
-  description = "Name of the schema registry deployment"
+  description = "Schema Registry deployment name"
   type        = string
-  default    = "kafka-schema-registry"
+  default     = "kafka-schema-registry"
 }
 
 variable "kafka_schema_registry_replicas" {
-  description = "Number of Kafka Schema Registry replicas"
+  description = "Number of replicas"
   type        = number
   default     = 1
 }
 
 variable "kafka_bootstrap_servers" {
-  description = "Kafka bootstrap servers list"
+  description = "Kafka bootstrap servers (list)"
   type        = list(string)
 }
 
 variable "kafka_schema_registry_resources_config" {
-  description = "Resource configuration for Kafka Schema Registry pods in YAML format"
-  type        = object({
+  description = "Resource requests/limits"
+  type = object({
     limits = object({
       cpu    = string
       memory = string
@@ -31,9 +31,9 @@ variable "kafka_schema_registry_resources_config" {
     requests = object({
       cpu    = string
       memory = string
-    }) 
+    })
   })
-  default     = {
+  default = {
     limits = {
       cpu    = "1"
       memory = "1Gi"
@@ -46,13 +46,13 @@ variable "kafka_schema_registry_resources_config" {
 }
 
 variable "schema_registry_version" {
-  description = "Kafka Schema Registry version"
+  description = "Schema Registry version"
   type        = string
   default     = "8.0.0"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Kafka via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }

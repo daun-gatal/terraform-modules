@@ -1,5 +1,5 @@
 variable "namespace" {
-  description = "The namespace to deploy Trino service into"
+  description = "Namespace for Trino deployment"
   type        = string
   default     = "trino"
 }
@@ -11,107 +11,104 @@ variable "prefix" {
 }
 
 variable "chart_name" {
-  description = "The Helm chart name for Trino"
+  description = "Helm chart name"
   type        = string
   default     = "trino"
 }
 
 variable "chart_version" {
-  description = "The Helm chart version for Trino"
+  description = "Helm chart version"
   type        = string
   default     = "1.40.0"
 }
 
 variable "image_repository" {
-  description = "The image repository for Trino"
+  description = "Container image repository"
   type        = string
   default     = "trinodb/trino"
 }
 
 variable "image_tag" {
-  description = "The image tag for Trino"
+  description = "Container image tag"
   type        = string
   default     = "477"
 }
 
 variable "worker_count" {
-  description = "The number of Trino worker replicas"
+  description = "Number of worker replicas"
   type        = number
   default     = 1
-  
 }
 
 variable "worker_query_max_memory" {
-  description = "The maximum memory for Trino worker queries"
+  description = "Max query memory per worker"
   type        = string
   default     = "4GB"
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose Trino via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
-  
 }
 
 variable "trino_coordinator_jvm_max_heap_size" {
-  description = "The maximum heap size for the Trino coordinator JVM"
+  description = "Coordinator JVM max heap size"
   type        = string
   default     = "6G"
 }
 
 variable "trino_coordinator_query_max_memory" {
-  description = "The maximum memory for Trino coordinator queries"
+  description = "Coordinator max query memory"
   type        = string
   default     = "1GB"
 }
 
 variable "trino_worker_jvm_max_heap_size" {
-  description = "The maximum heap size for the Trino worker JVM"
+  description = "Worker JVM max heap size"
   type        = string
   default     = "6G"
 }
 
 variable "trino_worker_query_max_memory" {
-  description = "The maximum memory for Trino worker queries"
+  description = "Worker max query memory"
   type        = string
   default     = "1GB"
 }
 
 variable "trino_shared_secret" {
-  description = "Shared secret for internal Trino communication"
+  description = "Shared secret for internal communication"
   type        = string
   sensitive   = true
 }
 
 variable "coordinator_as_worker" {
-  description = "Whether the coordinator should also act as a worker"
+  description = "Use coordinator as worker node"
   type        = bool
   default     = false
 }
 
-# Catalog Variables
+# Catalog Configuration
 variable "enabled_catalogs" {
-  description = "List of catalogs to enable"
-  sensitive = true
+  description = "Catalogs to enable (name + params)"
   type = list(object({
-    name      = string       # catalog name in Trino
-    params    = map(string)  # raw key=value pairs
+    name   = string
+    params = map(string)
   }))
-
-  default = []
+  sensitive = true
+  default   = []
 }
 
-# Additional Configuration Properties
+# Additional Configuration
 variable "additional_config_properties" {
-  description = "List of additional configuration properties for Trino server (e.g., ['retry-policy=TASK', 'query.max-execution-time=1h'])"
+  description = "Additional server config properties"
   type        = list(string)
   default     = []
 }
 
 variable "trino_resources_config" {
-  description = "Resource configuration for Trino pods in YAML format"
-    type = map(object({
+  description = "Resource requests/limits per component"
+  type = map(object({
     requests = optional(object({
       cpu = optional(string)
       ram = optional(string)

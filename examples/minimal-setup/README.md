@@ -1,230 +1,203 @@
 # Minimal Data Platform Setup
 
-A simple, ready-to-use data platform with PostgreSQL, MinIO, and Apache Airflow using CeleryExecutor.
+Simple data platform with PostgreSQL, MinIO, and Apache Airflow.
 
-## Architecture
+## What You Get
 
 ```
-PostgreSQL (metadata) ← Airflow (CeleryExecutor) → MinIO (logs)
+PostgreSQL ← Airflow (CeleryExecutor + Redis) → MinIO
+(metadata)   (webserver, scheduler, workers)    (logs)
 ```
 
-## What Gets Deployed
+- **PostgreSQL**: Metadata storage for Airflow
+- **MinIO**: Object storage for Airflow logs
+- **Airflow**: Full setup with git-sync for DAGs
 
-- **PostgreSQL**: Single instance for Airflow metadata
-- **MinIO**: Object storage with `airflow-logs` bucket
-- **Airflow**: Webserver, Scheduler, Workers (CeleryExecutor), Redis
+## Prerequisites (5 minutes)
 
-## Prerequisites
+**1. Tools:**
+- Terraform ≥ 1.0
+- kubectl configured
+- Kubernetes cluster running
 
-1. **Terraform** >= 1.0
-2. **kubectl** configured for your cluster
-3. **Kubernetes cluster** (Minikube, Kind, or cloud)
-4. **Create namespaces**:
-
+**2. Setup cluster:**
 ```bash
-# Create required namespaces
-curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- database storage airflow
-```
+# Create namespaces
+curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | \
+  bash -s -- database storage airflow
 
-5. **Install operators**:
-
-```bash
-# Install CloudNativePG and MinIO operators
+# Install operators (CloudNativePG, MinIO)
 curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
 ```
 
-6. **Git repository** with Airflow DAGs
-7. **Personal Access Token (PAT)** with access to your DAG repository
+**3. Prepare:**
+- Git repository with Airflow DAGs
+- GitHub/GitLab Personal Access Token (PAT)
 
-## Quick Start
+## Quick Start (3 Steps)
 
-### 1. Generate Secrets
+### Step 1: Generate Secrets
 
 ```bash
-# Fernet key (32 characters)
+# Fernet key
 python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 
-# API secret
+# API secret and passwords
 openssl rand -base64 32
-
-# Passwords
-openssl rand -base64 16
 ```
 
-### 2. Create Git Personal Access Token
+### Step 2: Get GitHub/GitLab PAT
 
-**GitHub:**
-1. Go to Settings → Developer settings → Personal access tokens → Generate new token
-2. Select scope: `repo` (Full control of private repositories)
-3. Copy the generated token (starts with `ghp_`)
+**GitHub:** Settings → Developer settings → Personal access tokens → New token
+- Scope: `repo`
+- Copy token (starts with `ghp_`)
 
-**GitLab:**
-1. Go to User Settings → Access Tokens → Add new token
-2. Select scope: `read_repository`
-3. Copy the generated token (starts with `glpat-`)
+**GitLab:** User Settings → Access Tokens → New token
+- Scope: `read_repository`
+- Copy token (starts with `glpat-`)
 
-**Bitbucket:**
-1. Go to Personal settings → App passwords → Create app password
-2. Select permission: `repository:read`
-3. Copy the generated password
-
-### 3. Configure
+### Step 3: Configure and Deploy
 
 ```bash
+# Copy and edit configuration
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-```
+nano terraform.tfvars  # or use your favorite editor
 
-**Minimum required in `terraform.tfvars`:**
-
-```hcl
-postgres_password      = "your-secure-db-password"
-minio_password         = "your-minio-password"
-airflow_fernet_key     = "your-32-char-fernet-key="
-airflow_api_secret_key = "your-api-secret"
-airflow_password       = "your-admin-password"
-dags_repo_url          = "https://github.com/your-org/airflow-dags.git"  # HTTPS URL
-git_username           = "your-github-username"
-git_password           = "ghp_YOUR_PERSONAL_ACCESS_TOKEN"  # Your PAT
-```
-
-### 4. Deploy
-
-```bash
+# Deploy
 terraform init
 terraform apply
 ```
 
-### 5. Access
-
-```bash
-# Airflow UI
-kubectl port-forward -n airflow svc/airflow-release-webserver 8080:8080
-# Open http://localhost:8080, login: admin / <your-airflow-password>
-
-# MinIO Console
-kubectl port-forward -n storage svc/dev-minio-console 9001:9001
-# Open http://localhost:9001, login: minio / <your-minio-password>
+**Required in `terraform.tfvars`:**
+```hcl
+postgres_password      = "YourSecurePassword123"
+minio_password         = "MinioPass123"  # min 8 chars
+airflow_fernet_key     = "qL8...your-fernet-key...="
+airflow_api_secret_key = "dGVz...your-api-secret..."
+airflow_password       = "AdminPass123"
+dags_repo_url          = "https://github.com/your-org/airflow-dags.git"
+git_username           = "your-username"
+git_password           = "ghp_yourPersonalAccessToken"
 ```
 
-Or get access commands from Terraform:
+## Access Services
+
 ```bash
+# Get all access commands
 terraform output access_instructions
+
+# Or manually:
+kubectl port-forward -n airflow svc/airflow-release-webserver 8080:8080
+# → http://localhost:8080 (admin / your-airflow-password)
+
+kubectl port-forward -n storage svc/dev-minio-console 9001:9001
+# → http://localhost:9001 (minio / your-minio-password)
 ```
 
-## What's Included
+## What's Deployed
 
-✅ **CeleryExecutor** - Production-ready task execution with workers  
-✅ **Remote Logging** - All logs stored in MinIO  
-✅ **Git Sync** - DAGs automatically synced from your repository  
-✅ **Redis** - Message broker for Celery  
-✅ **Single namespace per service** - Clean separation (database, storage, airflow)
+- ✅ Airflow with **CeleryExecutor** (production-ready)
+- ✅ **Git-sync** for automatic DAG updates
+- ✅ **Remote logging** to MinIO
+- ✅ Redis for Celery message queue
+- ✅ PostgreSQL for metadata
+- ✅ MinIO for object storage
 
-## Verify Deployment
+## Verify It Works
 
 ```bash
-# Check all pods are running
+# All pods should be Running
 kubectl get pods -n database
 kubectl get pods -n storage
 kubectl get pods -n airflow
 
-# Check Airflow components
-kubectl get pods -n airflow | grep -E "scheduler|webserver|worker"
-
-# View logs
-kubectl logs -n airflow deployment/airflow-release-scheduler
+# Check Airflow is ready
+kubectl get pods -n airflow | grep Running
 ```
 
-## Configuration
+## Configuration Reference
 
-All configuration uses sensible defaults. The only required variables are:
+**Required variables (in `terraform.tfvars`):**
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `postgres_password` | Database password | `mySecureP@ssw0rd` |
-| `minio_password` | MinIO password (8+ chars) | `minioPassword123` |
-| `airflow_fernet_key` | 32-char encryption key | `4RzJ9ABC...` |
-| `airflow_api_secret_key` | API authentication | `dGVzd...` |
-| `airflow_password` | Admin UI password | `adminPass123` |
-| `dags_repo_url` | Git repo for DAGs (HTTPS) | `https://github.com/...` |
-| `git_username` | Git username | `your-username` |
-| `git_password` | Personal Access Token | `ghp_abc123...` |
+| Variable | Description |
+|----------|-------------|
+| `postgres_password` | PostgreSQL password |
+| `minio_password` | MinIO password (min 8 chars) |
+| `airflow_fernet_key` | Encryption key (use generator above) |
+| `airflow_api_secret_key` | API secret (use generator above) |
+| `airflow_password` | Airflow admin password |
+| `dags_repo_url` | Git repository URL (HTTPS) |
+| `git_username` | Git username |
+| `git_password` | Personal Access Token |
 
-Optional:
-- `dags_repo_branch` (default: `main`)
+**Optional:**
+- `dags_repo_branch` - Git branch (default: `main`)
 
-## Default Resources
+## Default Sizes
 
-Each service gets these defaults:
-
-- **PostgreSQL**: 10Gi storage, 1 replica
-- **MinIO**: 5Gi storage, single server
-- **Airflow**: 1 scheduler, 1 worker (auto-scales with tasks)
+- PostgreSQL: 10Gi storage, 1 instance
+- MinIO: 5Gi storage, single node
+- Airflow: 1 scheduler, 1 worker (scales automatically)
 
 ## Troubleshooting
 
-### Pods not starting
-
+### Pods Not Starting
 ```bash
-# Check operators
+# Check operators are running
 kubectl get pods -n cnpg
 kubectl get pods -n minio-operator
 
-# Check events
-kubectl get events -n airflow --sort-by='.lastTimestamp'
+# Check pod status
+kubectl describe pod -n airflow <pod-name>
 ```
 
-### DAGs not appearing
-
+### DAGs Not Appearing
 ```bash
 # Check git-sync logs
 kubectl logs -n airflow deployment/airflow-release-scheduler -c git-sync
 
-# Common issues:
-# - Invalid Personal Access Token (check if expired)
-# - Incorrect repository URL (must be HTTPS format)
-# - Token lacks required permissions (needs 'repo' or 'read_repository' scope)
-# - Wrong username or token value
+# Common fixes:
+# ✓ Verify PAT is valid and not expired
+# ✓ Check repo URL is HTTPS format
+# ✓ Ensure PAT has 'repo' or 'read_repository' scope
+# ✓ Verify username matches the PAT owner
 ```
 
-### Worker not processing tasks
-
+### Tasks Not Running
 ```bash
 # Check worker logs
 kubectl logs -n airflow deployment/airflow-release-worker
 
-# Check Celery status in Airflow UI
-# Admin → Celery → Workers
+# Check Celery workers in Airflow UI
+# Admin → Celery → Workers (should show 1+ workers)
 ```
 
-## Scaling
+## Tips
 
-To scale workers for more parallel task execution:
-
+**Scale workers:**
 ```bash
 kubectl scale deployment airflow-release-worker -n airflow --replicas=3
 ```
 
-Or enable KEDA for auto-scaling (see main module documentation).
-
-## Cleanup
-
+**View service logs:**
 ```bash
-terraform destroy
+kubectl logs -n airflow deployment/airflow-release-scheduler -f
 ```
 
-**⚠️ Warning**: This deletes all data. Backup if needed.
+**Clean up:**
+```bash
+terraform destroy  # ⚠️ Deletes everything!
+```
 
 ## Next Steps
 
-1. Push DAG files to your Git repository
-2. Add Airflow connections via UI (Admin → Connections)
-3. Enable Flower UI for Celery monitoring (see module docs)
-4. Set up alerts and monitoring
-5. Extend with additional modules (Spark, Trino, Kafka)
+1. ✅ Push your DAG files to the Git repository
+2. ✅ Add connections in Airflow UI (Admin → Connections)
+3. ✅ Create your first pipeline
+4. 📈 Add more modules: [Trino](../../modules/trino/), [Kafka](../../modules/kafka/), [Nessie](../../modules/nessie/)
 
-## Support
+## Learn More
 
-- 📖 [Main README](../../README.md)
-- 📦 [Module Documentation](../../modules/)
-- 🐛 [Report Issues](https://gitlab.com/daun-gatal/terraform-modules/-/issues)
+- [Main README](../../README.md) - All available modules
+- [Module Docs](../../modules/) - Detailed configuration
+- [Report Issues](https://gitlab.com/daun-gatal/terraform-modules/-/issues)

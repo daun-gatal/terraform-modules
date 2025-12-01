@@ -1,5 +1,5 @@
 variable "namespace" {
-  description = "The namespace to deploy Airflow service into"
+  description = "Namespace for Airflow deployment"
   type        = string
   default     = "airflow"
 }
@@ -11,86 +11,86 @@ variable "prefix" {
 }
 
 variable "chart_name" {
-  description = "The Helm chart name for Airflow"
+  description = "Helm chart name"
   type        = string
   default     = "airflow"
 }
 
 variable "chart_version" {
-  description = "The Helm chart version for Airflow"
+  description = "Helm chart version"
   type        = string
   default     = "1.18.0"
 }
 
 variable "airflow_metadata_db_conn" {
-  description = "The SQLAlchemy connection for metadata DB with format postgresql://{username}:{password}@{host}:{port}/{db_name}"
-  type = string
-  sensitive = true
+  description = "SQLAlchemy connection string (postgresql://user:pass@host:port/db)"
+  type        = string
+  sensitive   = true
 }
 
 variable "airflow_fernet_key" {
-  description = "Fernet key for Airflow secrets encryption"
+  description = "Fernet key for secrets encryption"
   type        = string
   sensitive   = true
 }
 
 variable "airflow_api_secret_key" {
-  description = "API secret key for Airflow"
+  description = "API secret key"
   type        = string
   sensitive   = true
 }
 
 variable "git_auth_method" {
-  description = "Authentication method for git-sync: 'ssh' or 'pat' (Personal Access Token)"
+  description = "Git auth method (ssh or pat)"
   type        = string
   default     = "ssh"
 
   validation {
     condition     = contains(["ssh", "pat"], var.git_auth_method)
-    error_message = "Invalid git authentication method. Must be either 'ssh' or 'pat'."
+    error_message = "Must be 'ssh' or 'pat'"
   }
 }
 
 variable "git_ssh_key_path" {
-  description = "Path to Git SSH key file for DAG sync (required when git_auth_method is 'ssh')"
+  description = "Path to SSH key file (required for ssh auth)"
   type        = string
   default     = null
 }
 
 variable "git_username" {
-  description = "Git username for DAG sync (required when git_auth_method is 'pat')"
+  description = "Git username (required for pat auth)"
   type        = string
   default     = null
   sensitive   = true
 }
 
 variable "git_password" {
-  description = "Git password or Personal Access Token for DAG sync (required when git_auth_method is 'pat')"
+  description = "Git password or PAT (required for pat auth)"
   type        = string
   default     = null
   sensitive   = true
 }
 
 variable "tailscale_expose" {
-  description = "Whether to expose the Airflow service via Tailscale"
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
 
 variable "airflow_scheduler_replicas" {
-  description = "Number of Airflow scheduler replicas"
+  description = "Number of scheduler replicas"
   type        = number
   default     = 1
 }
 
 variable "airflow_log_retention_days" {
-  description = "Log retention in days for Airflow components"
+  description = "Log retention period in days"
   type        = number
   default     = 7
 }
 
 variable "airflow_enable_triggerer" {
-  description = "Enable Airflow triggerer component"
+  description = "Enable triggerer component"
   type        = bool
   default     = false
 }
@@ -114,8 +114,9 @@ variable "airflow_dag_processor_enabled" {
 }
 
 variable "airflow_logs_bucket_name" {
-  type      = string
-  default   = null
+  description = "S3 bucket name for remote logs"
+  type        = string
+  default     = null
 }
 
 variable "airflow_dags_git_sync_enabled" {
@@ -125,152 +126,152 @@ variable "airflow_dags_git_sync_enabled" {
 }
 
 variable "airflow_dags_git_sync_repo" {
-  description = "Git repository for DAGs"
+  description = "Git repository URL for DAGs"
   type        = string
 }
 
 variable "airflow_dags_git_sync_branch" {
-  description = "Git branch for DAGs sync"
+  description = "Git branch to sync"
   type        = string
   default     = "main"
 }
 
 variable "airflow_dags_git_sync_rev" {
-  description = "Git revision for DAGs sync"
+  description = "Git revision to sync"
   type        = string
   default     = "HEAD"
 }
 
 variable "airflow_dags_git_sync_ref" {
-  description = "Git reference for DAGs sync"
+  description = "Git reference to sync"
   type        = string
   default     = ""
 }
 
 variable "airflow_dags_git_sync_subpath" {
-  description = "SubPath inside DAGs repo for sync"
+  description = "Subpath within DAGs repo"
   type        = string
   default     = ""
 }
 
 variable "image_repository" {
-  description = "Container image repository for Airflow worker"
+  description = "Container image repository"
   type        = string
   default     = "apache/airflow"
 }
 
 variable "image_tag" {
-  description = "Container image tag for Airflow worker"
+  description = "Container image tag"
   type        = string
   default     = "3.0.6"
 }
 
 variable "enable_log_groomer_sidecar" {
-  description = "Airflow log groomer sidecar"
-  type = bool
-  default = false
+  description = "Enable log groomer sidecar"
+  type        = bool
+  default     = false
 }
 
 variable "enable_statsd" {
-  description = "Enable statsd"
-  type = bool
-  default = false
+  description = "Enable StatsD metrics"
+  type        = bool
+  default     = false
 }
 
 variable "aws_access_key_id" {
-  description = "AWS access key ID used for the initial connection."
+  description = "AWS access key ID"
   type        = string
   default     = ""
   sensitive   = true
 }
 
 variable "aws_secret_access_key" {
-  description = "AWS secret access key used for the initial connection."
+  description = "AWS secret access key"
   type        = string
   default     = ""
   sensitive   = true
 }
 
 variable "aws_region" {
-  description = "AWS Region for the connection (e.g., us-east-1)."
+  description = "AWS region (e.g., us-east-1)"
   type        = string
   default     = "us-east-1"
 }
 
 variable "aws_endpoint_url" {
-  description = "Custom S3 endpoint URL (useful for MinIO or local S3-compatible storage)."
+  description = "Custom S3 endpoint URL (for MinIO/S3-compatible storage)"
   type        = string
   default     = ""
 }
 
 variable "airflow_default_password" {
-  description = "Default password for login to Airflow"
-  type = string
-  sensitive = true
+  description = "Default webserver password"
+  type        = string
+  sensitive   = true
 }
 
 variable "enable_remote_logging" {
-  type    = bool
-  default = false
+  description = "Enable remote logging to S3"
+  type        = bool
+  default     = false
 }
 
 variable "airflow_executor" {
-  description = "Executor type for Airflow. Supported: CeleryExecutor or KubernetesExecutor."
+  description = "Executor type (CeleryExecutor or KubernetesExecutor)"
   type        = string
   default     = "KubernetesExecutor"
 
   validation {
     condition     = contains(["CeleryExecutor", "KubernetesExecutor"], var.airflow_executor)
-    error_message = "Invalid executor type. Must be either 'CeleryExecutor' or 'KubernetesExecutor'."
+    error_message = "Must be 'CeleryExecutor' or 'KubernetesExecutor'"
   }
 }
 
-
 variable "airflow_worker_replicas" {
-  description = "Number of Airflow worker replicas"
+  description = "Number of worker replicas"
   type        = number
   default     = 1
 }
 
 variable "airflow_worker_keda_enabled" {
-  description = "Enable KEDA for Airflow workers"
+  description = "Enable KEDA autoscaling for workers"
   type        = bool
   default     = false
 }
 
 variable "airflow_worker_keda_min_replicas" {
-  description = "Minimum number of Airflow worker replicas when using KEDA"
+  description = "Min worker replicas with KEDA"
   type        = number
   default     = 0
 }
 
 variable "airflow_worker_keda_max_replicas" {
-  description = "Maximum number of Airflow worker replicas when using KEDA"
+  description = "Max worker replicas with KEDA"
   type        = number
   default     = 3
 }
 
 variable "airflow_flower_credential" {
-  description = "Username for Airflow Flower UI"
+  description = "Flower UI credentials (user:pass)"
   type        = string
-  sensitive = true
+  sensitive   = true
   default     = "admin:admin"
 }
 
 variable "airflow_flower_enabled" {
-  description = "Enable Airflow Flower UI"
+  description = "Enable Flower monitoring UI"
   type        = bool
   default     = false
 }
 
 variable "airflow_kubernetes_cleanup_enabled" {
-  description = "Enable Kubernetes pod cleanup"
+  description = "Enable Kubernetes pod cleanup job"
   type        = bool
   default     = false
 }
 
 variable "airflow_resources_config" {
-  description = "Per-component resource configurations for Airflow components (requests and limits for CPU and RAM)"
+  description = "Resource requests/limits per component"
   type = map(object({
     requests = optional(object({
       cpu = optional(string)
