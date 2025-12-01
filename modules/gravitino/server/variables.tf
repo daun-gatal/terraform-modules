@@ -23,7 +23,7 @@ variable "namespace" {
 variable "image_tag" {
   description = "Docker image tag"
   type        = string
-  default     = "0.7.0"
+  default     = "1.1.0-SNAPSHOT"
 }
 
 variable "replicas" {
