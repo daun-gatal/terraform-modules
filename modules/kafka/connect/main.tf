@@ -60,12 +60,12 @@ resource "kubernetes_deployment" "kafka_connect" {
 
           env {
             name  = "CONNECT_GROUP_ID"
-            value = "compose-${each.key}-group"
+            value = replace("compose-${each.key}-group", "/[^a-zA-Z0-9]/", "-")
           }
 
           env {
             name  = "CONNECT_CONFIG_STORAGE_TOPIC"
-            value = "_${each.key}_configs"
+            value = replace("_${each.key}_configs", "/[^a-zA-Z0-9]/", "_")
           }
 
           env {
@@ -75,7 +75,7 @@ resource "kubernetes_deployment" "kafka_connect" {
 
           env {
             name  = "CONNECT_OFFSET_STORAGE_TOPIC"
-            value = "_${each.key}_offset"
+            value = replace("_${each.key}_offset", "/[^a-zA-Z0-9]/", "_")
           }
 
           env {
@@ -85,7 +85,7 @@ resource "kubernetes_deployment" "kafka_connect" {
 
           env {
             name  = "CONNECT_STATUS_STORAGE_TOPIC"
-            value = "_${each.key}_status"
+            value = replace("_${each.key}_status", "/[^a-zA-Z0-9]/", "_")
           }
 
           env {
