@@ -7,7 +7,6 @@ variable "namespace" {
 
 variable "kafka_connect_instances" {
   description = "Map of Kafka Connect deployments (auto-generated default from existing variables)"
-  sensitive = true
 
   type = map(object({
     replicas = number
