@@ -1,9 +1,11 @@
-output "kafka_connect_internal_dns" {
-  description = "Kafka Connect internal DNS"
-  value       = "${kubernetes_service.kafka_connect.metadata[0].name}.${var.namespace}.svc.cluster.local"
-}
-
-output "kafka_connect_port" {
-  description = "Kafka Connect port"
-  value       = kubernetes_service.kafka_connect.spec[0].port[0].port
+output "kafka_connect_endpoints" {
+  description = "Kafka Connect DNS + Port per instance"
+  
+  value = {
+    for name, svc in kubernetes_service.kafka_connect :
+    name => {
+      dns  = "${svc.metadata[0].name}.${var.namespace}.svc.cluster.local"
+      port = svc.spec[0].port[0].port
+    }
+  }
 }
