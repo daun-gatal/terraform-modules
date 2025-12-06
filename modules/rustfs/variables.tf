@@ -155,3 +155,9 @@ variable "values" {
   type        = any
   default     = {}
 }
+
+variable "tailscale_expose" {
+  description = "Expose API via Tailscale"
+  type        = bool
+  default     = false
+}

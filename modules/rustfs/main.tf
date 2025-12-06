@@ -4,6 +4,15 @@ locals {
     # Fullname override
     fullnameOverride = var.fullname_override
 
+    # Common labels for tailscale
+    commonLabels = {
+      "rustfs.tailscale.common/console" = var.fullname_override
+    }
+
+    podLabels = {
+      "rustfs.tailscale.pod/console" = var.fullname_override
+    }
+
     # Image configuration
     image = {
       registry        = var.image_registry
@@ -62,4 +71,33 @@ resource "helm_release" "rustfs" {
   values = [
     yamlencode(local.merged_values)
   ]
+}
+
+resource "kubernetes_service" "rustfs_custom_console_service" {
+  metadata {
+    name      = "${var.fullname_override}-console-service"
+    namespace = var.namespace
+    labels = {
+      app = var.fullname_override
+    }
+    annotations = {
+      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/hostname" = "${var.fullname_override}-console-int"
+    }
+  }
+
+  spec {
+    selector = {
+      "rustfs.tailscale.common/console" = var.fullname_override
+      "rustfs.tailscale.pod/console" = var.fullname_override
+    }
+
+    port {
+      name        = "${var.fullname_override}-custom-console"
+      port        = 9001
+      target_port = 9001
+    }
+
+    type = "ClusterIP"
+  }
 }
