@@ -73,16 +73,16 @@ resource "helm_release" "rustfs" {
   ]
 }
 
-resource "kubernetes_service" "rustfs_custom_console_service" {
+resource "kubernetes_service" "rustfs_custom_service" {
   metadata {
-    name      = "${var.fullname_override}-console-service"
+    name      = "${var.fullname_override}-custom-service"
     namespace = var.namespace
     labels = {
       app = var.fullname_override
     }
     annotations = {
       "tailscale.com/expose"   = "${var.tailscale_expose}"
-      "tailscale.com/hostname" = "${var.fullname_override}-console-int"
+      "tailscale.com/hostname" = "${var.fullname_override}-int"
     }
   }
 
@@ -96,6 +96,12 @@ resource "kubernetes_service" "rustfs_custom_console_service" {
       name        = "${var.fullname_override}-custom-console"
       port        = 9001
       target_port = 9001
+    }
+
+    port {
+      name        = "${var.fullname_override}-custom-api"
+      port        = 9000
+      target_port = 9000
     }
 
     type = "ClusterIP"
