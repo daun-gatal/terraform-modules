@@ -14,6 +14,9 @@ resource "kubernetes_manifest" "kafka_cluster" {
       kafka = {
         version         = var.kafka_version
         metadataVersion = var.kafka_metadata_version
+        metricsConfig = {
+          type = "strimziMetricsReporter"
+        }
         listeners = [
           {
             name = "plain"
