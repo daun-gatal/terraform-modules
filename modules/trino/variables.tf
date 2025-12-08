@@ -1,3 +1,7 @@
+# ============================================
+# Core Configuration
+# ============================================
+
 variable "namespace" {
   description = "Namespace for Trino deployment"
   type        = string
@@ -22,6 +26,10 @@ variable "chart_version" {
   default     = "1.40.0"
 }
 
+# ============================================
+# Image Configuration
+# ============================================
+
 variable "image_repository" {
   description = "Container image repository"
   type        = string
@@ -34,23 +42,9 @@ variable "image_tag" {
   default     = "477"
 }
 
-variable "worker_count" {
-  description = "Number of worker replicas"
-  type        = number
-  default     = 1
-}
-
-variable "worker_query_max_memory" {
-  description = "Max query memory per worker"
-  type        = string
-  default     = "4GB"
-}
-
-variable "tailscale_expose" {
-  description = "Expose service via Tailscale"
-  type        = bool
-  default     = false
-}
+# ============================================
+# Coordinator Configuration
+# ============================================
 
 variable "trino_coordinator_jvm_max_heap_size" {
   description = "Coordinator JVM max heap size"
@@ -62,6 +56,28 @@ variable "trino_coordinator_query_max_memory" {
   description = "Coordinator max query memory"
   type        = string
   default     = "1GB"
+}
+
+variable "coordinator_as_worker" {
+  description = "Use coordinator as worker node"
+  type        = bool
+  default     = false
+}
+
+# ============================================
+# Worker Configuration
+# ============================================
+
+variable "worker_count" {
+  description = "Number of worker replicas"
+  type        = number
+  default     = 1
+}
+
+variable "worker_query_max_memory" {
+  description = "Max query memory per worker"
+  type        = string
+  default     = "4GB"
 }
 
 variable "trino_worker_jvm_max_heap_size" {
@@ -76,19 +92,30 @@ variable "trino_worker_query_max_memory" {
   default     = "1GB"
 }
 
+# ============================================
+# Security Configuration
+# ============================================
+
 variable "trino_shared_secret" {
   description = "Shared secret for internal communication"
   type        = string
   sensitive   = true
 }
 
-variable "coordinator_as_worker" {
-  description = "Use coordinator as worker node"
+# ============================================
+# Service Configuration
+# ============================================
+
+variable "tailscale_expose" {
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
 
+# ============================================
 # Catalog Configuration
+# ============================================
+
 variable "enabled_catalogs" {
   description = "Catalogs to enable (name + params)"
   type = list(object({
@@ -99,12 +126,19 @@ variable "enabled_catalogs" {
   default   = []
 }
 
+# ============================================
 # Additional Configuration
+# ============================================
+
 variable "additional_config_properties" {
   description = "Additional server config properties"
   type        = list(string)
   default     = []
 }
+
+# ============================================
+# Resources Configuration
+# ============================================
 
 variable "trino_resources_config" {
   description = "Resource requests/limits per component"
@@ -142,4 +176,14 @@ variable "trino_resources_config" {
       }
     }
   }
+}
+
+# ============================================
+# Additional Helm Values
+# ============================================
+
+variable "values" {
+  description = "Additional Helm values to merge (supports all chart values). These values will override any defaults."
+  type        = any
+  default     = {}
 }

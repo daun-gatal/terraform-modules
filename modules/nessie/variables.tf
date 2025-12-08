@@ -1,3 +1,7 @@
+# ============================================
+# Core Configuration
+# ============================================
+
 variable "namespace" {
   description = "Namespace for Nessie deployment"
   type        = string
@@ -22,6 +26,10 @@ variable "chart_version" {
   default     = "0.104.10"
 }
 
+# ============================================
+# JDBC Configuration
+# ============================================
+
 variable "nessie_jdbc_username" {
   description = "JDBC username"
   type        = string
@@ -35,7 +43,7 @@ variable "nessie_jdbc_password" {
 }
 
 variable "nessie_jdbc_url" {
-  description = "JDBC URL"
+  description = "JDBC URL (hostname)"
   type        = string
 }
 
@@ -49,11 +57,19 @@ variable "nessie_database_name" {
   type        = string
 }
 
+# ============================================
+# Warehouse Configuration
+# ============================================
+
 variable "nessie_default_warehouse" {
   description = "Default warehouse path"
   type        = string
   default     = "warehouse"
 }
+
+# ============================================
+# S3/MinIO Configuration
+# ============================================
 
 variable "nessie_s3_bucket" {
   description = "S3/MinIO bucket name"
@@ -83,11 +99,19 @@ variable "nessie_s3_access_key_secret" {
   sensitive   = true
 }
 
+# ============================================
+# Service Configuration
+# ============================================
+
 variable "tailscale_expose" {
   description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
+
+# ============================================
+# Resources Configuration
+# ============================================
 
 variable "nessie_resources_config" {
   description = "Resource requests/limits"
@@ -111,4 +135,14 @@ variable "nessie_resources_config" {
       memory = "256Mi"
     }
   }
+}
+
+# ============================================
+# Additional Helm Values
+# ============================================
+
+variable "values" {
+  description = "Additional Helm values to merge (supports all chart values). These values will override any defaults."
+  type        = any
+  default     = {}
 }

@@ -1,24 +1,141 @@
 locals {
-  prefix = var.prefix
+  prefix       = var.prefix
   release_name = "${local.prefix}-release"
 
-  coordinator_resources_requests_cpu = var.trino_resources_config["coordinator"].requests.cpu
-  coordinator_resources_requests_ram = var.trino_resources_config["coordinator"].requests.ram
-  coordinator_resources_limits_cpu   = var.trino_resources_config["coordinator"].limits.cpu
-  coordinator_resources_limits_ram   = var.trino_resources_config["coordinator"].limits.ram
-
-  worker_resources_requests_cpu = var.trino_resources_config["worker"].requests.cpu
-  worker_resources_requests_ram = var.trino_resources_config["worker"].requests.ram
-  worker_resources_limits_cpu   = var.trino_resources_config["worker"].limits.cpu
-  worker_resources_limits_ram   = var.trino_resources_config["worker"].limits.ram
-
+  # Render catalog configurations from template
   rendered_catalogs = {
     for catalog in var.enabled_catalogs :
-    "catalogs.${catalog.name}" =>
-    templatefile("${path.module}/templates/catalog.tpl", {
+    catalog.name => templatefile("${path.module}/templates/catalog.tpl", {
       params = catalog.params
     })
   }
+
+  # Build additional config properties list with shared secret as first item
+  additional_config_properties_list = concat(
+    ["internal-communication.shared-secret=${var.trino_shared_secret}"],
+    var.additional_config_properties
+  )
+
+  # Default values - structured like rustfs pattern
+  default_values = {
+    # Fullname override
+    fullnameOverride = local.release_name
+
+    # Image configuration
+    image = {
+      repository = var.image_repository
+      tag        = var.image_tag
+    }
+
+    # Service configuration
+    service = {
+      annotations = {
+        "tailscale.com/expose"   = tostring(var.tailscale_expose)
+        "tailscale.com/hostname" = "${var.prefix}-int"
+      }
+    }
+
+    # Server configuration
+    server = {
+      workers = var.worker_count
+    }
+
+    # Coordinator configuration
+    coordinator = {
+      jvm = {
+        maxHeapSize = var.trino_coordinator_jvm_max_heap_size
+      }
+      config = {
+        query = {
+          maxMemoryPerNode = var.trino_coordinator_query_max_memory
+        }
+        nodeScheduler = {
+          includeCoordinator = var.coordinator_as_worker
+        }
+      }
+      resources = {
+        requests = {
+          cpu    = var.trino_resources_config["coordinator"].requests.cpu
+          memory = var.trino_resources_config["coordinator"].requests.ram
+        }
+        limits = {
+          cpu    = var.trino_resources_config["coordinator"].limits.cpu
+          memory = var.trino_resources_config["coordinator"].limits.ram
+        }
+      }
+    }
+
+    # Worker configuration
+    worker = {
+      jvm = {
+        maxHeapSize = var.trino_worker_jvm_max_heap_size
+      }
+      config = {
+        query = {
+          maxMemoryPerNode = var.trino_worker_query_max_memory
+        }
+      }
+      resources = {
+        requests = {
+          cpu    = var.trino_resources_config["worker"].requests.cpu
+          memory = var.trino_resources_config["worker"].requests.ram
+        }
+        limits = {
+          cpu    = var.trino_resources_config["worker"].limits.cpu
+          memory = var.trino_resources_config["worker"].limits.ram
+        }
+      }
+    }
+
+    # Persistence configuration
+    persistence = {
+      enabled = true
+    }
+
+    # Catalogs configuration
+    catalogs = local.rendered_catalogs
+
+    # Additional config properties
+    additionalConfigProperties = local.additional_config_properties_list
+
+    # Access control configuration
+    accessControl = {
+      type          = "configmap"
+      refreshPeriod = "60s"
+      configFile    = "rules.json"
+      rules = {
+        "rules.json" = jsonencode({
+          catalogs = [
+            {
+              user    = "admin"
+              catalog = ".*"
+              allow   = "read-only"
+            }
+          ]
+          schemas = [
+            {
+              user    = "admin"
+              catalog = ".*"
+              schema  = ".*"
+              owner   = false
+            }
+          ]
+          tables = [
+            {
+              user       = "admin"
+              catalog    = ".*"
+              schema     = ".*"
+              table      = ".*"
+              privileges = ["SELECT"]
+            }
+          ]
+        })
+      }
+    }
+  }
+
+  # Merge default values with user-provided values
+  merged_values = merge(local.default_values, var.values)
 }
 
 resource "helm_release" "trino" {
@@ -28,125 +145,9 @@ resource "helm_release" "trino" {
   chart      = var.chart_name
   version    = var.chart_version
 
-  values = [<<EOF
-  service:
-    annotations:
-      tailscale.com/expose: "${var.tailscale_expose}"
-      tailscale.com/hostname: "${var.prefix}-int"
-  coordinator:
-    resources:
-      requests:
-        cpu: "${local.coordinator_resources_requests_cpu}"
-        memory: "${local.coordinator_resources_requests_ram}"
-      limits:
-        cpu: "${local.coordinator_resources_limits_cpu}"
-        memory: "${local.coordinator_resources_limits_ram}"
-  worker:
-    resources:
-      requests:
-        cpu: "${local.worker_resources_requests_cpu}"
-        memory: "${local.worker_resources_requests_ram}"
-      limits:
-        cpu: "${local.worker_resources_limits_cpu}"
-        memory: "${local.worker_resources_limits_ram}"
-  accessControl:
-    type: configmap
-    refreshPeriod: 60s
-    configFile: "rules.json"
-    rules:
-      rules.json: |
-        {
-          "catalogs": [
-            {
-              "user": "admin",
-              "catalog": ".*",
-              "allow": "read-only"
-            }
-          ],
-          "schemas": [
-            {
-              "user": "admin",
-              "catalog": ".*",
-              "schema": ".*",
-              "owner": false
-            }
-          ],
-          "tables": [
-            {
-              "user": "admin",
-              "catalog": ".*",
-              "schema": ".*",
-              "table": ".*",
-              "privileges": ["SELECT"]
-            }
-          ]
-        }
-  EOF
+  values = [
+    yamlencode(local.merged_values)
   ]
-
-  set = [
-    {
-        name = "image.repository"
-        value = var.image_repository
-    },
-    {
-        name = "image.tag"
-        value = var.image_tag
-    },
-    {
-        name = "server.workers"
-        value = var.worker_count
-    },
-    {
-        name = "coordinator.jvm.maxHeapSize"
-        value = var.trino_coordinator_jvm_max_heap_size
-    },
-    {
-        name = "coordinator.config.query.maxMemoryPerNode"
-        value = var.trino_coordinator_query_max_memory
-    },
-    {
-        name = "worker.jvm.maxHeapSize"
-        value = var.trino_worker_jvm_max_heap_size
-    },
-    {
-        name = "worker.config.query.maxMemoryPerNode"
-        value = var.trino_worker_query_max_memory
-    },
-    {
-        name = "persistence.enabled"
-        value = "true"
-    },
-    {
-        name = "coordinator.config.nodeScheduler.includeCoordinator"
-        value = var.coordinator_as_worker 
-    },
-    {
-        name = "fullnameOverride"
-        value = "${local.release_name}"
-    }
-  ]
-
-  set_sensitive = concat(
-    [
-      for name, value in local.rendered_catalogs : {
-        name  = name
-        value = value
-      }
-    ],
-    [
-      {
-        name  = "additionalConfigProperties[0]"
-        value = "internal-communication.shared-secret=${var.trino_shared_secret}"
-      }
-    ],
-    [
-      for idx, property in var.additional_config_properties : {
-        name  = "additionalConfigProperties[${idx + 1}]"
-        value = property
-      }
-    ]
-  )
 }
 
 data "kubernetes_config_map" "trino_acl" {
@@ -155,5 +156,5 @@ data "kubernetes_config_map" "trino_acl" {
     namespace = var.namespace
   }
 
-  depends_on = [ helm_release.trino ]
+  depends_on = [helm_release.trino]
 }

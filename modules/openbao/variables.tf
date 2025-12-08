@@ -1,4 +1,7 @@
-# General Configuration
+# ============================================
+# Core Configuration
+# ============================================
+
 variable "openbao_fullname_override" {
   description = "Helm release fullname override"
   type        = string
@@ -11,13 +14,26 @@ variable "openbao_namespace" {
   default     = "openbao"
 }
 
+variable "chart_version" {
+  description = "OpenBao Helm chart version"
+  type        = string
+  default     = "0.20.0"
+}
+
+# ============================================
+# Service Configuration
+# ============================================
+
 variable "tailscale_expose" {
   description = "Expose service via Tailscale"
   type        = string
   default     = "false"
 }
 
+# ============================================
 # Secrets Configuration
+# ============================================
+
 variable "server_storage_secret_name" {
   description = "Secret name for server config (config.hcl)"
   type        = string
@@ -30,7 +46,10 @@ variable "server_unseal_secret_name" {
   default     = "openbao-unseal-key"
 }
 
+# ============================================
 # Server Storage Configuration
+# ============================================
+
 variable "server_data_storage" {
   description = "Server data storage configuration"
   type = object({
@@ -59,7 +78,10 @@ variable "server_audit_storage" {
   }
 }
 
-# Standalone Mode
+# ============================================
+# Standalone Mode Configuration
+# ============================================
+
 variable "server_standalone_enabled" {
   description = "Enable standalone mode"
   type        = bool
@@ -80,7 +102,10 @@ variable "server_standalone_config" {
   EOT
 }
 
-# High Availability Mode
+# ============================================
+# High Availability Mode Configuration
+# ============================================
+
 variable "server_ha_enabled" {
   description = "Enable HA mode"
   type        = bool
@@ -121,7 +146,10 @@ variable "server_ha_config" {
   EOT
 }
 
+# ============================================
 # UI Configuration
+# ============================================
+
 variable "ui_enabled" {
   description = "Enable web UI"
   type        = bool
@@ -132,4 +160,14 @@ variable "ui_external_port" {
   description = "External UI port"
   type        = number
   default     = 80
+}
+
+# ============================================
+# Additional Helm Values
+# ============================================
+
+variable "values" {
+  description = "Additional Helm values to merge (supports all chart values). These values will override any defaults."
+  type        = any
+  default     = {}
 }

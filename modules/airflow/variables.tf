@@ -1,3 +1,7 @@
+# ============================================
+# Core Configuration
+# ============================================
+
 variable "namespace" {
   description = "Namespace for Airflow deployment"
   type        = string
@@ -22,6 +26,26 @@ variable "chart_version" {
   default     = "1.18.0"
 }
 
+# ============================================
+# Image Configuration
+# ============================================
+
+variable "image_repository" {
+  description = "Container image repository"
+  type        = string
+  default     = "apache/airflow"
+}
+
+variable "image_tag" {
+  description = "Container image tag"
+  type        = string
+  default     = "3.0.6"
+}
+
+# ============================================
+# Authentication & Secrets
+# ============================================
+
 variable "airflow_metadata_db_conn" {
   description = "SQLAlchemy connection string (postgresql://user:pass@host:port/db)"
   type        = string
@@ -39,6 +63,16 @@ variable "airflow_api_secret_key" {
   type        = string
   sensitive   = true
 }
+
+variable "airflow_default_password" {
+  description = "Default webserver password"
+  type        = string
+  sensitive   = true
+}
+
+# ============================================
+# Git Sync Configuration
+# ============================================
 
 variable "git_auth_method" {
   description = "Git auth method (ssh or pat)"
@@ -69,54 +103,6 @@ variable "git_password" {
   type        = string
   default     = null
   sensitive   = true
-}
-
-variable "tailscale_expose" {
-  description = "Expose service via Tailscale"
-  type        = bool
-  default     = false
-}
-
-variable "airflow_scheduler_replicas" {
-  description = "Number of scheduler replicas"
-  type        = number
-  default     = 1
-}
-
-variable "airflow_log_retention_days" {
-  description = "Log retention period in days"
-  type        = number
-  default     = 7
-}
-
-variable "airflow_enable_triggerer" {
-  description = "Enable triggerer component"
-  type        = bool
-  default     = false
-}
-
-variable "airflow_triggerer_replicas" {
-  description = "Number of triggerer replicas"
-  type        = number
-  default     = 1
-}
-
-variable "airflow_dag_processor_replicas" {
-  description = "Number of DAG processor replicas"
-  type        = number
-  default     = 1
-}
-
-variable "airflow_dag_processor_enabled" {
-  description = "Enable DAG processor"
-  type        = bool
-  default     = true
-}
-
-variable "airflow_logs_bucket_name" {
-  description = "S3 bucket name for remote logs"
-  type        = string
-  default     = null
 }
 
 variable "airflow_dags_git_sync_enabled" {
@@ -154,16 +140,116 @@ variable "airflow_dags_git_sync_subpath" {
   default     = ""
 }
 
-variable "image_repository" {
-  description = "Container image repository"
+# ============================================
+# Executor Configuration
+# ============================================
+
+variable "airflow_executor" {
+  description = "Executor type (CeleryExecutor or KubernetesExecutor)"
   type        = string
-  default     = "apache/airflow"
+  default     = "KubernetesExecutor"
+
+  validation {
+    condition     = contains(["CeleryExecutor", "KubernetesExecutor"], var.airflow_executor)
+    error_message = "Must be 'CeleryExecutor' or 'KubernetesExecutor'"
+  }
 }
 
-variable "image_tag" {
-  description = "Container image tag"
+# ============================================
+# Scheduler Configuration
+# ============================================
+
+variable "airflow_scheduler_replicas" {
+  description = "Number of scheduler replicas"
+  type        = number
+  default     = 1
+}
+
+# ============================================
+# Triggerer Configuration
+# ============================================
+
+variable "airflow_enable_triggerer" {
+  description = "Enable triggerer component"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_triggerer_replicas" {
+  description = "Number of triggerer replicas"
+  type        = number
+  default     = 1
+}
+
+# ============================================
+# DAG Processor Configuration
+# ============================================
+
+variable "airflow_dag_processor_enabled" {
+  description = "Enable DAG processor"
+  type        = bool
+  default     = true
+}
+
+variable "airflow_dag_processor_replicas" {
+  description = "Number of DAG processor replicas"
+  type        = number
+  default     = 1
+}
+
+# ============================================
+# Worker Configuration
+# ============================================
+
+variable "airflow_worker_replicas" {
+  description = "Number of worker replicas"
+  type        = number
+  default     = 1
+}
+
+variable "airflow_worker_keda_enabled" {
+  description = "Enable KEDA autoscaling for workers"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_worker_keda_min_replicas" {
+  description = "Min worker replicas with KEDA"
+  type        = number
+  default     = 0
+}
+
+variable "airflow_worker_keda_max_replicas" {
+  description = "Max worker replicas with KEDA"
+  type        = number
+  default     = 3
+}
+
+# ============================================
+# Flower Configuration
+# ============================================
+
+variable "airflow_flower_enabled" {
+  description = "Enable Flower monitoring UI"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_flower_credential" {
+  description = "Flower UI credentials (user:pass)"
   type        = string
-  default     = "3.0.6"
+  sensitive   = true
+  default     = "admin:admin"
+}
+
+# ============================================
+# Logging Configuration
+# ============================================
+
+variable "airflow_log_retention_days" {
+  description = "Log retention period in days"
+  type        = number
+  default     = 7
 }
 
 variable "enable_log_groomer_sidecar" {
@@ -172,11 +258,41 @@ variable "enable_log_groomer_sidecar" {
   default     = false
 }
 
+variable "enable_remote_logging" {
+  description = "Enable remote logging to S3"
+  type        = bool
+  default     = false
+}
+
+variable "airflow_logs_bucket_name" {
+  description = "S3 bucket name for remote logs"
+  type        = string
+  default     = null
+}
+
+# ============================================
+# Cleanup Configuration
+# ============================================
+
+variable "airflow_kubernetes_cleanup_enabled" {
+  description = "Enable Kubernetes pod cleanup job"
+  type        = bool
+  default     = false
+}
+
+# ============================================
+# StatsD Configuration
+# ============================================
+
 variable "enable_statsd" {
   description = "Enable StatsD metrics"
   type        = bool
   default     = false
 }
+
+# ============================================
+# AWS/S3 Configuration
+# ============================================
 
 variable "aws_access_key_id" {
   description = "AWS access key ID"
@@ -204,71 +320,19 @@ variable "aws_endpoint_url" {
   default     = ""
 }
 
-variable "airflow_default_password" {
-  description = "Default webserver password"
-  type        = string
-  sensitive   = true
-}
+# ============================================
+# Service Configuration
+# ============================================
 
-variable "enable_remote_logging" {
-  description = "Enable remote logging to S3"
+variable "tailscale_expose" {
+  description = "Expose service via Tailscale"
   type        = bool
   default     = false
 }
 
-variable "airflow_executor" {
-  description = "Executor type (CeleryExecutor or KubernetesExecutor)"
-  type        = string
-  default     = "KubernetesExecutor"
-
-  validation {
-    condition     = contains(["CeleryExecutor", "KubernetesExecutor"], var.airflow_executor)
-    error_message = "Must be 'CeleryExecutor' or 'KubernetesExecutor'"
-  }
-}
-
-variable "airflow_worker_replicas" {
-  description = "Number of worker replicas"
-  type        = number
-  default     = 1
-}
-
-variable "airflow_worker_keda_enabled" {
-  description = "Enable KEDA autoscaling for workers"
-  type        = bool
-  default     = false
-}
-
-variable "airflow_worker_keda_min_replicas" {
-  description = "Min worker replicas with KEDA"
-  type        = number
-  default     = 0
-}
-
-variable "airflow_worker_keda_max_replicas" {
-  description = "Max worker replicas with KEDA"
-  type        = number
-  default     = 3
-}
-
-variable "airflow_flower_credential" {
-  description = "Flower UI credentials (user:pass)"
-  type        = string
-  sensitive   = true
-  default     = "admin:admin"
-}
-
-variable "airflow_flower_enabled" {
-  description = "Enable Flower monitoring UI"
-  type        = bool
-  default     = false
-}
-
-variable "airflow_kubernetes_cleanup_enabled" {
-  description = "Enable Kubernetes pod cleanup job"
-  type        = bool
-  default     = false
-}
+# ============================================
+# Resources Configuration
+# ============================================
 
 variable "airflow_resources_config" {
   description = "Resource requests/limits per component"
@@ -394,4 +458,14 @@ variable "airflow_resources_config" {
       }
     }
   }
+}
+
+# ============================================
+# Additional Helm Values
+# ============================================
+
+variable "values" {
+  description = "Additional Helm values to merge (supports all chart values). These values will override any defaults."
+  type        = any
+  default     = {}
 }

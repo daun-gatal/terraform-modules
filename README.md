@@ -79,6 +79,12 @@ S3-compatible object storage with operator-based deployment.
 - **Key vars:** `minio_root_password`*(required, 8+ chars)*, `buckets`, `storage_size`(5Gi)
 - **Outputs:** `minio_service_dns`, `minio_service_port`, credentials
 
+#### 🦀 RustFS (`modules/rustfs/`)
+High-performance S3-compatible object storage written in Rust.
+- **Features:** MinIO API compatible, lightweight, deployment/statefulset modes
+- **Key vars:** `auth_access_key`*(required)*, `auth_secret_key`*(required)*, `replica_count`(1), `deployment_type`(deployment)
+- **Outputs:** `rustfs_service_dns`, `rustfs_service_port`, credentials
+
 #### 🔐 OpenBao (`modules/openbao/`)
 Secrets management (Vault fork).
 - **Features:** Standalone/HA mode, web UI, Tailscale integration
@@ -136,16 +142,16 @@ Business intelligence and visualization.
 Build a modern data platform with modular components:
 
 ```
-┌─────────────┐    ┌──────────┐    ┌─────────┐
-│  PostgreSQL │◄───┤ Airflow  │───►│  MinIO  │
-│  (Metadata) │    │(Workflow)│    │(Storage)│
-└─────────────┘    └──────────┘    └─────────┘
-       ▲                │                │
-       │                ▼                ▼
-┌──────┴───────┐   ┌────────────────────┐
-│ Nessie/      │◄──┤      Kafka         │
-│ Gravitino    │   │   (Streaming)      │
-│ (Catalog)    │   └────────────────────┘
+┌─────────────┐    ┌──────────┐    ┌─────────────────┐
+│  PostgreSQL │◄───┤ Airflow  │───►│ MinIO / RustFS  │
+│  (Metadata) │    │(Workflow)│    │    (Storage)    │
+└─────────────┘    └──────────┘    └─────────────────┘
+       ▲                │                   │
+       │                ▼                   ▼
+┌──────┴───────┐   ┌────────────────────────┐
+│ Nessie/      │◄──┤        Kafka           │
+│ Gravitino    │   │     (Streaming)        │
+│ (Catalog)    │   └────────────────────────┘
 └──────┬───────┘            
        │                    
        ▼                    
@@ -155,7 +161,7 @@ Build a modern data platform with modular components:
    └───────┘    └──────────┘
 ```
 
-**Data Flow:** Airflow orchestrates → Kafka streams → MinIO stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
+**Data Flow:** Airflow orchestrates → Kafka streams → MinIO/RustFS stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
 
 **Security:** OpenBao for secrets, Tailscale for networking, PostgreSQL for shared metadata
 

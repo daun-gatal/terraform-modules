@@ -1,11 +1,94 @@
 locals {
-  prefix = var.prefix
-  release_name = "${local.prefix}-release"
-  secret_name = "${local.prefix}-secret"
-  s3_secret_name = "${local.prefix}-s3-secret"
+  prefix                = var.prefix
+  release_name          = "${local.prefix}-release"
+  secret_name           = "${local.prefix}-secret"
+  s3_secret_name        = "${local.prefix}-s3-secret"
   s3_warehouse_location = "s3://${var.nessie_s3_bucket}/${var.nessie_default_warehouse}"
+
+  # Default values - structured like rustfs pattern
+  default_values = {
+    # Fullname override
+    fullnameOverride = local.release_name
+
+    # Version store type
+    versionStoreType = "JDBC2"
+
+    # Service configuration
+    service = {
+      annotations = {
+        "tailscale.com/expose"   = tostring(var.tailscale_expose)
+        "tailscale.com/hostname" = "${local.prefix}-int"
+      }
+    }
+
+    # Resources configuration
+    resources = {
+      requests = {
+        cpu    = var.nessie_resources_config.requests.cpu
+        memory = var.nessie_resources_config.requests.memory
+      }
+      limits = {
+        cpu    = var.nessie_resources_config.limits.cpu
+        memory = var.nessie_resources_config.limits.memory
+      }
+    }
+
+    # JDBC configuration
+    jdbc = {
+      jdbcUrl = "jdbc:postgresql://${var.nessie_jdbc_url}:${var.nessie_jdbc_port}/${var.nessie_database_name}?currentSchema=public"
+      secret = {
+        name     = local.secret_name
+        username = "username"
+        password = "password"
+      }
+    }
+
+    # Catalog configuration
+    catalog = {
+      enabled = true
+      iceberg = {
+        defaultWarehouse = var.nessie_default_warehouse
+        warehouses = [
+          {
+            name     = var.nessie_default_warehouse
+            location = local.s3_warehouse_location
+          }
+        ]
+      }
+      storage = {
+        s3 = {
+          defaultOptions = {
+            region          = var.nessie_s3_region
+            endpoint        = var.nessie_s3_endpoint
+            pathStyleAccess = true
+            accessKeySecret = {
+              name               = local.s3_secret_name
+              awsAccessKeyId     = "id"
+              awsSecretAccessKey = "secret"
+            }
+          }
+        }
+      }
+    }
+
+    # Metrics configuration
+    metrics = {
+      enabled = false
+    }
+
+    # Service monitor configuration
+    serviceMonitor = {
+      enabled = false
+    }
+  }
+
+  # Merge default values with user-provided values
+  merged_values = merge(local.default_values, var.values)
 }
 
+# -------------------------------
+# Kubernetes Secrets
+# -------------------------------
 resource "kubernetes_secret" "nessie_jdbc" {
   metadata {
     name      = local.secret_name
@@ -27,13 +110,16 @@ resource "kubernetes_secret" "nessie_s3" {
   }
 
   data = {
-    id = var.nessie_s3_access_key_name
+    id     = var.nessie_s3_access_key_name
     secret = var.nessie_s3_access_key_secret
   }
 
   type = "Opaque"
 }
 
+# -------------------------------
+# Helm Release
+# -------------------------------
 resource "helm_release" "nessie" {
   name       = local.release_name
   namespace  = var.namespace
@@ -41,96 +127,12 @@ resource "helm_release" "nessie" {
   chart      = var.chart_name
   version    = var.chart_version
 
-  values = [<<EOF
-  service:
-    annotations:
-      tailscale.com/expose: "${var.tailscale_expose}"
-      tailscale.com/hostname: "${local.prefix}-int"
-  resources:
-    requests:
-      memory: "${var.nessie_resources_config.requests.memory}"
-      cpu: "${var.nessie_resources_config.requests.cpu}"
-    limits:
-      memory: "${var.nessie_resources_config.limits.memory}"
-      cpu: "${var.nessie_resources_config.limits.cpu}"
-  EOF
+  values = [
+    yamlencode(local.merged_values)
   ]
 
-  set = [
-    {
-      name  = "versionStoreType"
-      value = "JDBC2"
-    },
-    {
-        name = "catalog.enabled"
-        value = "true"
-    },
-    {
-        name = "catalog.iceberg.defaultWarehouse"
-        value = var.nessie_default_warehouse
-    },
-    {
-        name = "catalog.iceberg.warehouses[0].name"
-        value = var.nessie_default_warehouse
-    },
-    {
-        name = "catalog.iceberg.warehouses[0].location"
-        value = local.s3_warehouse_location
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.region"
-        value = var.nessie_s3_region
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.endpoint"
-        value = var.nessie_s3_endpoint
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.pathStyleAccess"
-        value = "true"
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.accessKeySecret.name"
-        value = local.s3_secret_name
-    },
-    {
-        name = "metrics.enabled"
-        value = "false"
-    },
-    {
-        name = "serviceMonitor.enabled"
-        value = "false"
-    },
-    {
-        name = "fullnameOverride"
-        value = "${local.release_name}"
-    }
-  ]
-
-  set_sensitive = [
-    {
-        name = "jdbc.jdbcUrl"
-        value = "jdbc:postgresql://${var.nessie_jdbc_url}:${var.nessie_jdbc_port}/${var.nessie_database_name}?currentSchema=public"
-    },
-    {
-        name = "jdbc.secret.name"
-        value = local.secret_name
-    },
-    {
-        name = "jdbc.secret.username"
-        value = "username"
-    },
-    {
-        name = "jdbc.secret.password"
-        value = "password"
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsAccessKeyId"
-        value = "id"
-    },
-    {
-        name = "catalog.storage.s3.defaultOptions.accessKeySecret.awsSecretAccessKey"
-        value = "secret"
-    }
+  depends_on = [
+    kubernetes_secret.nessie_jdbc,
+    kubernetes_secret.nessie_s3
   ]
 }
