@@ -98,6 +98,12 @@ Workflow orchestration with git-sync DAG management.
 - **Key vars:** `airflow_metadata_db_conn`*(required)*, `airflow_fernet_key`*, `airflow_dags_git_sync_repo`*, `git_auth_method`(ssh)
 - **Version:** Chart 1.18.0, Image apache/airflow:3.0.6
 
+#### 🚀 Kestra (`modules/kestra/`)
+Declarative workflow orchestration with YAML-based pipelines.
+- **Features:** Standalone/distributed modes, Docker-in-Docker tasks, HPA autoscaling, Tailscale support
+- **Key vars:** `deployment_mode`(standalone), `application_config`, `dind_enabled`(true), `tailscale_expose`(false)
+- **Version:** Chart 1.0.22
+
 #### 🌊 Kafka (`modules/kafka/`)
 Event streaming with Strimzi operator (KRaft mode, no Zookeeper).
 - **Features:** Kafka 4.0, optional UI (Kafbat), ephemeral/persistent storage
@@ -142,12 +148,12 @@ Business intelligence and visualization.
 Build a modern data platform with modular components:
 
 ```
-┌─────────────┐    ┌──────────┐    ┌─────────────────┐
-│  PostgreSQL │◄───┤ Airflow  │───►│ MinIO / RustFS  │
-│  (Metadata) │    │(Workflow)│    │    (Storage)    │
-└─────────────┘    └──────────┘    └─────────────────┘
-       ▲                │                   │
-       │                ▼                   ▼
+┌─────────────┐    ┌───────────────────┐    ┌─────────────────┐
+│  PostgreSQL │◄───┤ Airflow / Kestra  │───►│ MinIO / RustFS  │
+│  (Metadata) │    │   (Workflow)      │    │    (Storage)    │
+└─────────────┘    └───────────────────┘    └─────────────────┘
+       ▲                    │                       
+       │                    ▼                       
 ┌──────┴───────┐   ┌────────────────────────┐
 │ Nessie/      │◄──┤        Kafka           │
 │ Gravitino    │   │     (Streaming)        │
@@ -161,7 +167,7 @@ Build a modern data platform with modular components:
    └───────┘    └──────────┘
 ```
 
-**Data Flow:** Airflow orchestrates → Kafka streams → MinIO/RustFS stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
+**Data Flow:** Airflow/Kestra orchestrates → Kafka streams → MinIO/RustFS stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
 
 **Security:** OpenBao for secrets, Tailscale for networking, PostgreSQL for shared metadata
 
