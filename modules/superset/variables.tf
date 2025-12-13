@@ -69,6 +69,13 @@ variable "oauth_config" {
   sensitive   = true
 }
 
+variable "superset_secret_name" {
+  description = "Name of an existing Kubernetes Secret for Superset. The secret must contain the following env vars: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS, REDIS_HOST, REDIS_PORT, REDIS_PROTO, SUPERSET_SECRET_KEY."
+  type        = string
+  default     = "superset-custom-secret"
+}
+
+
 # ============================================
 # Database Configuration
 # ============================================

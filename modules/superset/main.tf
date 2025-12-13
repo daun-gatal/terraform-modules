@@ -10,6 +10,8 @@ locals {
     # Fullname override
     fullnameOverride = local.release_name
 
+    envFromSecret = var.superset_secret_name
+
     # Bootstrap script to install extra pip packages using uv
     bootstrapScript = <<-EOT
     #!/bin/bash
