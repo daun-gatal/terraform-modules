@@ -12,19 +12,19 @@ locals {
     fullnameOverride = local.release_name
 
     # Bootstrap script to install extra pip packages using uv
-    bootstrapScript = <<-EOF
-      #!/bin/bash
-      set -e
-      
-      if [ -n "${local.pip_packages}" ]; then
-        echo "Installing packages using uv: ${local.pip_packages}"
-        uv pip install ${local.pip_packages} --python /app/.venv/bin/python
-      fi
-      
-      if [ ! -f ~/bootstrap ]; then
-        echo "Running Superset with uid 0" > ~/bootstrap
-      fi
-    EOF
+    bootstrapScript = <<-EOT
+    #!/bin/bash
+    set -e
+
+    if [ -n "${local.pip_packages}" ]; then
+      echo "Installing packages using uv: ${local.pip_packages}"
+      uv pip install ${local.pip_packages} --python /app/.venv/bin/python
+    fi
+
+    if [ ! -f ~/bootstrap ]; then
+      echo "Running Superset with uid 0" > ~/bootstrap
+    fi
+    EOT
 
     # Image configuration
     image = {
@@ -177,10 +177,10 @@ locals {
 
     # Configuration overrides for secret key only
     configOverrides = {
-      secret = <<-EOF
-import os
-SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
-EOF
+      secret = <<-EOT
+      import os
+      SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
+      EOT
     }
 
     # Init job configuration
