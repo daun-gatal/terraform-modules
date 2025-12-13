@@ -1,7 +1,6 @@
 locals {
   prefix       = var.prefix
   release_name = "${local.prefix}-release"
-  secret_name  = "${local.prefix}-secret"
 
   # Packages to install via pip
   pip_packages = join(" ", var.bootstrap_pip_packages)
@@ -18,7 +17,7 @@ locals {
 
     if [ -n "${local.pip_packages}" ]; then
       echo "Installing packages using uv: ${local.pip_packages}"
-      uv pip install psycopg2-binary redis ${local.pip_packages} --python /app/.venv/bin/python
+      uv pip install psycopg2-binary redis Authlib ${local.pip_packages} --python /app/.venv/bin/python
     fi
 
     if [ ! -f ~/bootstrap ]; then
@@ -47,14 +46,6 @@ locals {
     # Superset node (web server)
     supersetNode = {
       replicaCount = var.superset_node_replicas
-      connections = var.use_external_redis ? {
-        redis_host      = var.external_redis_host
-        redis_port      = var.external_redis_port
-        redis_user      = var.external_redis_user
-        redis_password  = var.external_redis_password
-        redis_cache_db  = var.external_redis_cache_db
-        redis_celery_db = var.external_redis_celery_db
-      } : {}
       resources = {
         requests = {
           cpu    = var.superset_resources_config["supersetNode"].requests.cpu
@@ -152,42 +143,10 @@ locals {
       }
     }
 
-    # Secret values from external secret
-    extraEnvRaw = concat(
-      [
-        {
-          name = "SUPERSET_SECRET_KEY"
-          valueFrom = {
-            secretKeyRef = {
-              name = local.secret_name
-              key  = "secret-key"
-            }
-          }
-        }
-      ],
-      var.use_external_database && var.database_uri != "" ? [
-        {
-          name = "SUPERSET_DATABASE_URI"
-          valueFrom = {
-            secretKeyRef = {
-              name = local.secret_name
-              key  = "database-uri"
-            }
-          }
-        }
-      ] : []
-    )
-
     # Configuration overrides for secrets
     configOverrides = {
       secret = <<-EOT
-      import os
       SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
-      
-      # Database URI from secret (if configured)
-      _db_uri = os.environ.get('SUPERSET_DATABASE_URI')
-      if _db_uri:
-          SQLALCHEMY_DATABASE_URI = _db_uri
       EOT
     }
 
@@ -210,24 +169,6 @@ locals {
   merged_values = merge(local.default_values, var.values)
 }
 
-resource "kubernetes_secret" "superset_secret" {
-  metadata {
-    name      = local.secret_name
-    namespace = var.namespace
-  }
-
-  data = merge(
-    {
-      secret-key = var.superset_secret_key
-    },
-    var.use_external_database && var.database_uri != "" ? {
-      database-uri = var.database_uri
-    } : {}
-  )
-
-  type = "Opaque"
-}
-
 resource "helm_release" "superset" {
   name       = local.release_name
   namespace  = var.namespace
@@ -238,6 +179,4 @@ resource "helm_release" "superset" {
   values = [
     yamlencode(local.merged_values)
   ]
-
-  depends_on = [kubernetes_secret.superset_secret]
 }

@@ -56,13 +56,6 @@ variable "image_pull_policy" {
 # ============================================
 # Authentication & Secrets
 # ============================================
-
-variable "superset_secret_key" {
-  description = "Secret key for Superset (used for session signing and encryption)"
-  type        = string
-  sensitive   = true
-}
-
 variable "admin_password" {
   description = "Admin password"
   type        = string
@@ -72,18 +65,10 @@ variable "admin_password" {
 # ============================================
 # Database Configuration
 # ============================================
-
 variable "use_external_database" {
   description = "Use external PostgreSQL instead of built-in"
   type        = bool
   default     = false
-}
-
-variable "database_uri" {
-  description = "SQLAlchemy database URI for Superset metastore (e.g., postgresql://user:pass@host:5432/superset). Required when use_external_database is true."
-  type        = string
-  default     = ""
-  sensitive   = true
 }
 
 # ============================================
@@ -94,43 +79,6 @@ variable "use_external_redis" {
   description = "Use external Redis instead of built-in"
   type        = bool
   default     = false
-}
-
-variable "external_redis_host" {
-  description = "External Redis host (required when use_external_redis is true)"
-  type        = string
-  default     = ""
-}
-
-variable "external_redis_port" {
-  description = "External Redis port"
-  type        = string
-  default     = "6379"
-}
-
-variable "external_redis_user" {
-  description = "External Redis user (optional)"
-  type        = string
-  default     = ""
-}
-
-variable "external_redis_password" {
-  description = "External Redis password (optional)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "external_redis_cache_db" {
-  description = "External Redis database number for cache"
-  type        = string
-  default     = "1"
-}
-
-variable "external_redis_celery_db" {
-  description = "External Redis database number for Celery"
-  type        = string
-  default     = "0"
 }
 
 # ============================================
@@ -164,7 +112,6 @@ variable "admin_email" {
 # ============================================
 # Superset Node Configuration
 # ============================================
-
 variable "superset_node_replicas" {
   description = "Number of Superset web server replicas"
   type        = number
@@ -185,7 +132,6 @@ variable "service_type" {
 # ============================================
 # Celery Configuration
 # ============================================
-
 variable "enable_celery_worker" {
   description = "Enable Celery worker for async queries"
   type        = bool
@@ -213,7 +159,6 @@ variable "enable_celery_flower" {
 # ============================================
 # Websocket Configuration
 # ============================================
-
 variable "enable_websockets" {
   description = "Enable websocket server for real-time features"
   type        = bool
@@ -223,7 +168,6 @@ variable "enable_websockets" {
 # ============================================
 # Cache Configuration
 # ============================================
-
 variable "cache_default_timeout" {
   description = "Default cache timeout in seconds"
   type        = number
@@ -239,7 +183,6 @@ variable "cache_key_prefix" {
 # ============================================
 # Service Configuration
 # ============================================
-
 variable "tailscale_expose" {
   description = "Expose service via Tailscale"
   type        = bool
@@ -249,7 +192,6 @@ variable "tailscale_expose" {
 # ============================================
 # Resources Configuration
 # ============================================
-
 variable "superset_resources_config" {
   description = "Resource requests/limits per component"
   type = map(object({
@@ -335,7 +277,6 @@ variable "superset_resources_config" {
 # ============================================
 # Bootstrap Configuration
 # ============================================
-
 variable "bootstrap_pip_packages" {
   description = "List of pip packages to install during bootstrap (e.g., database drivers, connectors)"
   type        = list(string)
@@ -345,7 +286,6 @@ variable "bootstrap_pip_packages" {
 # ============================================
 # Additional Helm Values
 # ============================================
-
 variable "values" {
   description = "Additional Helm values to merge (supports all chart values). These values will override any defaults."
   type        = any
