@@ -95,6 +95,8 @@ resource "kubernetes_deployment" "kafka_ui" {
 }
 
 resource "kubernetes_service" "kafka_ui" {
+  depends_on = [kubernetes_deployment.kafka_ui]
+
   metadata {
     name      = "${var.kafka_ui_name}-service"
     namespace = var.namespace
@@ -119,5 +121,51 @@ resource "kubernetes_service" "kafka_ui" {
     }
 
     type = "ClusterIP"
+  }
+}
+
+resource "kubernetes_ingress_v1" "superset_ingress" {
+  count = var.tailscale_funnel ? 1 : 0
+
+  depends_on = [kubernetes_service.kafka_ui]
+
+  metadata {
+    name      = "${kubernetes_service.kafka_ui.metadata[0].name}-funnel"
+    namespace = var.namespace
+
+    annotations = {
+      "tailscale.com/funnel" = "true"
+    }
+  }
+
+  spec {
+    ingress_class_name = "tailscale"
+
+    tls {
+      hosts = [
+        "${var.kafka_ui_name}-ui-ext"
+      ]
+    }
+
+    rule {
+      host = "${var.kafka_ui_name}-ui-ext"
+
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = kubernetes_service.kafka_ui.metadata[0].name
+
+              port {
+                number = kubernetes_service.kafka_ui.spec[0].port[0].port
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

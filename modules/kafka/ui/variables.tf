@@ -51,3 +51,9 @@ variable "tailscale_expose" {
   type        = bool
   default     = false
 }
+
+variable "tailscale_funnel" {
+  description = "Enable Tailscale Funnel for the Superset service"
+  type        = bool
+  default     = false
+}
