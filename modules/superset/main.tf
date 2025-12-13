@@ -18,7 +18,7 @@ locals {
 
     if [ -n "${local.pip_packages}" ]; then
       echo "Installing packages using uv: ${local.pip_packages}"
-      uv pip install ${local.pip_packages} --python /app/.venv/bin/python
+      uv pip install psycopg2-binary redis ${local.pip_packages} --python /app/.venv/bin/python
     fi
 
     if [ ! -f ~/bootstrap ]; then
