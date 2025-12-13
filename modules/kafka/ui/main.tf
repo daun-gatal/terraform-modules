@@ -143,12 +143,12 @@ resource "kubernetes_ingress_v1" "superset_ingress" {
 
     tls {
       hosts = [
-        "${var.kafka_ui_name}-ui-ext"
+        "${var.kafka_ui_name}-ext"
       ]
     }
 
     rule {
-      host = "${var.kafka_ui_name}-ui-ext"
+      host = "${var.kafka_ui_name}-ext"
 
       http {
         path {
