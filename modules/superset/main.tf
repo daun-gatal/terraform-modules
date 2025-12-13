@@ -47,25 +47,14 @@ locals {
     # Superset node (web server)
     supersetNode = {
       replicaCount = var.superset_node_replicas
-      connections = merge(
-        # External database configuration
-        var.use_external_database ? {
-          db_host = var.external_db_host
-          db_port = var.external_db_port
-          db_user = var.external_db_user
-          db_pass = var.external_db_pass
-          db_name = var.external_db_name
-        } : {},
-        # External Redis configuration
-        var.use_external_redis ? {
-          redis_host     = var.external_redis_host
-          redis_port     = var.external_redis_port
-          redis_user     = var.external_redis_user
-          redis_password = var.external_redis_password
-          redis_cache_db = var.external_redis_cache_db
-          redis_celery_db = var.external_redis_celery_db
-        } : {}
-      )
+      connections = var.use_external_redis ? {
+        redis_host      = var.external_redis_host
+        redis_port      = var.external_redis_port
+        redis_user      = var.external_redis_user
+        redis_password  = var.external_redis_password
+        redis_cache_db  = var.external_redis_cache_db
+        redis_celery_db = var.external_redis_celery_db
+      } : {}
       resources = {
         requests = {
           cpu    = var.superset_resources_config["supersetNode"].requests.cpu
@@ -162,24 +151,42 @@ locals {
       }
     }
 
-    # Secret key from external secret
-    extraEnvRaw = [
-      {
-        name = "SUPERSET_SECRET_KEY"
-        valueFrom = {
-          secretKeyRef = {
-            name = local.secret_name
-            key  = "secret-key"
+    # Secret values from external secret
+    extraEnvRaw = concat(
+      [
+        {
+          name = "SUPERSET_SECRET_KEY"
+          valueFrom = {
+            secretKeyRef = {
+              name = local.secret_name
+              key  = "secret-key"
+            }
           }
         }
-      }
-    ]
+      ],
+      var.use_external_database && var.database_uri != "" ? [
+        {
+          name = "SUPERSET_DATABASE_URI"
+          valueFrom = {
+            secretKeyRef = {
+              name = local.secret_name
+              key  = "database-uri"
+            }
+          }
+        }
+      ] : []
+    )
 
-    # Configuration overrides for secret key only
+    # Configuration overrides for secrets
     configOverrides = {
       secret = <<-EOT
       import os
       SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
+      
+      # Database URI from secret (if configured)
+      _db_uri = os.environ.get('SUPERSET_DATABASE_URI')
+      if _db_uri:
+          SQLALCHEMY_DATABASE_URI = _db_uri
       EOT
     }
 
@@ -208,9 +215,14 @@ resource "kubernetes_secret" "superset_secret" {
     namespace = var.namespace
   }
 
-  data = {
-    secret-key = var.superset_secret_key
-  }
+  data = merge(
+    {
+      secret-key = var.superset_secret_key
+    },
+    var.use_external_database && var.database_uri != "" ? {
+      database-uri = var.database_uri
+    } : {}
+  )
 
   type = "Opaque"
 }

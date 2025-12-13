@@ -79,35 +79,11 @@ variable "use_external_database" {
   default     = false
 }
 
-variable "external_db_host" {
-  description = "External database host (required when use_external_database is true)"
-  type        = string
-  default     = ""
-}
-
-variable "external_db_port" {
-  description = "External database port"
-  type        = string
-  default     = "5432"
-}
-
-variable "external_db_user" {
-  description = "External database user"
-  type        = string
-  default     = "superset"
-}
-
-variable "external_db_pass" {
-  description = "External database password"
+variable "database_uri" {
+  description = "SQLAlchemy database URI for Superset metastore (e.g., postgresql://user:pass@host:5432/superset). Required when use_external_database is true."
   type        = string
   default     = ""
   sensitive   = true
-}
-
-variable "external_db_name" {
-  description = "External database name"
-  type        = string
-  default     = "superset"
 }
 
 # ============================================
