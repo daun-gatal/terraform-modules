@@ -3,18 +3,23 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name  = "${local.prefix}-secret"
 
+  # Packages to install via pip
+  pip_packages = join(" ", var.bootstrap_pip_packages)
+
   # Default values - structured like airflow pattern
   default_values = {
     # Fullname override
     fullnameOverride = local.release_name
 
-    # Bootstrap script to install psycopg2 for PostgreSQL support using uv
+    # Bootstrap script to install extra pip packages using uv
     bootstrapScript = <<-EOF
       #!/bin/bash
       set -e
       
-      echo "Installing psycopg2-binary using uv..."
-      uv pip install psycopg2-binary redis --python /app/.venv/bin/python
+      if [ -n "${local.pip_packages}" ]; then
+        echo "Installing packages using uv: ${local.pip_packages}"
+        uv pip install ${local.pip_packages} --python /app/.venv/bin/python
+      fi
       
       if [ ! -f ~/bootstrap ]; then
         echo "Running Superset with uid 0" > ~/bootstrap

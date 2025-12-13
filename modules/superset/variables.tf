@@ -357,6 +357,16 @@ variable "superset_resources_config" {
 }
 
 # ============================================
+# Bootstrap Configuration
+# ============================================
+
+variable "bootstrap_pip_packages" {
+  description = "List of pip packages to install during bootstrap (e.g., database drivers, connectors)"
+  type        = list(string)
+  default     = ["psycopg2-binary", "redis"]
+}
+
+# ============================================
 # Additional Helm Values
 # ============================================
 
