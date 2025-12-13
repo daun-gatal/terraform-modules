@@ -184,3 +184,49 @@ resource "helm_release" "superset" {
     yamlencode(local.merged_values)
   ]
 }
+
+resource "kubernetes_ingress_v1" "superset_ingress" {
+  count = var.tailscale_funnel ? 1 : 0
+
+  depends_on = [helm_release.superset]
+
+  metadata {
+    name      = "${local.prefix}-funnel"
+    namespace = var.namespace
+
+    annotations = {
+      "tailscale.com/funnel" = "true"
+    }
+  }
+
+  spec {
+    ingress_class_name = "tailscale"
+
+    tls {
+      hosts = [
+        "${local.prefix}-web-ext"
+      ]
+    }
+
+    rule {
+      host = "${local.prefix}-web-ext"
+
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = local.release_name
+
+              port {
+                number = var.superset_port
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

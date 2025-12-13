@@ -149,6 +149,12 @@ variable "superset_port" {
   default     = 8088
 }
 
+variable "tailscale_funnel" {
+  description = "Enable Tailscale Funnel for the Superset service"
+  type        = bool
+  default     = false
+}
+
 # ============================================
 # Celery Configuration
 # ============================================
