@@ -47,9 +47,9 @@ locals {
 
     service = {
       type = var.service_type
-      port = var.tailscale_expose ? 80 : 8088
+      port = var.superset_port
       annotations = {
-        "tailscale.com/expose"   = "${var.tailscale_expose}"
+        "tailscale.com/expose"   = tostring(var.tailscale_expose)
         "tailscale.com/hostname" = "${local.prefix}-web-int"
       }
     }

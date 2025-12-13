@@ -143,6 +143,12 @@ variable "service_type" {
   }
 }
 
+variable "superset_port" {
+  description = "Port for Superset service"
+  type        = number
+  default     = 8088
+}
+
 # ============================================
 # Celery Configuration
 # ============================================
