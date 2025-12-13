@@ -141,6 +141,13 @@ Business intelligence and visualization.
 - **Key vars:** `metabase_db_host`*, `metabase_db_password`*
 - **Version:** metabase/metabase:v0.56.x
 
+#### 🦸 Superset (`modules/superset/`)
+Modern data exploration and visualization platform.
+- **Features:** Interactive dashboards, SQL Lab, external PostgreSQL/Redis support, Celery workers, Tailscale integration
+- **Key vars:** `superset_secret_key`*, `admin_password`*, `use_external_database`(false), `use_external_redis`(false), `bootstrap_pip_packages`
+- **Bootstrap:** Installs extra Python packages via `uv` (default: psycopg2-binary, redis)
+- **Version:** Chart 0.14.1, Image apache/superset:5.0.0
+
 > *Variables marked with asterisk (*) are required
 
 ## 🏗️ Architecture
@@ -161,13 +168,13 @@ Build a modern data platform with modular components:
 └──────┬───────┘            
        │                    
        ▼                    
-   ┌───────┐    ┌──────────┐
-   │ Trino │───►│ Metabase │
-   │ (SQL) │    │   (BI)   │
-   └───────┘    └──────────┘
+   ┌───────┐    ┌────────────────────────┐
+   │ Trino │───►│ Metabase / Superset    │
+   │ (SQL) │    │        (BI)            │
+   └───────┘    └────────────────────────┘
 ```
 
-**Data Flow:** Airflow/Kestra orchestrates → Kafka streams → MinIO/RustFS stores → Nessie/Gravitino catalogs → Trino queries → Metabase visualizes
+**Data Flow:** Airflow/Kestra orchestrates → Kafka streams → MinIO/RustFS stores → Nessie/Gravitino catalogs → Trino queries → Metabase/Superset visualizes
 
 **Security:** OpenBao for secrets, Tailscale for networking, PostgreSQL for shared metadata
 
