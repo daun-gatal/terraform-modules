@@ -62,6 +62,13 @@ variable "admin_password" {
   sensitive   = true
 }
 
+variable "oauth_config" {
+  description = "OAuth configuration for Superset authentication"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 # ============================================
 # Database Configuration
 # ============================================

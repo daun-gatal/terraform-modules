@@ -43,6 +43,15 @@ locals {
       }
     }
 
+    service = {
+      type = var.service_type
+      port = var.tailscale_expose ? 80 : 8088
+      annotations = {
+        "tailscale.com/expose"   = "${var.tailscale_expose}"
+        "tailscale.com/hostname" = "${local.prefix}-web-int"
+      }
+    }
+
     # Superset node (web server)
     supersetNode = {
       replicaCount = var.superset_node_replicas
@@ -54,14 +63,6 @@ locals {
         limits = {
           cpu    = var.superset_resources_config["supersetNode"].limits.cpu
           memory = var.superset_resources_config["supersetNode"].limits.ram
-        }
-      }
-      service = {
-        type = var.service_type
-        port = var.tailscale_expose ? 80 : 8088
-        annotations = {
-          "tailscale.com/expose"   = "${var.tailscale_expose}"
-          "tailscale.com/hostname" = "${local.prefix}-web-int"
         }
       }
     }
@@ -148,6 +149,7 @@ locals {
       secret = <<-EOT
       SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
       EOT
+      enable_oauth = var.oauth_config
     }
 
     # Init job configuration
