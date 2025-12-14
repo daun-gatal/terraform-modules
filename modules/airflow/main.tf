@@ -63,7 +63,6 @@ locals {
       defaultUser = {
         password = var.airflow_default_password
       }
-      webserverConfig = var.airflow_webserver_config
     }
 
     # Scheduler configuration
@@ -100,6 +99,7 @@ locals {
 
     # API Server configuration
     apiServer = {
+      apiServerConfig = var.airflow_api_server_config
       service = {
         annotations = {
           "tailscale.com/expose"   = tostring(var.tailscale_expose)

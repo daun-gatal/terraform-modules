@@ -471,10 +471,10 @@ variable "values" {
 }
 
 # ============================================
-# Webserver Configuration
+# API Server Configuration
 # ============================================
-variable "airflow_webserver_config" {
-  description = "Additional webserver configuration options"
+variable "airflow_api_server_config" {
+  description = "Additional API server configuration options"
   type        = string
   default     = ""
 }
