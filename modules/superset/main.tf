@@ -57,6 +57,13 @@ locals {
     # Superset node (web server)
     supersetNode = {
       replicaCount = var.superset_node_replicas
+      autoscaling = {
+        enabled         = var.enable_superset_autoscaling
+        minReplicas     = var.superset_autoscaling_min_replicas
+        maxReplicas     = var.superset_autoscaling_max_replicas
+        targetCPUUtilizationPercentage = var.superset_autoscaling_target_cpu_utilization_percentage
+        targetMemoryUtilizationPercentage  = var.superset_autoscaling_target_memory_utilization_percentage
+      }
       resources = {
         requests = {
           cpu    = var.superset_resources_config["supersetNode"].requests.cpu
@@ -73,6 +80,13 @@ locals {
     supersetWorker = {
       enabled      = var.enable_celery_worker
       replicaCount = var.celery_worker_replicas
+      autoscaling = {
+        enabled         = var.enable_superset_autoscaling
+        minReplicas     = var.superset_autoscaling_min_replicas
+        maxReplicas     = var.superset_autoscaling_max_replicas
+        targetCPUUtilizationPercentage = var.superset_autoscaling_target_cpu_utilization_percentage
+        targetMemoryUtilizationPercentage  = var.superset_autoscaling_target_memory_utilization_percentage
+      }
       resources = {
         requests = {
           cpu    = var.superset_resources_config["supersetWorker"].requests.cpu

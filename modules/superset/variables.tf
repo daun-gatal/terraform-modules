@@ -310,6 +310,39 @@ variable "bootstrap_pip_packages" {
 }
 
 # ============================================
+# Autoscaling Configuration
+# ============================================
+variable "enable_superset_autoscaling" {
+  description = "Enable autoscaling for Superset web server and Celery worker"
+  type        = bool
+  default     = false
+}
+
+variable "superset_autoscaling_min_replicas" {
+  description = "Minimum number of replicas for autoscaling"
+  type        = number
+  default     = 1
+}
+
+variable "superset_autoscaling_max_replicas" {
+  description = "Maximum number of replicas for autoscaling"
+  type        = number
+  default     = 2
+}
+
+variable "superset_autoscaling_target_cpu_utilization_percentage" {
+  description = "Target CPU utilization percentage for autoscaling"
+  type        = number
+  default     = 90
+}
+
+variable "superset_autoscaling_target_memory_utilization_percentage" {
+  description = "Target Memory utilization percentage for autoscaling"
+  type        = number
+  default     = 90
+}
+
+# ============================================
 # Additional Helm Values
 # ============================================
 variable "values" {
