@@ -469,3 +469,12 @@ variable "values" {
   type        = any
   default     = {}
 }
+
+# ============================================
+# Webserver Configuration
+# ============================================
+variable "airflow_webserver_config" {
+  description = "Additional webserver configuration options"
+  type        = string
+  default     = ""
+}

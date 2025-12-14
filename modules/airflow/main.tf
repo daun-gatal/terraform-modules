@@ -63,6 +63,7 @@ locals {
       defaultUser = {
         password = var.airflow_default_password
       }
+      webserverConfig = var.airflow_webserver_config
     }
 
     # Scheduler configuration
