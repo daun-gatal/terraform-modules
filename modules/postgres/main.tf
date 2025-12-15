@@ -22,6 +22,18 @@ resource "kubernetes_manifest" "postgres_cluster" {
       imageName = local.postgres_image
       instances = var.postgres_replicas
 
+      managed = {
+        roles = [
+          {
+            name = var.db_user
+            passwordSecret = kubernetes_secret.postgres_credentials.metadata[0].name
+            ensure = "present"
+            login = true
+            createdb = true
+          }
+        ]
+      }
+
       resources = {
         requests = {
           cpu    = var.postgres_resources_config.requests.cpu
