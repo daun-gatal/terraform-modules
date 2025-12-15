@@ -18,52 +18,56 @@ resource "kubernetes_manifest" "postgres_cluster" {
       }
     }
 
-    spec = {
-      imageName = local.postgres_image
-      instances = var.postgres_replicas
+    spec = merge(
+      {
+        imageName = local.postgres_image
+        instances = var.postgres_replicas
 
-      managed = {
-        roles = [
-          {
-            name = var.db_user
-            passwordSecret = {
+        managed = {
+          roles = [
+            {
+              name = var.db_user
+              passwordSecret = {
+                name = kubernetes_secret.postgres_credentials.metadata[0].name
+              }
+              ensure   = "present"
+              login    = true
+              createdb = true
+            }
+          ]
+        }
+
+        # Database initialization
+        bootstrap = {
+          initdb = {
+            database = var.db_name
+            owner    = var.db_user
+            secret = {
               name = kubernetes_secret.postgres_credentials.metadata[0].name
             }
-            ensure   = "present"
-            login    = true
-            createdb = true
-          }
-        ]
-      }
-
-      resources = var.postgres_resources_config != null ? {
-        requests = var.postgres_resources_config.requests != null ? {
-          cpu    = try(var.postgres_resources_config.requests.cpu, null)
-          memory = try(var.postgres_resources_config.requests.memory, null)
-        } : {}
-        limits = var.postgres_resources_config.limits != null ? {
-          cpu    = try(var.postgres_resources_config.limits.cpu, null)
-          memory = try(var.postgres_resources_config.limits.memory, null)
-        } : {}
-      } : {}
-
-      # Database initialization
-      bootstrap = {
-        initdb = {
-          database = var.db_name
-          owner    = var.db_user
-          secret = {
-            name = kubernetes_secret.postgres_credentials.metadata[0].name
           }
         }
-      }
 
-      # Storage configuration
-      storage = {
-        size         = var.storage_size
-        storageClass = var.storage_class_name
-      }
-    }
+        # Storage configuration
+        storage = {
+          size         = var.storage_size
+          storageClass = var.storage_class_name
+        }
+      },
+      # Resources (only include if configured)
+      var.postgres_resources_config != null ? {
+        resources = {
+          requests = var.postgres_resources_config.requests != null ? {
+            cpu    = try(var.postgres_resources_config.requests.cpu, null)
+            memory = try(var.postgres_resources_config.requests.memory, null)
+          } : null
+          limits = var.postgres_resources_config.limits != null ? {
+            cpu    = try(var.postgres_resources_config.limits.cpu, null)
+            memory = try(var.postgres_resources_config.limits.memory, null)
+          } : null
+        }
+      } : {}
+    )
   }
 }
 

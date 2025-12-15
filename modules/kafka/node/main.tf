@@ -40,14 +40,14 @@ resource "kubernetes_manifest" "kafka_node_pool" {
       },
       var.kafka_node_resources_config != null ? {
         resources = {
-          requests = {
+          requests = var.kafka_node_resources_config.requests != null ? {
             cpu    = try(var.kafka_node_resources_config.requests.cpu, null)
             memory = try(var.kafka_node_resources_config.requests.memory, null)
-          }
-          limits = {
+          } : {}
+          limits = var.kafka_node_resources_config.limits != null ? {
             cpu    = try(var.kafka_node_resources_config.limits.cpu, null)
             memory = try(var.kafka_node_resources_config.limits.memory, null)
-          }
+          } : {}
         }
       } : {}
     )
