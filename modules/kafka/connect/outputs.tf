@@ -1,6 +1,6 @@
 output "kafka_connect_endpoints" {
   description = "Kafka Connect DNS + Port per instance"
-  
+
   value = {
     for name, svc in kubernetes_service.kafka_connect :
     name => {

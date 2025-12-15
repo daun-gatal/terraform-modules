@@ -5,9 +5,9 @@ locals {
   tenant_name = var.tenant_name
   secret_name = "${local.tenant_name}-secret"
   minio_image = "${var.image_repository}:${var.image_tag}"
-  
+
   # Development defaults
-  servers = var.enable_distributed ? 4 : 1
+  servers            = var.enable_distributed ? 4 : 1
   volumes_per_server = 1
 }
 
@@ -41,79 +41,83 @@ resource "kubernetes_manifest" "minio_tenant" {
     }
     spec = {
       # Basic configuration
-      image             = local.minio_image
-      imagePullPolicy   = "IfNotPresent"
-      
+      image           = local.minio_image
+      imagePullPolicy = "IfNotPresent"
+
       # Configuration secret
       configuration = {
         name = kubernetes_secret.minio_credentials.metadata[0].name
       }
-      
+
       # Simple pool configuration
       pools = [
-        {
-          name             = "pool"
-          servers          = local.servers
-          volumesPerServer = local.volumes_per_server
+        merge(
+          {
+            name             = "pool"
+            servers          = local.servers
+            volumesPerServer = local.volumes_per_server
 
-          resources = {
-            limits = {
-              cpu    = var.minio_resources_config.limits.cpu
-              memory = var.minio_resources_config.limits.memory
-            }
-            requests = {
-              cpu    = var.minio_resources_config.requests.cpu
-              memory = var.minio_resources_config.requests.memory
-            }
-          }
-          
-          # Storage
-          volumeClaimTemplate = {
-            metadata = {
-              name = "data"
-            }
-            spec = {
-              accessModes = ["ReadWriteOnce"]
-              resources = {
-                requests = {
-                  storage = var.storage_size
-                }
+            # Storage
+            volumeClaimTemplate = {
+              metadata = {
+                name = "data"
               }
-              storageClassName = var.storage_class_name
+              spec = {
+                accessModes = ["ReadWriteOnce"]
+                resources = {
+                  requests = {
+                    storage = var.storage_size
+                  }
+                }
+                storageClassName = var.storage_class_name
+              }
             }
-          }
-          
-          # Basic security context
-          securityContext = {
-            runAsUser    = 1000
-            runAsGroup   = 1000
-            runAsNonRoot = true
-            fsGroup      = 1000
-          }
-          
-          # Container security
-          containerSecurityContext = {
-            runAsUser                = 1000
-            runAsGroup               = 1000
-            runAsNonRoot             = true
-            allowPrivilegeEscalation = false
-            capabilities = {
-              drop = ["ALL"]
+
+            # Basic security context
+            securityContext = {
+              runAsUser    = 1000
+              runAsGroup   = 1000
+              runAsNonRoot = true
+              fsGroup      = 1000
             }
-          }
-        }
+
+            # Container security
+            containerSecurityContext = {
+              runAsUser                = 1000
+              runAsGroup               = 1000
+              runAsNonRoot             = true
+              allowPrivilegeEscalation = false
+              capabilities = {
+                drop = ["ALL"]
+              }
+            }
+          },
+          # Resources (only if configured)
+          var.minio_resources_config != null ? {
+            resources = {
+              limits = var.minio_resources_config.limits != null ? {
+                cpu    = try(var.minio_resources_config.limits.cpu, null)
+                memory = try(var.minio_resources_config.limits.memory, null)
+              } : {}
+              requests = var.minio_resources_config.requests != null ? {
+                cpu    = try(var.minio_resources_config.requests.cpu, null)
+                memory = try(var.minio_resources_config.requests.memory, null)
+              } : {}
+            }
+          } : {}
+        )
       ]
-      
+
       # Simple mount paths
       mountPath = "/export"
       subPath   = "/data"
-      
+
       # Pod management
       podManagementPolicy = "Parallel"
-      
+
       # TLS configuration (simplified for development)
       requestAutoCert = var.enable_tls
-      
+
       # Service metadata for Tailscale exposure
       serviceMetadata = {
         consoleServiceAnnotations = {
@@ -121,12 +125,12 @@ resource "kubernetes_manifest" "minio_tenant" {
           "tailscale.com/hostname" = "${local.tenant_name}-console-int"
         }
       }
-      
+
       # Bucket creation during tenant provisioning
       buckets = [
         for bucket in var.buckets : {
-          name       = bucket.name
-          region     = bucket.region
+          name   = bucket.name
+          region = bucket.region
         }
       ]
     }
@@ -137,12 +141,12 @@ resource "kubernetes_manifest" "minio_tenant" {
 resource "kubernetes_job" "apply_bucket_policies" {
   count      = length([for b in var.buckets : b if b.expire_days != null || b.noncurrent_expire_days != null]) > 0 ? 1 : 0
   depends_on = [kubernetes_manifest.minio_tenant]
-  
+
   metadata {
     name      = "${local.tenant_name}-bucket-policies"
     namespace = var.namespace
   }
-  
+
   spec {
     template {
       metadata {}

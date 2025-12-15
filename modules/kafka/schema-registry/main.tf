@@ -32,14 +32,17 @@ resource "kubernetes_deployment" "schema_registry" {
             container_port = 8081
           }
 
-          resources {
-            limits = {
-              cpu = var.kafka_schema_registry_resources_config.limits.cpu
-              memory = var.kafka_schema_registry_resources_config.limits.memory
-            }
-            requests = {
-              cpu = var.kafka_schema_registry_resources_config.requests.cpu
-              memory = var.kafka_schema_registry_resources_config.requests.memory
+          dynamic "resources" {
+            for_each = var.kafka_schema_registry_resources_config != null ? [var.kafka_schema_registry_resources_config] : []
+            content {
+              limits = resources.value.limits != null ? {
+                cpu    = try(resources.value.limits.cpu, null)
+                memory = try(resources.value.limits.memory, null)
+              } : {}
+              requests = resources.value.requests != null ? {
+                cpu    = try(resources.value.requests.cpu, null)
+                memory = try(resources.value.requests.memory, null)
+              } : {}
             }
           }
 

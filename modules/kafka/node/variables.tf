@@ -76,25 +76,16 @@ variable "pod_fs_group" {
 }
 
 variable "kafka_node_resources_config" {
-  description = "Resource requests/limits"
+  description = "Resource requests/limits. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = object({
-    limits = object({
-      cpu    = string
-      memory = string
-    })
-    requests = object({
-      cpu    = string
-      memory = string
-    })
+    limits = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
+    requests = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
   })
-  default = {
-    limits = {
-      cpu    = "2"
-      memory = "4Gi"
-    }
-    requests = {
-      cpu    = "500m"
-      memory = "1Gi"
-    }
-  }
+  default = null
 }

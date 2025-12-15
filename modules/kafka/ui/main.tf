@@ -38,18 +38,21 @@ resource "kubernetes_deployment" "kafka_ui" {
           }
 
           env {
-            name = "SPRING_CONFIG_ADDITIONAL-LOCATION"
+            name  = "SPRING_CONFIG_ADDITIONAL-LOCATION"
             value = "/tmp/config.yml"
           }
 
-          resources {
-            limits = {
-              cpu = var.kafka_ui_resources_config.limits.cpu
-              memory = var.kafka_ui_resources_config.limits.memory
-            }
-            requests = {
-              cpu = var.kafka_ui_resources_config.requests.cpu
-              memory = var.kafka_ui_resources_config.requests.memory
+          dynamic "resources" {
+            for_each = var.kafka_ui_resources_config != null ? [var.kafka_ui_resources_config] : []
+            content {
+              limits = resources.value.limits != null ? {
+                cpu    = try(resources.value.limits.cpu, null)
+                memory = try(resources.value.limits.memory, null)
+              } : {}
+              requests = resources.value.requests != null ? {
+                cpu    = try(resources.value.requests.cpu, null)
+                memory = try(resources.value.requests.memory, null)
+              } : {}
             }
           }
 
@@ -82,7 +85,7 @@ resource "kubernetes_deployment" "kafka_ui" {
             read_only  = true
           }
         }
-        
+
         volume {
           name = "kafka-ui-config"
           secret {

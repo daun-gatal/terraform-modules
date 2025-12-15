@@ -89,7 +89,7 @@ resource "kubernetes_service" "rustfs_custom_service" {
   spec {
     selector = {
       "rustfs.tailscale.common/console" = var.fullname_override
-      "rustfs.tailscale.pod/console" = var.fullname_override
+      "rustfs.tailscale.pod/console"    = var.fullname_override
     }
 
     port {

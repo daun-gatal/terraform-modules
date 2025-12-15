@@ -30,22 +30,25 @@ resource "kubernetes_deployment" "kafka_connect" {
 
       spec {
         container {
-          name  = "kafka-connect"
-          image = each.value.image
+          name              = "kafka-connect"
+          image             = each.value.image
           image_pull_policy = "Always"
 
           port {
             container_port = 8083
           }
 
-          resources {
-            limits = {
-              cpu    = each.value.resources.limits.cpu
-              memory = each.value.resources.limits.memory
-            }
-            requests = {
-              cpu    = each.value.resources.requests.cpu
-              memory = each.value.resources.requests.memory
+          dynamic "resources" {
+            for_each = each.value.resources != null ? [each.value.resources] : []
+            content {
+              limits = resources.value.limits != null ? {
+                cpu    = try(resources.value.limits.cpu, null)
+                memory = try(resources.value.limits.memory, null)
+              } : {}
+              requests = resources.value.requests != null ? {
+                cpu    = try(resources.value.requests.cpu, null)
+                memory = try(resources.value.requests.memory, null)
+              } : {}
             }
           }
 

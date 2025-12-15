@@ -29,14 +29,14 @@ output "access_instructions" {
       username     = "admin"
       note         = "Use the airflow_password you set"
     }
-    
+
     minio_console = {
       port_forward = "kubectl port-forward -n storage svc/dev-minio-console 9001:9001"
       url          = "http://localhost:9001"
       username     = "minio"
       note         = "Use the minio_password you set"
     }
-    
+
     postgres = {
       port_forward = "kubectl port-forward -n database svc/postgres-cluster-rw 5432:5432"
       connection   = "psql -h localhost -p 5432 -U dev -d airflow"

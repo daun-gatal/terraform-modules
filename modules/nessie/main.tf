@@ -21,17 +21,17 @@ locals {
       }
     }
 
-    # Resources configuration
-    resources = {
-      requests = {
-        cpu    = var.nessie_resources_config.requests.cpu
-        memory = var.nessie_resources_config.requests.memory
-      }
-      limits = {
-        cpu    = var.nessie_resources_config.limits.cpu
-        memory = var.nessie_resources_config.limits.memory
-      }
-    }
+    # Resources configuration (only if configured)
+    resources = var.nessie_resources_config != null ? {
+      requests = var.nessie_resources_config.requests != null ? {
+        cpu    = try(var.nessie_resources_config.requests.cpu, null)
+        memory = try(var.nessie_resources_config.requests.memory, null)
+      } : {}
+      limits = var.nessie_resources_config.limits != null ? {
+        cpu    = try(var.nessie_resources_config.limits.cpu, null)
+        memory = try(var.nessie_resources_config.limits.memory, null)
+      } : {}
+    } : {}
 
     # JDBC configuration
     jdbc = {

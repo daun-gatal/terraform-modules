@@ -41,51 +41,59 @@ locals {
     }
 
     # Coordinator configuration
-    coordinator = {
-      jvm = {
-        maxHeapSize = var.trino_coordinator_jvm_max_heap_size
-      }
-      config = {
-        query = {
-          maxMemoryPerNode = var.trino_coordinator_query_max_memory
+    coordinator = merge(
+      {
+        jvm = {
+          maxHeapSize = var.trino_coordinator_jvm_max_heap_size
         }
-        nodeScheduler = {
-          includeCoordinator = var.coordinator_as_worker
+        config = {
+          query = {
+            maxMemoryPerNode = var.trino_coordinator_query_max_memory
+          }
+          nodeScheduler = {
+            includeCoordinator = var.coordinator_as_worker
+          }
         }
-      }
-      resources = {
-        requests = {
-          cpu    = var.trino_resources_config["coordinator"].requests.cpu
-          memory = var.trino_resources_config["coordinator"].requests.ram
+      },
+      lookup(var.trino_resources_config, "coordinator", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.trino_resources_config["coordinator"].requests.cpu, null)
+            memory = try(var.trino_resources_config["coordinator"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.trino_resources_config["coordinator"].limits.cpu, null)
+            memory = try(var.trino_resources_config["coordinator"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.trino_resources_config["coordinator"].limits.cpu
-          memory = var.trino_resources_config["coordinator"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Worker configuration
-    worker = {
-      jvm = {
-        maxHeapSize = var.trino_worker_jvm_max_heap_size
-      }
-      config = {
-        query = {
-          maxMemoryPerNode = var.trino_worker_query_max_memory
+    worker = merge(
+      {
+        jvm = {
+          maxHeapSize = var.trino_worker_jvm_max_heap_size
         }
-      }
-      resources = {
-        requests = {
-          cpu    = var.trino_resources_config["worker"].requests.cpu
-          memory = var.trino_resources_config["worker"].requests.ram
+        config = {
+          query = {
+            maxMemoryPerNode = var.trino_worker_query_max_memory
+          }
         }
-        limits = {
-          cpu    = var.trino_resources_config["worker"].limits.cpu
-          memory = var.trino_resources_config["worker"].limits.ram
+      },
+      lookup(var.trino_resources_config, "worker", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.trino_resources_config["worker"].requests.cpu, null)
+            memory = try(var.trino_resources_config["worker"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.trino_resources_config["worker"].limits.cpu, null)
+            memory = try(var.trino_resources_config["worker"].limits.memory, null)
+          }
         }
-      }
-    }
+      } : {}
+    )
 
     # Persistence configuration
     persistence = {

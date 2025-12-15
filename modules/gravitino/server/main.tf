@@ -34,8 +34,17 @@ locals {
       jdbcPassword = var.entity_jdbc_config.password
     } : {}
 
-    # Resources
-    resources = var.resources
+    # Resources (only if configured)
+    resources = var.resources != null ? {
+      requests = var.resources.requests != null ? {
+        cpu    = try(var.resources.requests.cpu, null)
+        memory = try(var.resources.requests.memory, null)
+      } : {}
+      limits = var.resources.limits != null ? {
+        cpu    = try(var.resources.limits.cpu, null)
+        memory = try(var.resources.limits.memory, null)
+      } : {}
+    } : {}
 
     # Service configuration
     service = {

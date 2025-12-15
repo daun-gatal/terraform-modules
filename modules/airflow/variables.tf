@@ -335,129 +335,19 @@ variable "tailscale_expose" {
 # ============================================
 
 variable "airflow_resources_config" {
-  description = "Resource requests/limits per component"
+  description = "Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = map(object({
     requests = optional(object({
-      cpu = optional(string)
-      ram = optional(string)
+      cpu    = optional(string)
+      memory = optional(string)
     }))
     limits = optional(object({
-      cpu = optional(string)
-      ram = optional(string)
+      cpu    = optional(string)
+      memory = optional(string)
     }))
   }))
 
-  default = {
-    scheduler = {
-      requests = {
-        cpu = "200m"
-        ram = "256Mi"
-      }
-      limits = {
-        cpu = "2000m"
-        ram = "4096Mi"
-      }
-    }
-
-    cleanup = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-    }
-
-    apiServer = {
-      requests = {
-        cpu = "200m"
-        ram = "256Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "3072Mi"
-      }
-    }
-
-    triggerer = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-    }
-
-    dagProcessor = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "2048Mi"
-      }
-    }
-
-    workers = {
-      requests = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-      limits = {
-        cpu = "1000m"
-        ram = "8192Mi"
-      }
-    }
-
-    flower = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-    }
-
-    gitSync = {
-      requests = {
-        cpu = "50m"
-        ram = "64Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-    }
-
-    redis = {
-      requests = {
-        cpu = "100m"
-        ram = "256Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "2048Mi"
-      }
-    }
-
-    statsd = {
-      requests = {
-        cpu = "50m"
-        ram = "64Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "1024Mi"
-      }
-    }
-  }
+  default = {}
 }
 
 # ============================================

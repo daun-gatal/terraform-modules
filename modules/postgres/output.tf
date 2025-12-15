@@ -16,13 +16,13 @@ output "postgres_database_name" {
 output "postgres_username" {
   description = "The username for the Postgres database"
   value       = var.db_user
-  sensitive = true
+  sensitive   = true
 }
 
 output "postgres_password" {
   description = "The password for the Postgres database"
   value       = var.db_password
-  sensitive = true
+  sensitive   = true
 }
 
 output "postgres_port" {

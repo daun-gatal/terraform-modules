@@ -1,7 +1,7 @@
 locals {
-  prefix = var.prefix
-  app_label = "${local.prefix}-app"
-  cluster_name = "${local.prefix}-cluster"
+  prefix         = var.prefix
+  app_label      = "${local.prefix}-app"
+  cluster_name   = "${local.prefix}-cluster"
   postgres_image = "${var.image_repository}:${var.image_tag}"
 }
 
@@ -9,7 +9,7 @@ resource "kubernetes_manifest" "postgres_cluster" {
   manifest = {
     apiVersion = "postgresql.cnpg.io/v1"
     kind       = "Cluster"
-    
+
     metadata = {
       name      = local.cluster_name
       namespace = var.namespace
@@ -17,7 +17,7 @@ resource "kubernetes_manifest" "postgres_cluster" {
         app = local.app_label
       }
     }
-    
+
     spec = {
       imageName = local.postgres_image
       instances = var.postgres_replicas
@@ -29,23 +29,23 @@ resource "kubernetes_manifest" "postgres_cluster" {
             passwordSecret = {
               name = kubernetes_secret.postgres_credentials.metadata[0].name
             }
-            ensure = "present"
-            login = true
+            ensure   = "present"
+            login    = true
             createdb = true
           }
         ]
       }
 
-      resources = {
-        requests = {
-          cpu    = var.postgres_resources_config.requests.cpu
-          memory = var.postgres_resources_config.requests.memory
-        }
-        limits = {
-          cpu    = var.postgres_resources_config.limits.cpu
-          memory = var.postgres_resources_config.limits.memory
-        }
-      }
+      resources = var.postgres_resources_config != null ? {
+        requests = var.postgres_resources_config.requests != null ? {
+          cpu    = try(var.postgres_resources_config.requests.cpu, null)
+          memory = try(var.postgres_resources_config.requests.memory, null)
+        } : {}
+        limits = var.postgres_resources_config.limits != null ? {
+          cpu    = try(var.postgres_resources_config.limits.cpu, null)
+          memory = try(var.postgres_resources_config.limits.memory, null)
+        } : {}
+      } : {}
 
       # Database initialization
       bootstrap = {
@@ -95,8 +95,8 @@ resource "kubernetes_manifest" "extra_postgres_databases" {
     }
 
     spec = {
-      name    = each.value
-      owner   = var.db_user
+      name  = each.value
+      owner = var.db_user
       cluster = {
         name = local.cluster_name
       }
@@ -112,15 +112,15 @@ resource "kubernetes_manifest" "extra_postgres_databases" {
 # Apply custom PostgreSQL parameters after cluster creation
 resource "null_resource" "postgres_config" {
   depends_on = [
-    kubernetes_manifest.postgres_cluster, 
-    kubernetes_secret.postgres_credentials, 
+    kubernetes_manifest.postgres_cluster,
+    kubernetes_secret.postgres_credentials,
     kubernetes_manifest.extra_postgres_databases
   ]
 
   triggers = {
-    parameters = jsonencode(var.postgresql_parameters)
+    parameters   = jsonencode(var.postgresql_parameters)
     cluster_name = local.cluster_name
-    namespace = var.namespace
+    namespace    = var.namespace
   }
 
   provisioner "local-exec" {

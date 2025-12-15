@@ -22,27 +22,18 @@ variable "kafka_bootstrap_servers" {
 }
 
 variable "kafka_schema_registry_resources_config" {
-  description = "Resource requests/limits"
+  description = "Resource requests/limits. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = object({
-    limits = object({
-      cpu    = string
-      memory = string
-    })
-    requests = object({
-      cpu    = string
-      memory = string
-    })
+    limits = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
+    requests = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
   })
-  default = {
-    limits = {
-      cpu    = "1"
-      memory = "1Gi"
-    }
-    requests = {
-      cpu    = "250m"
-      memory = "256Mi"
-    }
-  }
+  default = null
 }
 
 variable "schema_registry_version" {

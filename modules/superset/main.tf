@@ -55,94 +55,114 @@ locals {
     }
 
     # Superset node (web server)
-    supersetNode = {
-      replicaCount = var.superset_node_replicas
-      autoscaling = {
-        enabled         = var.enable_superset_autoscaling
-        minReplicas     = var.superset_autoscaling_min_replicas
-        maxReplicas     = var.superset_autoscaling_max_replicas
-        targetCPUUtilizationPercentage = var.superset_autoscaling_target_cpu_utilization_percentage
-        targetMemoryUtilizationPercentage  = var.superset_autoscaling_target_memory_utilization_percentage
-      }
-      resources = {
-        requests = {
-          cpu    = var.superset_resources_config["supersetNode"].requests.cpu
-          memory = var.superset_resources_config["supersetNode"].requests.ram
+    supersetNode = merge(
+      {
+        replicaCount = var.superset_node_replicas
+        autoscaling = {
+          enabled                           = var.enable_superset_autoscaling
+          minReplicas                       = var.superset_autoscaling_min_replicas
+          maxReplicas                       = var.superset_autoscaling_max_replicas
+          targetCPUUtilizationPercentage    = var.superset_autoscaling_target_cpu_utilization_percentage
+          targetMemoryUtilizationPercentage = var.superset_autoscaling_target_memory_utilization_percentage
         }
-        limits = {
-          cpu    = var.superset_resources_config["supersetNode"].limits.cpu
-          memory = var.superset_resources_config["supersetNode"].limits.ram
+      },
+      lookup(var.superset_resources_config, "supersetNode", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.superset_resources_config["supersetNode"].requests.cpu, null)
+            memory = try(var.superset_resources_config["supersetNode"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.superset_resources_config["supersetNode"].limits.cpu, null)
+            memory = try(var.superset_resources_config["supersetNode"].limits.memory, null)
+          }
         }
-      }
-    }
+      } : {}
+    )
 
     # Superset worker (Celery)
-    supersetWorker = {
-      enabled      = var.enable_celery_worker
-      replicaCount = var.celery_worker_replicas
-      autoscaling = {
-        enabled         = var.enable_superset_autoscaling
-        minReplicas     = var.superset_autoscaling_min_replicas
-        maxReplicas     = var.superset_autoscaling_max_replicas
-        targetCPUUtilizationPercentage = var.superset_autoscaling_target_cpu_utilization_percentage
-        targetMemoryUtilizationPercentage  = var.superset_autoscaling_target_memory_utilization_percentage
-      }
-      resources = {
-        requests = {
-          cpu    = var.superset_resources_config["supersetWorker"].requests.cpu
-          memory = var.superset_resources_config["supersetWorker"].requests.ram
+    supersetWorker = merge(
+      {
+        enabled      = var.enable_celery_worker
+        replicaCount = var.celery_worker_replicas
+        autoscaling = {
+          enabled                           = var.enable_superset_autoscaling
+          minReplicas                       = var.superset_autoscaling_min_replicas
+          maxReplicas                       = var.superset_autoscaling_max_replicas
+          targetCPUUtilizationPercentage    = var.superset_autoscaling_target_cpu_utilization_percentage
+          targetMemoryUtilizationPercentage = var.superset_autoscaling_target_memory_utilization_percentage
         }
-        limits = {
-          cpu    = var.superset_resources_config["supersetWorker"].limits.cpu
-          memory = var.superset_resources_config["supersetWorker"].limits.ram
+      },
+      lookup(var.superset_resources_config, "supersetWorker", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.superset_resources_config["supersetWorker"].requests.cpu, null)
+            memory = try(var.superset_resources_config["supersetWorker"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.superset_resources_config["supersetWorker"].limits.cpu, null)
+            memory = try(var.superset_resources_config["supersetWorker"].limits.memory, null)
+          }
         }
-      }
-    }
+      } : {}
+    )
 
     # Celery beat (scheduler)
-    supersetCeleryBeat = {
-      enabled = var.enable_celery_beat
-      resources = {
-        requests = {
-          cpu    = var.superset_resources_config["supersetCeleryBeat"].requests.cpu
-          memory = var.superset_resources_config["supersetCeleryBeat"].requests.ram
+    supersetCeleryBeat = merge(
+      {
+        enabled = var.enable_celery_beat
+      },
+      lookup(var.superset_resources_config, "supersetCeleryBeat", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.superset_resources_config["supersetCeleryBeat"].requests.cpu, null)
+            memory = try(var.superset_resources_config["supersetCeleryBeat"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.superset_resources_config["supersetCeleryBeat"].limits.cpu, null)
+            memory = try(var.superset_resources_config["supersetCeleryBeat"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.superset_resources_config["supersetCeleryBeat"].limits.cpu
-          memory = var.superset_resources_config["supersetCeleryBeat"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Celery Flower (monitoring)
-    supersetCeleryFlower = {
-      enabled = var.enable_celery_flower
-      resources = {
-        requests = {
-          cpu    = var.superset_resources_config["supersetCeleryFlower"].requests.cpu
-          memory = var.superset_resources_config["supersetCeleryFlower"].requests.ram
+    supersetCeleryFlower = merge(
+      {
+        enabled = var.enable_celery_flower
+      },
+      lookup(var.superset_resources_config, "supersetCeleryFlower", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.superset_resources_config["supersetCeleryFlower"].requests.cpu, null)
+            memory = try(var.superset_resources_config["supersetCeleryFlower"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.superset_resources_config["supersetCeleryFlower"].limits.cpu, null)
+            memory = try(var.superset_resources_config["supersetCeleryFlower"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.superset_resources_config["supersetCeleryFlower"].limits.cpu
-          memory = var.superset_resources_config["supersetCeleryFlower"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Websocket server
-    supersetWebsockets = {
-      enabled = var.enable_websockets
-      resources = {
-        requests = {
-          cpu    = var.superset_resources_config["supersetWebsockets"].requests.cpu
-          memory = var.superset_resources_config["supersetWebsockets"].requests.ram
+    supersetWebsockets = merge(
+      {
+        enabled = var.enable_websockets
+      },
+      lookup(var.superset_resources_config, "supersetWebsockets", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.superset_resources_config["supersetWebsockets"].requests.cpu, null)
+            memory = try(var.superset_resources_config["supersetWebsockets"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.superset_resources_config["supersetWebsockets"].limits.cpu, null)
+            memory = try(var.superset_resources_config["supersetWebsockets"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.superset_resources_config["supersetWebsockets"].limits.cpu
-          memory = var.superset_resources_config["supersetWebsockets"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Built-in PostgreSQL configuration
     postgresql = {
@@ -162,25 +182,25 @@ locals {
 
     # Configuration overrides for secrets
     configOverrides = {
-      secret = <<-EOT
+      secret       = <<-EOT
       SECRET_KEY = os.environ.get('SUPERSET_SECRET_KEY')
       EOT
       enable_oauth = var.oauth_config
     }
 
     # Init job configuration
-    initJob = {
+    initJob = lookup(var.superset_resources_config, "initJob", null) != null ? {
       resources = {
         requests = {
-          cpu    = var.superset_resources_config["initJob"].requests.cpu
-          memory = var.superset_resources_config["initJob"].requests.ram
+          cpu    = try(var.superset_resources_config["initJob"].requests.cpu, null)
+          memory = try(var.superset_resources_config["initJob"].requests.memory, null)
         }
         limits = {
-          cpu    = var.superset_resources_config["initJob"].limits.cpu
-          memory = var.superset_resources_config["initJob"].limits.ram
+          cpu    = try(var.superset_resources_config["initJob"].limits.cpu, null)
+          memory = try(var.superset_resources_config["initJob"].limits.memory, null)
         }
       }
-    }
+    } : {}
   }
 
   # Merge default values with user-provided values

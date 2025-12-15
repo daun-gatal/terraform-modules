@@ -65,18 +65,18 @@ variable "entity_jdbc_config" {
 # ============================================
 
 variable "resources" {
-  description = "Container resource requests and limits"
+  description = "Container resource requests and limits. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = object({
     requests = optional(object({
-      cpu    = optional(string, "500m")
-      memory = optional(string, "1Gi")
-    }), {})
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
     limits = optional(object({
-      cpu    = optional(string, "2")
-      memory = optional(string, "3Gi")
-    }), {})
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
   })
-  default = {}
+  default = null
 }
 
 # ============================================

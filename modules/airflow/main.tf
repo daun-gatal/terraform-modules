@@ -66,183 +66,211 @@ locals {
     }
 
     # Scheduler configuration
-    scheduler = {
-      replicas = var.airflow_scheduler_replicas
-      args = [
-        "bash",
-        "-c",
-        templatefile("${path.module}/scripts/scheduler-init.sh", {
-          aws_access_key_id     = var.aws_access_key_id
-          aws_secret_access_key = var.aws_secret_access_key
-          aws_region            = var.aws_region
-          aws_endpoint_url      = var.aws_endpoint_url
-        })
-      ]
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["scheduler"].requests.cpu
-          memory = var.airflow_resources_config["scheduler"].requests.ram
+    scheduler = merge(
+      {
+        replicas = var.airflow_scheduler_replicas
+        args = [
+          "bash",
+          "-c",
+          templatefile("${path.module}/scripts/scheduler-init.sh", {
+            aws_access_key_id     = var.aws_access_key_id
+            aws_secret_access_key = var.aws_secret_access_key
+            aws_region            = var.aws_region
+            aws_endpoint_url      = var.aws_endpoint_url
+          })
+        ]
+        logGroomerSidecar = {
+          enabled       = var.enable_log_groomer_sidecar
+          retentionDays = var.airflow_log_retention_days
         }
-        limits = {
-          cpu    = var.airflow_resources_config["scheduler"].limits.cpu
-          memory = var.airflow_resources_config["scheduler"].limits.ram
+        waitForMigrations = {
+          enabled = true
         }
-      }
-      logGroomerSidecar = {
-        enabled       = var.enable_log_groomer_sidecar
-        retentionDays = var.airflow_log_retention_days
-      }
-      waitForMigrations = {
-        enabled = true
-      }
-    }
+      },
+      lookup(var.airflow_resources_config, "scheduler", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["scheduler"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["scheduler"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["scheduler"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["scheduler"].limits.memory, null)
+          }
+        }
+      } : {}
+    )
 
     # API Server configuration
-    apiServer = {
-      apiServerConfig = var.airflow_api_server_config
-      service = {
-        annotations = {
-          "tailscale.com/expose"   = tostring(var.tailscale_expose)
-          "tailscale.com/hostname" = "${local.prefix}-web-int"
+    apiServer = merge(
+      {
+        apiServerConfig = var.airflow_api_server_config
+        service = {
+          annotations = {
+            "tailscale.com/expose"   = tostring(var.tailscale_expose)
+            "tailscale.com/hostname" = "${local.prefix}-web-int"
+          }
         }
-      }
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["apiServer"].requests.cpu
-          memory = var.airflow_resources_config["apiServer"].requests.ram
+        waitForMigrations = {
+          enabled = true
         }
-        limits = {
-          cpu    = var.airflow_resources_config["apiServer"].limits.cpu
-          memory = var.airflow_resources_config["apiServer"].limits.ram
+      },
+      lookup(var.airflow_resources_config, "apiServer", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["apiServer"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["apiServer"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["apiServer"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["apiServer"].limits.memory, null)
+          }
         }
-      }
-      waitForMigrations = {
-        enabled = true
-      }
-    }
+      } : {}
+    )
 
     # Triggerer configuration
-    triggerer = {
-      enabled  = var.airflow_enable_triggerer
-      replicas = var.airflow_triggerer_replicas
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["triggerer"].requests.cpu
-          memory = var.airflow_resources_config["triggerer"].requests.ram
+    triggerer = merge(
+      {
+        enabled  = var.airflow_enable_triggerer
+        replicas = var.airflow_triggerer_replicas
+        persistence = {
+          enabled = false
         }
-        limits = {
-          cpu    = var.airflow_resources_config["triggerer"].limits.cpu
-          memory = var.airflow_resources_config["triggerer"].limits.ram
+        logGroomerSidecar = {
+          enabled       = var.enable_log_groomer_sidecar
+          retentionDays = var.airflow_log_retention_days
         }
-      }
-      persistence = {
-        enabled = false
-      }
-      logGroomerSidecar = {
-        enabled       = var.enable_log_groomer_sidecar
-        retentionDays = var.airflow_log_retention_days
-      }
-      waitForMigrations = {
-        enabled = true
-      }
-    }
+        waitForMigrations = {
+          enabled = true
+        }
+      },
+      lookup(var.airflow_resources_config, "triggerer", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["triggerer"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["triggerer"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["triggerer"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["triggerer"].limits.memory, null)
+          }
+        }
+      } : {}
+    )
 
     # DAG Processor configuration
-    dagProcessor = {
-      enabled  = var.airflow_dag_processor_enabled
-      replicas = var.airflow_dag_processor_replicas
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["dagProcessor"].requests.cpu
-          memory = var.airflow_resources_config["dagProcessor"].requests.ram
+    dagProcessor = merge(
+      {
+        enabled  = var.airflow_dag_processor_enabled
+        replicas = var.airflow_dag_processor_replicas
+        logGroomerSidecar = {
+          enabled       = var.enable_log_groomer_sidecar
+          retentionDays = var.airflow_log_retention_days
         }
-        limits = {
-          cpu    = var.airflow_resources_config["dagProcessor"].limits.cpu
-          memory = var.airflow_resources_config["dagProcessor"].limits.ram
+        waitForMigrations = {
+          enabled = true
         }
-      }
-      logGroomerSidecar = {
-        enabled       = var.enable_log_groomer_sidecar
-        retentionDays = var.airflow_log_retention_days
-      }
-      waitForMigrations = {
-        enabled = true
-      }
-    }
+      },
+      lookup(var.airflow_resources_config, "dagProcessor", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["dagProcessor"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["dagProcessor"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["dagProcessor"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["dagProcessor"].limits.memory, null)
+          }
+        }
+      } : {}
+    )
 
     # Workers configuration
-    workers = {
-      replicas = var.airflow_worker_replicas
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["workers"].requests.cpu
-          memory = var.airflow_resources_config["workers"].requests.ram
+    workers = merge(
+      {
+        replicas = var.airflow_worker_replicas
+        persistence = {
+          enabled = false
         }
-        limits = {
-          cpu    = var.airflow_resources_config["workers"].limits.cpu
-          memory = var.airflow_resources_config["workers"].limits.ram
+        logGroomerSidecar = {
+          enabled = var.enable_log_groomer_sidecar
         }
-      }
-      persistence = {
-        enabled = false
-      }
-      logGroomerSidecar = {
-        enabled = var.enable_log_groomer_sidecar
-      }
-      waitForMigrations = {
-        enabled = true
-      }
-      keda = {
-        enabled         = var.airflow_worker_keda_enabled
-        minReplicaCount = var.airflow_worker_keda_min_replicas
-        maxReplicaCount = var.airflow_worker_keda_max_replicas
-      }
-    }
+        waitForMigrations = {
+          enabled = true
+        }
+        keda = {
+          enabled         = var.airflow_worker_keda_enabled
+          minReplicaCount = var.airflow_worker_keda_min_replicas
+          maxReplicaCount = var.airflow_worker_keda_max_replicas
+        }
+      },
+      lookup(var.airflow_resources_config, "workers", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["workers"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["workers"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["workers"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["workers"].limits.memory, null)
+          }
+        }
+      } : {}
+    )
 
     # Flower configuration
-    flower = {
-      enabled    = var.airflow_flower_enabled
-      secretName = local.secret_name
-      service = {
-        annotations = {
-          "tailscale.com/expose"   = tostring(var.tailscale_expose)
-          "tailscale.com/hostname" = "${local.prefix}-flower-int"
+    flower = merge(
+      {
+        enabled    = var.airflow_flower_enabled
+        secretName = local.secret_name
+        service = {
+          annotations = {
+            "tailscale.com/expose"   = tostring(var.tailscale_expose)
+            "tailscale.com/hostname" = "${local.prefix}-flower-int"
+          }
         }
-      }
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["flower"].requests.cpu
-          memory = var.airflow_resources_config["flower"].requests.ram
+      },
+      lookup(var.airflow_resources_config, "flower", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["flower"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["flower"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["flower"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["flower"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.airflow_resources_config["flower"].limits.cpu
-          memory = var.airflow_resources_config["flower"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Cleanup job configuration
-    cleanup = {
-      enabled  = var.airflow_kubernetes_cleanup_enabled
-      schedule = "*/15 * * * *"
-      args = [
-        "bash",
-        "-c",
-        templatefile("${path.module}/scripts/cleanup-pods.sh", {
-          namespace = var.namespace
-        })
-      ]
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["cleanup"].requests.cpu
-          memory = var.airflow_resources_config["cleanup"].requests.ram
+    cleanup = merge(
+      {
+        enabled  = var.airflow_kubernetes_cleanup_enabled
+        schedule = "*/15 * * * *"
+        args = [
+          "bash",
+          "-c",
+          templatefile("${path.module}/scripts/cleanup-pods.sh", {
+            namespace = var.namespace
+          })
+        ]
+      },
+      lookup(var.airflow_resources_config, "cleanup", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["cleanup"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["cleanup"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["cleanup"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["cleanup"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.airflow_resources_config["cleanup"].limits.cpu
-          memory = var.airflow_resources_config["cleanup"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # DAGs git-sync configuration
     dags = {
@@ -254,16 +282,6 @@ locals {
           rev     = var.airflow_dags_git_sync_rev
           ref     = var.airflow_dags_git_sync_ref
           subPath = var.airflow_dags_git_sync_subpath
-          resources = {
-            requests = {
-              cpu    = var.airflow_resources_config["gitSync"].requests.cpu
-              memory = var.airflow_resources_config["gitSync"].requests.ram
-            }
-            limits = {
-              cpu    = var.airflow_resources_config["gitSync"].limits.cpu
-              memory = var.airflow_resources_config["gitSync"].limits.ram
-            }
-          }
         },
         # SSH authentication
         var.git_auth_method == "ssh" ? {
@@ -272,41 +290,62 @@ locals {
         # PAT authentication
         var.git_auth_method == "pat" ? {
           credentialsSecret = local.secret_name
+        } : {},
+        # Resources (only if configured)
+        lookup(var.airflow_resources_config, "gitSync", null) != null ? {
+          resources = {
+            requests = {
+              cpu    = try(var.airflow_resources_config["gitSync"].requests.cpu, null)
+              memory = try(var.airflow_resources_config["gitSync"].requests.memory, null)
+            }
+            limits = {
+              cpu    = try(var.airflow_resources_config["gitSync"].limits.cpu, null)
+              memory = try(var.airflow_resources_config["gitSync"].limits.memory, null)
+            }
+          }
         } : {}
       )
     }
 
     # Redis configuration
-    redis = {
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["redis"].requests.cpu
-          memory = var.airflow_resources_config["redis"].requests.ram
+    redis = merge(
+      {
+        persistence = {
+          enabled = false
         }
-        limits = {
-          cpu    = var.airflow_resources_config["redis"].limits.cpu
-          memory = var.airflow_resources_config["redis"].limits.ram
+      },
+      lookup(var.airflow_resources_config, "redis", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["redis"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["redis"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["redis"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["redis"].limits.memory, null)
+          }
         }
-      }
-      persistence = {
-        enabled = false
-      }
-    }
+      } : {}
+    )
 
     # StatsD configuration
-    statsd = {
-      enabled = var.enable_statsd
-      resources = {
-        requests = {
-          cpu    = var.airflow_resources_config["statsd"].requests.cpu
-          memory = var.airflow_resources_config["statsd"].requests.ram
+    statsd = merge(
+      {
+        enabled = var.enable_statsd
+      },
+      lookup(var.airflow_resources_config, "statsd", null) != null ? {
+        resources = {
+          requests = {
+            cpu    = try(var.airflow_resources_config["statsd"].requests.cpu, null)
+            memory = try(var.airflow_resources_config["statsd"].requests.memory, null)
+          }
+          limits = {
+            cpu    = try(var.airflow_resources_config["statsd"].limits.cpu, null)
+            memory = try(var.airflow_resources_config["statsd"].limits.memory, null)
+          }
         }
-        limits = {
-          cpu    = var.airflow_resources_config["statsd"].limits.cpu
-          memory = var.airflow_resources_config["statsd"].limits.ram
-        }
-      }
-    }
+      } : {}
+    )
 
     # Airflow config
     config = {

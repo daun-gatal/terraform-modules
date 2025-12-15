@@ -219,85 +219,19 @@ variable "tailscale_expose" {
 # Resources Configuration
 # ============================================
 variable "superset_resources_config" {
-  description = "Resource requests/limits per component"
+  description = "Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = map(object({
     requests = optional(object({
-      cpu = optional(string)
-      ram = optional(string)
+      cpu    = optional(string)
+      memory = optional(string)
     }))
     limits = optional(object({
-      cpu = optional(string)
-      ram = optional(string)
+      cpu    = optional(string)
+      memory = optional(string)
     }))
   }))
 
-  default = {
-    supersetNode = {
-      requests = {
-        cpu = "200m"
-        ram = "256Mi"
-      }
-      limits = {
-        cpu = "1000m"
-        ram = "2048Mi"
-      }
-    }
-
-    supersetWorker = {
-      requests = {
-        cpu = "200m"
-        ram = "256Mi"
-      }
-      limits = {
-        cpu = "1000m"
-        ram = "2048Mi"
-      }
-    }
-
-    supersetCeleryBeat = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "512Mi"
-      }
-    }
-
-    supersetCeleryFlower = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "512Mi"
-      }
-    }
-
-    supersetWebsockets = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "512Mi"
-      }
-    }
-
-    initJob = {
-      requests = {
-        cpu = "100m"
-        ram = "128Mi"
-      }
-      limits = {
-        cpu = "500m"
-        ram = "512Mi"
-      }
-    }
-  }
+  default = {}
 }
 
 # ============================================

@@ -89,18 +89,18 @@ variable "io_impl" {
 # ============================================
 
 variable "resources" {
-  description = "Container resource requests and limits"
+  description = "Container resource requests and limits. Empty by default - no resources applied to avoid CPU issues on k3s."
   type = object({
     requests = optional(object({
-      cpu    = optional(string, "1")
-      memory = optional(string, "2Gi")
-    }), {})
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
     limits = optional(object({
-      cpu    = optional(string, "2")
-      memory = optional(string, "4Gi")
-    }), {})
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
   })
-  default = {}
+  default = null
 }
 
 # ============================================

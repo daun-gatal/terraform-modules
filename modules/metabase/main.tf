@@ -1,11 +1,11 @@
 locals {
-  prefix = var.prefix
+  prefix          = var.prefix
   deployment_name = "${local.prefix}-deployment"
-  app_label = "${local.prefix}-app"
-  container_name = "${local.prefix}-container"
-  service_name = "${local.prefix}-service"
-  metabase_image = "${var.image}:${var.image_tag}"
-  ingress_name = "${local.prefix}-ingress"
+  app_label       = "${local.prefix}-app"
+  container_name  = "${local.prefix}-container"
+  service_name    = "${local.prefix}-service"
+  metabase_image  = "${var.image}:${var.image_tag}"
+  ingress_name    = "${local.prefix}-ingress"
 }
 
 resource "kubernetes_deployment" "metabase" {
@@ -35,14 +35,17 @@ resource "kubernetes_deployment" "metabase" {
           name  = local.container_name
           image = local.metabase_image
 
-          resources {
-            limits = {
-              cpu = var.metabase_resources_config.limits.cpu
-              memory = var.metabase_resources_config.limits.memory
-            }
-            requests = {
-              cpu = var.metabase_resources_config.requests.cpu
-              memory = var.metabase_resources_config.requests.memory
+          dynamic "resources" {
+            for_each = var.metabase_resources_config != null ? [var.metabase_resources_config] : []
+            content {
+              limits = resources.value.limits != null ? {
+                cpu    = try(resources.value.limits.cpu, null)
+                memory = try(resources.value.limits.memory, null)
+              } : {}
+              requests = resources.value.requests != null ? {
+                cpu    = try(resources.value.requests.cpu, null)
+                memory = try(resources.value.requests.memory, null)
+              } : {}
             }
           }
 
@@ -58,7 +61,7 @@ resource "kubernetes_deployment" "metabase" {
 
           env {
             name  = "MB_DB_PORT"
-            value = "${var.metabase_db_port}"
+            value = var.metabase_db_port
           }
 
           env {
@@ -90,7 +93,7 @@ resource "kubernetes_service" "metabase" {
     name      = local.service_name
     namespace = var.namespace
     annotations = {
-      "tailscale.com/expose" = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = "${var.tailscale_expose}"
       "tailscale.com/hostname" = "${local.prefix}-int"
     }
   }
@@ -105,7 +108,7 @@ resource "kubernetes_service" "metabase" {
       target_port = kubernetes_deployment.metabase.spec[0].template[0].spec[0].container[0].port[0].container_port
     }
 
-    type                 = "ClusterIP"
+    type = "ClusterIP"
   }
 }
 
@@ -113,7 +116,7 @@ resource "kubernetes_ingress_v1" "metabase" {
   count = var.tailscale_funnel ? 1 : 0
 
   metadata {
-    name = local.ingress_name
+    name      = local.ingress_name
     namespace = var.namespace
 
     annotations = {
