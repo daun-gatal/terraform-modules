@@ -26,7 +26,9 @@ resource "kubernetes_manifest" "postgres_cluster" {
         roles = [
           {
             name = var.db_user
-            passwordSecret = kubernetes_secret.postgres_credentials.metadata[0].name
+            passwordSecret = {
+              name = kubernetes_secret.postgres_credentials.metadata[0].name
+            }
             ensure = "present"
             login = true
             createdb = true
