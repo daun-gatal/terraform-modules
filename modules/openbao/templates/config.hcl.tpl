@@ -124,7 +124,7 @@ plugin_auto_register     = ${plugin_auto_register}
 plugin_download_behavior = "${plugin_download_behavior}"
 
 %{ for plugin in plugins ~}
-plugin "${plugin.name}" {
+plugin "${plugin.type}" "${plugin.name}" {
   image       = "${plugin.image}"
   version     = "${plugin.version}"
   binary_name = "${plugin.binary_name}"

@@ -13,6 +13,7 @@ locals {
       version     = "v0.0.1"
       binary_name = "openbao-plugin-auth-github"
       sha256sum   = "4eeccf42c06ef98f6144e9f705d5c25ddf92566ff2a8f245d57522cab11ab7f5"
+      type        = "auth"
     }
   ]
 }

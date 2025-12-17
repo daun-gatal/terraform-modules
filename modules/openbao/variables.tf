@@ -331,6 +331,7 @@ variable "additional_plugins" {
     version     = string               # Plugin version
     binary_name = string               # Binary name in the image
     sha256sum   = optional(string, "") # SHA256 checksum (optional but recommended)
+    type        = string
   }))
   default = []
 }
