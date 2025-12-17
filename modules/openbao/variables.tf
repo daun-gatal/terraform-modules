@@ -23,7 +23,7 @@ variable "chart_version" {
 variable "image_tag" {
   description = "OpenBao image tag"
   type        = string
-  default     = "2.4.4"
+  default     = ""
 }
 
 # ============================================
