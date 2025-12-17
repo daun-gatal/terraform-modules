@@ -285,6 +285,57 @@ variable "ui_external_port" {
 }
 
 # ============================================
+# Plugin Configuration
+# ============================================
+
+variable "plugin_directory" {
+  description = "Directory from which plugins are loaded. See: https://openbao.org/docs/configuration/"
+  type        = string
+  default     = "/openbao/plugins"
+}
+
+variable "plugin_auto_download" {
+  description = "Enable automatic plugin downloading from OCI images. See: https://openbao.org/docs/configuration/plugin/"
+  type        = bool
+  default     = true
+}
+
+variable "plugin_auto_register" {
+  description = "Enable automatic plugin registration. See: https://openbao.org/docs/configuration/plugin/"
+  type        = bool
+  default     = true
+}
+
+variable "plugin_download_behavior" {
+  description = "Plugin download behavior when download fails: fail, warn, or ignore"
+  type        = string
+  default     = "warn"
+
+  validation {
+    condition     = contains(["fail", "warn", "ignore"], var.plugin_download_behavior)
+    error_message = "plugin_download_behavior must be one of: fail, warn, ignore"
+  }
+}
+
+variable "additional_plugins" {
+  description = "Additional plugins to merge with default plugins. See: https://openbao.org/docs/configuration/plugin/"
+  type = list(object({
+    name        = string               # Plugin name (e.g., "aws", "kubernetes")
+    image       = string               # OCI image reference
+    version     = string               # Plugin version
+    binary_name = string               # Binary name in the image
+    sha256sum   = optional(string, "") # SHA256 checksum (optional but recommended)
+  }))
+  default = []
+}
+
+variable "disable_default_plugins" {
+  description = "Set to true to disable all default plugins"
+  type        = bool
+  default     = false
+}
+
+# ============================================
 # Additional Helm Values
 # ============================================
 

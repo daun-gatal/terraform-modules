@@ -113,3 +113,25 @@ storage "file" {
 }
 %{ endif ~}
 
+%{ if length(plugins) > 0 || plugin_auto_download || plugin_auto_register ~}
+# -------------------------------
+# Plugin Configuration
+# See: https://openbao.org/docs/configuration/plugin/
+# -------------------------------
+plugin_directory         = "${plugin_directory}"
+plugin_auto_download     = ${plugin_auto_download}
+plugin_auto_register     = ${plugin_auto_register}
+plugin_download_behavior = "${plugin_download_behavior}"
+
+%{ for plugin in plugins ~}
+plugin "${plugin.name}" {
+  image       = "${plugin.image}"
+  version     = "${plugin.version}"
+  binary_name = "${plugin.binary_name}"
+%{ if plugin.sha256sum != "" ~}
+  sha256sum   = "${plugin.sha256sum}"
+%{ endif ~}
+}
+
+%{ endfor ~}
+%{ endif ~}

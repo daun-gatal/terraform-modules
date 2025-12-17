@@ -5,6 +5,10 @@
 resource "random_bytes" "unseal_key" {
   count  = var.generate_unseal_key ? 1 : 0
   length = 32
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # ============================================
@@ -45,6 +49,13 @@ locals {
     path = "/openbao/data"
   }
 
+  # Merge default plugins with additional plugins
+  # Additional plugins with the same binary_name will override default plugins
+  merged_plugins = concat(
+    var.disable_default_plugins ? [] : [for p in local.default_plugins : p if !contains([for ap in var.additional_plugins : ap.binary_name], p.binary_name)],
+    var.additional_plugins
+  )
+
   # Storage config template variables
   storage_template_vars = {
     storage_type     = var.storage_type
@@ -60,6 +71,13 @@ locals {
 
     # File config
     file_storage = var.storage_type == "file" ? merge(local.file_defaults, var.storage_file) : local.file_defaults
+
+    # Plugin configuration
+    plugin_directory         = var.plugin_directory
+    plugin_auto_download     = var.plugin_auto_download
+    plugin_auto_register     = var.plugin_auto_register
+    plugin_download_behavior = var.plugin_download_behavior
+    plugins                  = local.merged_plugins
   }
 
   # Render the storage config HCL
