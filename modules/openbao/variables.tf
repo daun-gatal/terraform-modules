@@ -20,6 +20,12 @@ variable "chart_version" {
   default     = "0.20.0"
 }
 
+variable "image_tag" {
+  description = "OpenBao image tag"
+  type        = string
+  default     = "2.4.4"
+}
+
 # ============================================
 # Tailscale Configuration
 # ============================================

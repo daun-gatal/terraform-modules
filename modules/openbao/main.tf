@@ -108,6 +108,10 @@ locals {
         }
       }
 
+      image = {
+        tag = var.image_tag
+      }
+
       dataStorage  = var.server_data_storage
       auditStorage = var.server_audit_storage
 
@@ -166,6 +170,24 @@ locals {
       annotations = {
         "tailscale.com/expose"   = var.tailscale_ui_expose
         "tailscale.com/hostname" = "${var.openbao_fullname_override}-ui-int"
+      }
+    }
+
+    injector = {
+      image = {
+        tag = var.image_tag
+      }
+    }
+
+    csi = {
+      image = {
+        tag = var.image_tag
+      }
+
+      agent = {
+        image = {
+          tag = var.image_tag
+        }
       }
     }
   }
