@@ -177,6 +177,10 @@ locals {
       image = {
         tag = var.image_tag
       }
+
+      agentImage = {
+        tag = var.image_tag
+      }
     }
 
     csi = {
