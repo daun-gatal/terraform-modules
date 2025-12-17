@@ -6,9 +6,13 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.30.0"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.1"
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.12"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
     }
   }
 }

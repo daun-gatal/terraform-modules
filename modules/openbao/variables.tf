@@ -21,11 +21,17 @@ variable "chart_version" {
 }
 
 # ============================================
-# Service Configuration
+# Tailscale Configuration
 # ============================================
 
-variable "tailscale_expose" {
-  description = "Expose service via Tailscale"
+variable "tailscale_server_expose" {
+  description = "Expose server service via Tailscale"
+  type        = string
+  default     = "false"
+}
+
+variable "tailscale_ui_expose" {
+  description = "Expose UI service via Tailscale"
   type        = string
   default     = "false"
 }
@@ -47,11 +53,122 @@ variable "server_unseal_secret_name" {
 }
 
 # ============================================
-# Server Storage Configuration
+# Unseal Key Configuration
+# ============================================
+
+variable "generate_unseal_key" {
+  description = "Whether to generate unseal key automatically or use provided key"
+  type        = bool
+  default     = true
+}
+
+variable "unseal_current_key" {
+  description = "Current unseal key (32 bytes, base64 encoded). Required if generate_unseal_key is false"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "unseal_current_key_id" {
+  description = "Identifier for the current unseal key (e.g., date-based: 2024-12-17)"
+  type        = string
+  default     = "initial-key"
+}
+
+variable "unseal_previous_key" {
+  description = "Previous unseal key for rotation (32 bytes, base64 encoded). Optional"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "unseal_previous_key_id" {
+  description = "Identifier for the previous unseal key. Required if unseal_previous_key is set"
+  type        = string
+  default     = ""
+}
+
+# ============================================
+# Storage Backend Configuration
+# ============================================
+
+variable "storage_type" {
+  description = "Storage backend type: postgresql, raft, file"
+  type        = string
+  default     = "raft"
+
+  validation {
+    condition     = contains(["postgresql", "raft", "file"], var.storage_type)
+    error_message = "storage_type must be one of: postgresql, raft, file"
+  }
+}
+
+# -------------------------------
+# PostgreSQL Storage Configuration
+# -------------------------------
+variable "storage_postgresql" {
+  description = "PostgreSQL storage backend configuration. See: https://openbao.org/docs/configuration/storage/postgresql/"
+  type = object({
+    connection_url       = string
+    table                = optional(string, "openbao_kv_store")
+    max_idle_connections = optional(number)
+    max_parallel         = optional(number, 128)
+    ha_enabled           = optional(bool, false)
+    ha_table             = optional(string, "openbao_ha_locks")
+    skip_create_table    = optional(bool, false)
+    max_connect_retries  = optional(number, 1)
+  })
+  default   = null
+  sensitive = true
+}
+
+# -------------------------------
+# Raft Storage Configuration
+# -------------------------------
+variable "storage_raft" {
+  description = "Raft (integrated) storage backend configuration. See: https://openbao.org/docs/configuration/storage/raft/"
+  type = object({
+    path                         = optional(string, "/openbao/data")
+    node_id                      = optional(string)
+    performance_multiplier       = optional(number, 0)
+    trailing_logs                = optional(number, 10000)
+    snapshot_threshold           = optional(number, 8192)
+    snapshot_interval            = optional(string, "120s")
+    max_entry_size               = optional(number, 1048576)
+    max_transaction_size         = optional(number, 8388608)
+    autopilot_reconcile_interval = optional(string, "10s")
+    autopilot_update_interval    = optional(string, "2s")
+    retry_join = optional(list(object({
+      leader_api_addr         = optional(string)
+      auto_join               = optional(string)
+      auto_join_scheme        = optional(string, "https")
+      auto_join_port          = optional(number, 8200)
+      leader_tls_servername   = optional(string)
+      leader_ca_cert_file     = optional(string)
+      leader_client_cert_file = optional(string)
+      leader_client_key_file  = optional(string)
+    })), [])
+  })
+  default = {}
+}
+
+# -------------------------------
+# File Storage Configuration
+# -------------------------------
+variable "storage_file" {
+  description = "File storage backend configuration (development only)"
+  type = object({
+    path = optional(string, "/openbao/data")
+  })
+  default = {}
+}
+
+# ============================================
+# Server PVC Storage Configuration
 # ============================================
 
 variable "server_data_storage" {
-  description = "Server data storage configuration"
+  description = "Server data storage (PVC) configuration"
   type = object({
     enabled      = bool
     size         = string
@@ -65,7 +182,7 @@ variable "server_data_storage" {
 }
 
 variable "server_audit_storage" {
-  description = "Server audit storage configuration"
+  description = "Server audit storage (PVC) configuration"
   type = object({
     enabled      = bool
     size         = string
@@ -89,7 +206,7 @@ variable "server_standalone_enabled" {
 }
 
 variable "server_standalone_config" {
-  description = "Standalone server config (HCL)"
+  description = "Standalone server config (HCL) - listener configuration only. Storage is managed separately."
   type        = string
   default     = <<-EOT
     ui = true
@@ -116,6 +233,11 @@ variable "server_ha_replicas" {
   description = "Number of HA replicas"
   type        = number
   default     = 2
+
+  validation {
+    condition     = var.server_ha_replicas >= 1 && var.server_ha_replicas <= 10
+    error_message = "HA replicas must be between 1 and 10."
+  }
 }
 
 variable "server_ha_raft_enabled" {
@@ -131,7 +253,7 @@ variable "server_ha_raft_set_node_id" {
 }
 
 variable "server_ha_config" {
-  description = "HA server config (HCL)"
+  description = "HA server config (HCL) - listener configuration only. Storage is managed separately."
   type        = string
   default     = <<-EOT
     ui = true
