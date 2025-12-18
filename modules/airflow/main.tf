@@ -379,8 +379,6 @@ locals {
     multiNamespaceMode = true
   }
 
-  # Merge default values with user-provided values
-  merged_values = merge(local.default_values, var.values)
 }
 
 resource "kubernetes_secret" "airflow_secret" {
@@ -420,7 +418,8 @@ resource "helm_release" "airflow" {
   version    = var.chart_version
 
   values = [
-    yamlencode(local.merged_values)
+    yamlencode(local.default_values),
+    yamlencode(var.values)
   ]
 
   depends_on = [kubernetes_secret.airflow_secret]

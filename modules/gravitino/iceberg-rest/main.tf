@@ -65,8 +65,6 @@ locals {
     }
   }
 
-  # Merge default values with user-provided values
-  merged_values = merge(local.default_values, var.values)
 }
 
 resource "helm_release" "iceberg_rest" {
@@ -75,6 +73,7 @@ resource "helm_release" "iceberg_rest" {
   chart     = local.chart_path
 
   values = [
-    yamlencode(local.merged_values)
+    yamlencode(local.default_values),
+    yamlencode(var.values)
   ]
 }

@@ -82,8 +82,6 @@ locals {
     }
   }
 
-  # Merge default values with user-provided values
-  merged_values = merge(local.default_values, var.values)
 }
 
 # -------------------------------
@@ -128,7 +126,8 @@ resource "helm_release" "nessie" {
   version    = var.chart_version
 
   values = [
-    yamlencode(local.merged_values)
+    yamlencode(local.default_values),
+    yamlencode(var.values)
   ]
 
   depends_on = [
