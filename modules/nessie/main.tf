@@ -134,4 +134,9 @@ resource "helm_release" "nessie" {
     kubernetes_secret.nessie_jdbc,
     kubernetes_secret.nessie_s3
   ]
+
+  recreate_pods = true
+  force_update  = true
+  wait          = true
+  timeout       = 600
 }

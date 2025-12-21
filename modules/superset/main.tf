@@ -216,6 +216,11 @@ resource "helm_release" "superset" {
     yamlencode(local.default_values),
     yamlencode(var.values)
   ]
+
+  recreate_pods = true
+  force_update  = true
+  wait          = true
+  timeout       = 600
 }
 
 resource "kubernetes_ingress_v1" "superset_ingress" {

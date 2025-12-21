@@ -70,6 +70,11 @@ resource "helm_release" "rustfs" {
     yamlencode(local.default_values),
     yamlencode(var.values)
   ]
+
+  recreate_pods = true
+  force_update  = true
+  wait          = true
+  timeout       = 600
 }
 
 resource "kubernetes_service" "rustfs_custom_service" {

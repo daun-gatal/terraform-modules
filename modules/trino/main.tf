@@ -155,6 +155,11 @@ resource "helm_release" "trino" {
     yamlencode(local.default_values),
     yamlencode(var.values)
   ]
+
+  recreate_pods = true
+  force_update  = true
+  wait          = true
+  timeout       = 600
 }
 
 data "kubernetes_config_map" "trino_acl" {

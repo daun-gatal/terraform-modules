@@ -31,4 +31,9 @@ resource "helm_release" "airbyte" {
     yamlencode(local.default_values),
     yamlencode(var.values)
   ]
+
+  recreate_pods = true
+  force_update  = true
+  wait          = true
+  timeout       = 600
 }
