@@ -27,6 +27,9 @@ STRIMZI_NAMESPACE="${STRIMZI_NAMESPACE:-kafka}"
 FLINK_OPERATOR_VERSION="${FLINK_OPERATOR_VERSION:-1.12.1}"
 FLINK_NAMESPACE="${FLINK_NAMESPACE:-flink}"
 
+KEYCLOAK_VERSION="${KEYCLOAK_VERSION:-26.4.7}"
+KEYCLOAK_NAMESPACE="${KEYCLOAK_NAMESPACE:-keycloak}"
+
 # --------------------------
 # Help Message
 # --------------------------
@@ -57,6 +60,9 @@ Options:
   --flink-version VERSION      Flink Operator version (default: $FLINK_OPERATOR_VERSION)
   --flink-namespace NS         Flink namespace (default: $FLINK_NAMESPACE)
 
+  --keycloak-version VERSION   Keycloak Operator version (default: $KEYCLOAK_VERSION)
+  --keycloak-namespace NS      Keycloak namespace (default: $KEYCLOAK_NAMESPACE)
+
   --help, -h                    Show this help message
 EOF
   exit 0
@@ -84,6 +90,17 @@ delete_spark_crds() {
     echo "$crds" | xargs kubectl delete --ignore-not-found
   else
     echo "ℹ️  No Spark CRDs found."
+  fi
+}
+
+delete_keycloak_crds() {
+  echo "🧹 Cleaning up Keycloak CRDs..."
+  local crds
+  crds=$(kubectl get crd -o name | grep "keycloak.org" || true)
+  if [[ -n "$crds" ]]; then
+    echo "$crds" | xargs kubectl delete --ignore-not-found
+  else
+    echo "ℹ️  No Keycloak CRDs found."
   fi
 }
 
@@ -121,6 +138,8 @@ while [[ $# -gt 0 ]]; do
     --strimzi-namespace) shift; STRIMZI_NAMESPACE="$1" ;;
     --flink-version) shift; FLINK_OPERATOR_VERSION="$1" ;;
     --flink-namespace) shift; FLINK_NAMESPACE="$1" ;;
+    --keycloak-version) shift; KEYCLOAK_VERSION="$1" ;;
+    --keycloak-namespace) shift; KEYCLOAK_NAMESPACE="$1" ;;
     --help|-h) print_help ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -194,6 +213,15 @@ if [[ "$ACTION" == "install" ]]; then
     --create-namespace  \
     --set webhook.create=false
 
+  echo "🔹 Installing Keycloak Operator..."
+  # CRDs
+  kubectl apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/keycloaks.k8s.keycloak.org-v1.yml"
+  kubectl apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml"
+  
+  # Operator
+  kubectl create namespace "$KEYCLOAK_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+  kubectl -n "$KEYCLOAK_NAMESPACE" apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/kubernetes.yml"
+
   echo "✅ Installation complete!"
 
 else
@@ -204,10 +232,16 @@ else
   helm uninstall cnpg-operator --namespace "$CNPG_NAMESPACE" || true
   helm uninstall minio-operator --namespace "$MINIO_NAMESPACE" || true
   helm uninstall strimzi-kafka-operator --namespace "$STRIMZI_NAMESPACE" || true
+
   helm uninstall flink-operator --namespace "$FLINK_NAMESPACE" || true
+  
+  # Keycloak uninstall (raw manifests)
+  kubectl -n "$KEYCLOAK_NAMESPACE" delete -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/kubernetes.yml" --ignore-not-found || true
 
   delete_spark_crds
+
   delete_cnpg_crds
+  delete_keycloak_crds
 
   echo "🗑️ Deleting namespaces..."
   $TAILSCALE_ENABLED && force_delete_namespace "$TAILSCALE_NAMESPACE"
@@ -215,7 +249,9 @@ else
   force_delete_namespace "$CNPG_NAMESPACE"
   force_delete_namespace "$MINIO_NAMESPACE"
   force_delete_namespace "$STRIMZI_NAMESPACE"
+
   force_delete_namespace "$FLINK_NAMESPACE"
+  force_delete_namespace "$KEYCLOAK_NAMESPACE"
 
   echo "✅ Uninstallation complete!"
 fi
