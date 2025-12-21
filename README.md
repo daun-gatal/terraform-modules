@@ -5,22 +5,21 @@ Production-ready Terraform modules for deploying a modern data platform on Kuber
 ## 🏗️ Architecture
 
 ```mermaid
-graph TD
+graph LR
     %% Styles
     classDef orchestration fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#black;
     classDef ingestion fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#black;
     classDef storage fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#black;
     classDef compute fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#black;
     classDef bi fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#black;
+    classDef security fill:#fff8e1,stroke:#ff8f00,stroke-width:2px,color:#black;
 
     %% Nodes
     subgraph Orch_Group [Orchestration]
-        direction LR
         Orch[Airflow / Kestra]:::orchestration
     end
 
     subgraph Ingest_Group [Ingestion]
-        direction LR
         Kafka[Kafka]:::ingestion
         Airbyte[Airbyte]:::ingestion
     end
@@ -28,7 +27,7 @@ graph TD
     subgraph Data_Group [Data Lake & Metadata]
         direction TB
         Lake[(MinIO / RustFS)]:::storage
-        Catalog[Gravitino / Nessie / Lakekeeper]:::storage
+        Catalog[Gravitino / Nessie]:::storage
         MetaDB[(PostgreSQL)]:::storage
     end
 
@@ -40,16 +39,36 @@ graph TD
         BI[Metabase / Superset]:::bi
     end
 
-    %% Edges - Control Flow (Dotted)
-    Orch -.->|Trigger| Airbyte
-    Orch -.->|Trigger| Trino
-    
-    %% Edges - Data Flow (Solid)
+    subgraph Security_Group [Security & Identity]
+        Keycloak[Keycloak]:::security
+        OpenBao[OpenBao]:::security
+    end
+
+    %% Edge Wiring
+    %% 1. Ingestion Flow
     Kafka -->|Stream| Lake
     Airbyte -->|Load| Lake
-    
-    %% Edges - Metadata/Read
+
+    %% 2. Compute Flow
+    Lake -->|Read| Trino
+    Catalog -->|Metadata| Trino
     MetaDB --- Catalog
+    Lake --- Catalog
+
+    %% 3. Consumption
+    Trino -->|Query| BI
+
+    %% 4. Orchestration Control
+    Orch -.->|Trigger| Airbyte
+    Orch -.->|Trigger| Trino
+
+    %% 5. Security Overlay (Cross-cutting)
+    Keycloak -.->|Auth| Orch
+    Keycloak -.->|Auth| Trino
+    Keycloak -.->|Auth| BI
+
+    %% Styling
+    linkStyle default interpolate basis
     Lake --- Catalog
     Catalog -->|Metadata| Trino
     Lake -->|Data| Trino
@@ -69,6 +88,7 @@ graph TD
 | | [**MinIO**](modules/minio/) | Object Storage | Distributed S3, Operator-managed |
 | | [**RustFS**](modules/rustfs/) | Lightweight S3 | Rust-based, High performance, Low footprint |
 | | [**OpenBao**](modules/openbao/) | Secrets Management | Vault fork, Standalone/HA, UI |
+| | [**Keycloak**](modules/keycloak/) | Identity & Access Mgt | SSO, User Federation, OIDC/SAML |
 | **Ingestion** | [**Airbyte**](modules/airbyte/) | ELT Platform | Connector library, UI, API |
 | | [**Kafka**](modules/kafka/) | Event Streaming | Strimzi (KRaft), Schema Registry, UI |
 | **Orchestration** | [**Airflow**](modules/airflow/) | Workflow Engine | Git-Sync, Celery/K8s Executors, Flower |
