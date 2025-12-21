@@ -23,7 +23,7 @@ variable "chart_name" {
 variable "chart_version" {
   description = "Helm chart version"
   type        = string
-  default     = "0.1.0"
+  default     = "0.8.1"
 }
 
 variable "chart_repository" {
