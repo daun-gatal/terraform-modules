@@ -104,3 +104,9 @@ variable "tailscale_funnel" {
   type        = bool
   default     = false
 }
+
+variable "proxy_headers" {
+  description = "Proxy headers configuration (e.g. xforwarded, forwarded)"
+  type        = string
+  default     = "xforwarded"
+}

@@ -29,6 +29,10 @@ locals {
     ingress = {
       enabled = var.ingress_enabled
     }
+
+    proxy = {
+      headers = var.proxy_headers
+    }
   }
 }
 
