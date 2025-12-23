@@ -424,5 +424,8 @@ resource "helm_release" "airflow_chart" {
 
   depends_on = [kubernetes_secret.airflow_secret]
 
-  timeout = 900
+  timeout       = 900
+  recreate_pods = true
+  force_update  = true
+  wait          = true
 }
