@@ -418,7 +418,8 @@ resource "helm_release" "airflow" {
   version    = var.chart_version
 
   values = [
-    yamlencode(merge(local.default_values, var.values))
+    yamlencode(local.default_values),
+    yamlencode(var.values)
   ]
 
   depends_on = [kubernetes_secret.airflow_secret]
