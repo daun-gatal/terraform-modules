@@ -14,6 +14,12 @@ variable "prefix" {
   default     = "airflow"
 }
 
+variable "timeout" {
+  description = "Timeout for Helm operations in seconds"
+  type        = number
+  default     = 900
+}
+
 variable "chart_name" {
   description = "Helm chart name"
   type        = string
