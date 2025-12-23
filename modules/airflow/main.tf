@@ -410,7 +410,7 @@ resource "kubernetes_secret" "airflow_secret" {
   type = "Opaque"
 }
 
-resource "helm_release" "airflow" {
+resource "helm_release" "airflow_chart" {
   name       = local.release_name
   namespace  = var.namespace
   repository = "https://airflow.apache.org"
@@ -424,8 +424,5 @@ resource "helm_release" "airflow" {
 
   depends_on = [kubernetes_secret.airflow_secret]
 
-  recreate_pods = true
-  force_update  = true
-  wait          = true
-  timeout       = 600
+  timeout = 900
 }
