@@ -425,5 +425,7 @@ resource "helm_release" "airflow" {
   depends_on = [kubernetes_secret.airflow_secret]
 
   recreate_pods = true
+  force_update  = true
+  wait          = true
   timeout       = 600
 }
