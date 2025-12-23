@@ -413,7 +413,7 @@ resource "kubernetes_secret" "airflow_secret" {
 resource "helm_release" "airflow_chart" {
   name       = local.release_name
   namespace  = var.namespace
-  repository = "https://airflow.apache.org"
+  repository = "https://airflow.apache.org/"
   chart      = var.chart_name
   version    = var.chart_version
 
