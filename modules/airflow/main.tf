@@ -411,10 +411,11 @@ resource "kubernetes_secret" "airflow_secret" {
 }
 
 resource "helm_release" "airflow" {
-  name      = local.release_name
-  namespace = var.namespace
-  chart     = "https://downloads.apache.org/airflow/helm-chart/${var.chart_version}/airflow-${var.chart_version}.tgz"
-  version   = var.chart_version
+  name       = local.release_name
+  namespace  = var.namespace
+  repository = "https://airflow.apache.org"
+  chart      = var.chart_name
+  version    = var.chart_version
 
   values = [
     yamlencode(local.default_values),
@@ -426,5 +427,5 @@ resource "helm_release" "airflow" {
   recreate_pods = true
   force_update  = true
   wait          = true
-  timeout       = var.timeout
+  timeout       = 600
 }
