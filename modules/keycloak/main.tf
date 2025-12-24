@@ -33,7 +33,7 @@ locals {
     additionalOptions = [
       {
         name = "features"
-        value = "token-exchange,legacy-token-exchange"
+        value = "token-exchange,token-exchange-external-internal"
       }
     ]
 
