@@ -105,41 +105,6 @@ locals {
 
     # Additional config properties
     additionalConfigProperties = local.additional_config_properties_list
-
-    # Access control configuration
-    accessControl = {
-      type          = "configmap"
-      refreshPeriod = "60s"
-      configFile    = "rules.json"
-      rules = {
-        "rules.json" = jsonencode({
-          catalogs = [
-            {
-              user    = "admin"
-              catalog = ".*"
-              allow   = "read-only"
-            }
-          ]
-          schemas = [
-            {
-              user    = "admin"
-              catalog = ".*"
-              schema  = ".*"
-              owner   = false
-            }
-          ]
-          tables = [
-            {
-              user       = "admin"
-              catalog    = ".*"
-              schema     = ".*"
-              table      = ".*"
-              privileges = ["SELECT"]
-            }
-          ]
-        })
-      }
-    }
   }
 
 }
@@ -160,13 +125,4 @@ resource "helm_release" "trino" {
   force_update  = true
   wait          = true
   timeout       = 600
-}
-
-data "kubernetes_config_map" "trino_acl" {
-  metadata {
-    name      = "${local.release_name}-access-control-volume-coordinator"
-    namespace = var.namespace
-  }
-
-  depends_on = [helm_release.trino]
 }
