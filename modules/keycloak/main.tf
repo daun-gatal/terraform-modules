@@ -30,6 +30,13 @@ locals {
       enabled = var.ingress_enabled
     }
 
+    additionalOptions = [
+      {
+        name = "features"
+        value = "token-exchange,legacy-token-exchange"
+      }
+    ]
+
     proxy = {
       headers = var.proxy_headers
     }
