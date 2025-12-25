@@ -114,6 +114,10 @@ variable "additional_ports" {
     port = number
   }))
   default = []
+  validation {
+    condition     = alltrue([for p in var.additional_ports : p.port != 80 && p.port != 443 && p.port != 5001])
+    error_message = "Ports 80, 443, and 5001 are reserved and cannot be used in additional_ports."
+  }
 }
 
 variable "apps_service_type" {
