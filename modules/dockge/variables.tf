@@ -106,3 +106,34 @@ variable "ingress_host" {
   type        = string
   default     = "dockge-web-ext"
 }
+
+variable "additional_ports" {
+  description = "List of additional ports to expose on the apps service."
+  type = list(object({
+    name = string
+    port = number
+  }))
+  default = []
+}
+
+variable "apps_service_type" {
+  description = "The type of service to create for apps."
+  type        = string
+  default     = "ClusterIP"
+  validation {
+    condition     = contains(["ClusterIP", "NodePort", "LoadBalancer"], var.apps_service_type)
+    error_message = "Service type must be ClusterIP, NodePort, or LoadBalancer."
+  }
+}
+
+variable "tailscale_app_hostname" {
+  description = "The hostname to use for Tailscale."
+  type        = string
+  default     = "dockge-apps-int"
+}
+
+variable "tailscale_app_expose" {
+  description = "Expose service via Tailscale"
+  type        = bool
+  default     = false
+}

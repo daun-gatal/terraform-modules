@@ -43,6 +43,33 @@ resource "kubernetes_service" "dockge" {
   }
 }
 
+resource "kubernetes_service" "dockge_apps" {
+  count = length(var.additional_ports) > 0 ? 1 : 0
+
+  metadata {
+    name      = "dockge-apps"
+    namespace = local.namespace
+    labels    = local.labels
+    annotations = {
+      "tailscale.com/expose"   = tostring(var.tailscale_app_expose)
+      "tailscale.com/hostname" = var.tailscale_app_hostname
+    }
+  }
+  spec {
+    type     = var.apps_service_type
+    selector = local.labels
+
+    dynamic "port" {
+      for_each = var.additional_ports
+      content {
+        name        = port.value.name
+        port        = port.value.port
+        target_port = port.value.port
+      }
+    }
+  }
+}
+
 resource "kubernetes_stateful_set" "dockge" {
   metadata {
     name      = "dockge"
