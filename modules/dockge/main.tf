@@ -77,6 +77,11 @@ resource "kubernetes_stateful_set" "dockge" {
             value = "tcp://localhost:2375"
           }
 
+          env {
+            name  = "DOCKGE_ENABLE_CONSOLE"
+            value = "true"
+          }
+
           dynamic "env" {
             for_each = var.dockge_env
             content {
