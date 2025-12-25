@@ -17,9 +17,15 @@ variable "dind_image" {
 }
 
 variable "dockge_data_size" {
-  description = "Size of the volume for Dockge data (stacks)."
+  description = "Size of the volume for Dockge data."
   type        = string
   default     = "50Gi"
+}
+
+variable "dockge_stacks_size" {
+  description = "Size of the volume for Dockge stacks."
+  type        = string
+  default     = "5Gi"
 }
 
 variable "dind_storage_size" {
