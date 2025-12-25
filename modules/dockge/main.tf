@@ -126,6 +126,11 @@ resource "kubernetes_stateful_set" "dockge" {
             name       = "dockge-data"
             mount_path = "/app/data"
           }
+
+          volume_mount {
+            name       = "dockge-stacks"
+            mount_path = "/opt/stacks"
+          }
         }
 
         container {
@@ -163,6 +168,11 @@ resource "kubernetes_stateful_set" "dockge" {
             name       = "dockge-data"
             mount_path = "/app/data"
           }
+
+          volume_mount {
+            name       = "dockge-stacks"
+            mount_path = "/opt/stacks"
+          }
         }
       }
     }
@@ -177,6 +187,21 @@ resource "kubernetes_stateful_set" "dockge" {
         resources {
           requests = {
             storage = var.dockge_data_size
+          }
+        }
+      }
+    }
+
+    volume_claim_template {
+      metadata {
+        name = "dockge-stacks"
+      }
+      spec {
+        access_modes       = ["ReadWriteOnce"]
+        storage_class_name = var.storage_class_name
+        resources {
+          requests = {
+            storage = var.dockge_stacks_size
           }
         }
       }
