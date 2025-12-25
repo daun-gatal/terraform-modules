@@ -7,7 +7,7 @@ variable "namespace" {
 variable "dockge_image" {
   description = "The Dockge Docker image."
   type        = string
-  default     = "louislam/dockge:nightly"
+  default     = "louislam/dockge:1.5.0"
 }
 
 variable "dind_image" {
