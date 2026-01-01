@@ -105,16 +105,16 @@ graph LR
 ### 1. Setup Namespace & Operators
 ```bash
 # Create namespaces
-curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | bash -s -- database storage airflow
+curl -sSL "https://raw.githubusercontent.com/daun-gatal/terraform-modules/main/scripts/create-namespaces.sh" | bash -s -- database storage airflow
 
 # Install Operators (CNPG, MinIO, Strimzi, etc.)
-curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
+curl -sSL "https://raw.githubusercontent.com/daun-gatal/terraform-modules/main/scripts/manage-operators.sh" | bash
 ```
 
 ### 2. Deploy Modules
 ```hcl
 module "postgres" {
-  source = "git::https://gitlab.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
   namespace   = "database"
   db_password = "secure-password"
 }
@@ -129,4 +129,4 @@ See **[examples/](examples/)** for complete working (and interconnected) configu
 - **kubectl**
 
 ## 🤝 Contributing
-Contributions welcome at [GitLab repository](https://gitlab.com/daun-gatal/terraform-modules).
+Contributions welcome at [GitHub repository](https://github.com/daun-gatal/terraform-modules).
