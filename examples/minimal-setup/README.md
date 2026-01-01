@@ -23,11 +23,11 @@ PostgreSQL ← Airflow (CeleryExecutor + Redis) → MinIO
 **2. Setup cluster:**
 ```bash
 # Create namespaces
-curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/create-namespaces.sh" | \
+curl -sSL "https://raw.githubusercontent.com/daun-gatal/terraform-modules/main/scripts/create-namespaces.sh" | \
   bash -s -- database storage airflow
 
 # Install operators (CloudNativePG, MinIO)
-curl -sSL "https://gitlab.com/daun-gatal/terraform-modules/-/raw/main/scripts/manage-operators.sh" | bash
+curl -sSL "https://raw.githubusercontent.com/daun-gatal/terraform-modules/main/scripts/manage-operators.sh" | bash
 ```
 
 **3. Prepare:**
@@ -200,4 +200,4 @@ terraform destroy  # ⚠️ Deletes everything!
 
 - [Main README](../../README.md) - All available modules
 - [Module Docs](../../modules/) - Detailed configuration
-- [Report Issues](https://gitlab.com/daun-gatal/terraform-modules/-/issues)
+- [Report Issues](https://github.com/daun-gatal/terraform-modules/issues)
