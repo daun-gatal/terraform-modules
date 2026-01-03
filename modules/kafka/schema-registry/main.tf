@@ -76,7 +76,7 @@ resource "kubernetes_service" "schema_registry" {
     name      = "${var.kafka_schema_registry_name}-service"
     namespace = var.namespace
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${var.kafka_schema_registry_name}-int"
     }
     labels = {

@@ -74,11 +74,7 @@ variable "worker_count" {
   default     = 1
 }
 
-variable "worker_query_max_memory" {
-  description = "Max query memory per worker"
-  type        = string
-  default     = "4GB"
-}
+
 
 variable "trino_worker_jvm_max_heap_size" {
   description = "Worker JVM max heap size"

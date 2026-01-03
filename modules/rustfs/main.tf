@@ -85,7 +85,7 @@ resource "kubernetes_service" "rustfs_custom_service" {
       app = var.fullname_override
     }
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${var.fullname_override}-int"
     }
   }

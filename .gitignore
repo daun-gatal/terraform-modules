@@ -38,3 +38,13 @@ terraform.rc
 
 # Auto-downloaded Helm charts
 modules/gravitino/_charts/
+
+# Terraform Plan Files
+*.tfplan
+
+# Terraform Lock Files (Local)
+.terraform.lock.hcl
+
+# Local History
+.history/
+

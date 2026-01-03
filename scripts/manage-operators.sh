@@ -33,12 +33,20 @@ KEYCLOAK_NAMESPACE="${KEYCLOAK_NAMESPACE:-keycloak}"
 # --------------------------
 # Help Message
 # --------------------------
-print_help() {
+# --------------------------
+# Help Message
+# --------------------------
+usage() {
   cat <<EOF
-Usage: $0 [options]
+Usage: $(basename "$0") [options]
+
+Description:
+  Manages the installation and uninstallation of core platform operators.
 
 Options:
-  --uninstall, -u              Uninstall operators (default: install)
+  --install                     Install operators (default)
+  --uninstall, -u               Uninstall operators
+  
   --with-tailscale              Include Tailscale operator
   --tailscale-version VERSION   Tailscale version (default: $TAILSCALE_VERSION)
   --tailscale-namespace NS      Tailscale namespace (default: $TAILSCALE_NAMESPACE)
@@ -57,16 +65,38 @@ Options:
   --strimzi-version VERSION     Strimzi Kafka Operator version (default: $STRIMZI_VERSION)
   --strimzi-namespace NS        Strimzi namespace (default: $STRIMZI_NAMESPACE)
 
-  --flink-version VERSION      Flink Operator version (default: $FLINK_OPERATOR_VERSION)
-  --flink-namespace NS         Flink namespace (default: $FLINK_NAMESPACE)
+  --flink-version VERSION       Flink Operator version (default: $FLINK_OPERATOR_VERSION)
+  --flink-namespace NS          Flink namespace (default: $FLINK_NAMESPACE)
 
-  --keycloak-version VERSION   Keycloak Operator version (default: $KEYCLOAK_VERSION)
-  --keycloak-namespace NS      Keycloak namespace (default: $KEYCLOAK_NAMESPACE)
+  --keycloak-version VERSION    Keycloak Operator version (default: $KEYCLOAK_VERSION)
+  --keycloak-namespace NS       Keycloak namespace (default: $KEYCLOAK_NAMESPACE)
 
   --help, -h                    Show this help message
+
+Example:
+  $(basename "$0") --install --with-tailscale
+  $(basename "$0") --uninstall
 EOF
   exit 0
 }
+
+# --------------------------
+# Check Dependencies
+# --------------------------
+check_dependencies() {
+  local missing=0
+  for cmd in kubectl helm jq; do
+    if ! command -v "$cmd" &> /dev/null; then
+      echo "❌ Error: Required command '$cmd' is not installed."
+      missing=1
+    fi
+  done
+  
+  if [ $missing -eq 1 ]; then
+    exit 1
+  fi
+}
+
 
 # --------------------------
 # Helpers
@@ -146,6 +176,9 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+# 1. Check Dependencies
+check_dependencies
+
 # --------------------------
 # Install or Uninstall Logic
 # --------------------------
@@ -158,7 +191,7 @@ if [[ "$ACTION" == "install" ]]; then
   helm repo add cnpg https://cloudnative-pg.github.io/charts
   helm repo add minio-operator https://operator.min.io
   helm repo add strimzi https://strimzi.io/charts/
-  helm repo add flink-operator https://downloads.apache.org/flink/flink-kubernetes-operator-$FLINK_OPERATOR_VERSION
+  helm repo add flink-operator "https://downloads.apache.org/flink/flink-kubernetes-operator-$FLINK_OPERATOR_VERSION"
 
   # Update repos once
   helm repo update

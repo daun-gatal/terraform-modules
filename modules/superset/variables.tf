@@ -194,17 +194,7 @@ variable "enable_websockets" {
 # ============================================
 # Cache Configuration
 # ============================================
-variable "cache_default_timeout" {
-  description = "Default cache timeout in seconds"
-  type        = number
-  default     = 300
-}
 
-variable "cache_key_prefix" {
-  description = "Cache key prefix"
-  type        = string
-  default     = "superset_"
-}
 
 # ============================================
 # Service Configuration

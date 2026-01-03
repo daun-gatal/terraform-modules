@@ -1,0 +1,30 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v0.2.0] - 2026-01-03
+
+### Added
+- **CI/CD Workflows**: Added comprehensive GitHub Actions pipelines (`lint.yaml`, `docs.yaml`, `security.yaml`, `scripts.yaml`) running on **self-hosted** runners.
+- **Documentation**: Added standardized `README.md` files for all modules with auto-generated input/output tables.
+- **Root Documentation**: Overhauled root `README.md` with architecture diagrams, quick start guides, and status badges.
+- **Linting Config**: Added `.tflint.hcl` with optimized rules (`terraform_documented_variables`, `terraform_module_pinned_source`).
+- **Script Improvements**: Added robust error handling (`set -euo pipefail`), usage help, and dependency checks to `create-namespaces.sh` and `manage-operators.sh`.
+
+### Changed
+- **Standardization**: Renamed all `output.tf` files to `outputs.tf` across the codebase.
+- **Helm Provider**: Updated `hashicorp/helm` provider version to `~> 2.16` across all modules to resolve compatibility issues.
+- **Documentation Cleanup**: Removed manual "Inputs/Outputs" tables from module READMEs to prevent conflicts with `terraform-docs`.
+
+### Security
+- **Sensitive Variables**: Marked password and secret variables as `sensitive = true` in `nessie`, `minio`, `airflow`, `lakekeeper`, `superset`, `metabase`, and `rustfs`.
+- **Infrastructure Scanning**: Integrated Trivy IaC scanning into the CI pipeline.
+
+## [v0.1.0] - 2025-12-31
+
+### Added
+- Initial release of modular data platform components.
+- Modules: `postgres`, `minio`, `airflow`, `kafka`, `trino`, `superset`, `metabase`, `keycloak`, `openbao`, `gravitino`, `nessie`, `lakekeeper`, `rustfs`, `airbyte`, `dockge`, `kestra`.

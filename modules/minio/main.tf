@@ -189,7 +189,7 @@ resource "kubernetes_service" "minio_api_service" {
       app = local.tenant_name
     }
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${local.tenant_name}-api-int"
     }
   }

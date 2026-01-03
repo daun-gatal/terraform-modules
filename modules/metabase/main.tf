@@ -93,7 +93,7 @@ resource "kubernetes_service" "metabase" {
     name      = local.service_name
     namespace = var.namespace
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${local.prefix}-int"
     }
   }
@@ -120,7 +120,7 @@ resource "kubernetes_ingress_v1" "metabase" {
     namespace = var.namespace
 
     annotations = {
-      "tailscale.com/funnel" = "${var.tailscale_funnel}"
+      "tailscale.com/funnel" = tostring(var.tailscale_funnel)
     }
   }
 

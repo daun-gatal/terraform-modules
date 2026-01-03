@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: self-hosted
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Release Notes
+        id: extract_notes
+        run: |
+          # Extract the section for this tag from CHANGELOG.md
+          # 1. Find the line with the current tag (e.g., "## [v0.2.0]")
+          # 2. Print until the next version header or end of file
+          # 3. Remove the first line (the header itself) and the last line (the next header) if present.
+          
+          TAG_NAME=${GITHUB_REF_NAME}
+          
+          # Use awk to extract the block safely
+          # Logic: Start printing after matching the current tag header, stop at the next header.
+          awk -v tag="[${TAG_NAME}]" '/^## / { if ($2 == tag) { flag=1; next } else { flag=0 } } flag' CHANGELOG.md > RELEASE_NOTES.md
+          
+          # Debug
+          echo "Extracted Notes:"
+          cat RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
