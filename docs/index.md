@@ -16,6 +16,32 @@ hide:
 
 Welcome to the **Data Platform Terraform Modules** library. This collection provides a set of highly opinionated, production-ready modules for building modern data infrastructure on Kubernetes.
 
+## Live Demos
+
+Explore running instances deployed using these modules.
+
+<div class="grid cards" markdown>
+
+-   :material-airflow: **Apache Airflow**
+    ---
+    Production-ready orchestration with CeleryExecutor and git-sync.
+    
+    [:octicons-link-external-16: Launch Demo](https://airflow-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
+
+-   :material-chart-bar: **Apache Superset**
+    ---
+    Full BI platform connected to Trino and Postgres.
+    
+    [:octicons-link-external-16: Launch Demo](https://superset-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
+
+-   :material-console: **Kafka UI**
+    ---
+    Management interface for Kafka clusters and Schema Registry.
+    
+    [:octicons-link-external-16: Launch Demo](https://kafka-ui-ext.kitty-barb.ts.net/){ .md-button .md-button--primary }
+
+</div>
+
 <div class="grid cards" markdown>
 
 -   :material-cube-outline: **Standardized Outputs**
