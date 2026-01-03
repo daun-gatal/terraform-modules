@@ -55,8 +55,6 @@ No modules.
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Admin password | `string` | n/a | yes |
 | <a name="input_admin_username"></a> [admin\_username](#input\_admin\_username) | Admin username | `string` | `"admin"` | no |
 | <a name="input_bootstrap_pip_packages"></a> [bootstrap\_pip\_packages](#input\_bootstrap\_pip\_packages) | List of pip packages to install during bootstrap (e.g., database drivers, connectors) | `list(string)` | `[]` | no |
-| <a name="input_cache_default_timeout"></a> [cache\_default\_timeout](#input\_cache\_default\_timeout) | Default cache timeout in seconds | `number` | `300` | no |
-| <a name="input_cache_key_prefix"></a> [cache\_key\_prefix](#input\_cache\_key\_prefix) | Cache key prefix | `string` | `"superset_"` | no |
 | <a name="input_celery_worker_replicas"></a> [celery\_worker\_replicas](#input\_celery\_worker\_replicas) | Number of Celery worker replicas | `number` | `1` | no |
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name | `string` | `"superset"` | no |
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Helm chart version | `string` | `"0.14.1"` | no |

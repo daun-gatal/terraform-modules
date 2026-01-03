@@ -3,12 +3,6 @@ locals {
   release_name = "${local.prefix}-release"
   secret_name  = "${local.prefix}-secret"
 
-  # Validation: SSH authentication requires git_ssh_key_path
-  validate_ssh_auth = var.git_auth_method == "ssh" && var.git_ssh_key_path == null ? tobool("ERROR: git_ssh_key_path is required when git_auth_method is 'ssh'") : true
-
-  # Validation: PAT authentication requires both git_username and git_password
-  validate_pat_auth = var.git_auth_method == "pat" && (var.git_username == null || var.git_password == null) ? tobool("ERROR: git_username and git_password are required when git_auth_method is 'pat'") : true
-
   # Remote logging environment variables
   remote_logging_env = var.enable_remote_logging ? [
     {

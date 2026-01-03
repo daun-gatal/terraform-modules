@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.16"
+    }
+  }
+}
+
 locals {
   # Default values - only mandatory configurations
   default_values = {
@@ -85,7 +94,7 @@ resource "kubernetes_service" "rustfs_custom_service" {
       app = var.fullname_override
     }
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${var.fullname_override}-int"
     }
   }

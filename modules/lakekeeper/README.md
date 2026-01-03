@@ -63,7 +63,6 @@ No modules.
 | <a name="input_database_user"></a> [database\_user](#input\_database\_user) | Database user | `string` | `"catalog"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for Lakekeeper deployment | `string` | `"lakekeeper"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for resource names | `string` | `"lakekeeper"` | no |
-| <a name="input_resources_config"></a> [resources\_config](#input\_resources\_config) | Resource requests/limits per component | <pre>map(object({<br/>    requests = optional(object({<br/>      cpu    = optional(string)<br/>      memory = optional(string)<br/>    }))<br/>    limits = optional(object({<br/>      cpu    = optional(string)<br/>      memory = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
 | <a name="input_tailscale_expose"></a> [tailscale\_expose](#input\_tailscale\_expose) | Expose service via Tailscale | `bool` | `false` | no |
 | <a name="input_tailscale_funnel"></a> [tailscale\_funnel](#input\_tailscale\_funnel) | Expose service via Tailscale Funnel (public ingress) | `bool` | `false` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional Helm values to merge | `any` | `{}` | no |

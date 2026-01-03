@@ -107,7 +107,7 @@ resource "kubernetes_service" "kafka_ui" {
       app = var.kafka_ui_name
     }
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${var.kafka_ui_name}-int"
     }
   }

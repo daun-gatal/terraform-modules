@@ -117,20 +117,7 @@ variable "tailscale_funnel" {
 # Resources Configuration
 # ============================================
 
-variable "resources_config" {
-  description = "Resource requests/limits per component"
-  type = map(object({
-    requests = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
-    }))
-    limits = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
-    }))
-  }))
-  default = {}
-}
+
 
 # ============================================
 # Additional Helm Values

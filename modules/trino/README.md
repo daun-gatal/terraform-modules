@@ -77,7 +77,6 @@ No modules.
 | <a name="input_trino_worker_query_max_memory"></a> [trino\_worker\_query\_max\_memory](#input\_trino\_worker\_query\_max\_memory) | Worker max query memory | `string` | `"1GB"` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional Helm values to merge (supports all chart values). These values will override any defaults. | `any` | `{}` | no |
 | <a name="input_worker_count"></a> [worker\_count](#input\_worker\_count) | Number of worker replicas | `number` | `1` | no |
-| <a name="input_worker_query_max_memory"></a> [worker\_query\_max\_memory](#input\_worker\_query\_max\_memory) | Max query memory per worker | `string` | `"4GB"` | no |
 
 ## Outputs
 

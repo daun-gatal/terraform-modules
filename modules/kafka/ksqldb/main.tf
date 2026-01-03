@@ -130,7 +130,7 @@ resource "kubernetes_service" "ksqldb" {
     namespace = var.namespace
 
     annotations = {
-      "tailscale.com/expose"   = "${var.tailscale_expose}"
+      "tailscale.com/expose"   = tostring(var.tailscale_expose)
       "tailscale.com/hostname" = "${var.kafka_ksqldb_name}-int"
     }
   }
