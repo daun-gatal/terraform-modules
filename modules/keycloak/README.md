@@ -50,6 +50,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_keycloak_internal_dns"></a> [keycloak\_internal\_dns](#output\_keycloak\_internal\_dns) | Internal DNS name of the Keycloak service |
-| <a name="output_keycloak_internal_port"></a> [keycloak\_internal\_port](#output\_keycloak\_internal\_port) | Keycloak service HTTP port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Keycloak is deployed |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | Name of the Keycloak service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | Keycloak service HTTP port |
 <!-- END_TF_DOCS -->

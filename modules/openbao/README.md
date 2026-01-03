@@ -72,7 +72,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_generated_unseal_key"></a> [generated\_unseal\_key](#output\_generated\_unseal\_key) | Generated unseal key (base64 encoded). SAVE THIS SECURELY! Only available when generate\_unseal\_key is true. |
-| <a name="output_openbao_internal_dns"></a> [openbao\_internal\_dns](#output\_openbao\_internal\_dns) | Full DNS and port for the OpenBao internal service (all pods) |
-| <a name="output_openbao_server_dns"></a> [openbao\_server\_dns](#output\_openbao\_server\_dns) | Full DNS and port for the OpenBao server service |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_deployment_name"></a> [deployment\_name](#output\_deployment\_name) | Name of the OpenBao deployment |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where OpenBao is deployed |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | Name of the OpenBao active service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | OpenBao service port |
 <!-- END_TF_DOCS -->

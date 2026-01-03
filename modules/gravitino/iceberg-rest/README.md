@@ -49,10 +49,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_catalog_backend"></a> [catalog\_backend](#output\_catalog\_backend) | Configured catalog backend |
-| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where Iceberg REST is deployed |
-| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Helm release name |
-| <a name="output_service_dns"></a> [service\_dns](#output\_service\_dns) | DNS name of the Iceberg REST service |
-| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | Iceberg REST service port |
-| <a name="output_warehouse_location"></a> [warehouse\_location](#output\_warehouse\_location) | Configured warehouse location |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where the service is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | The name of the Helm release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the service |
 <!-- END_TF_DOCS -->

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.0] - 2026-01-03
+
+### Changed
+- **BREAKING CHANGE**: Standardized module outputs across all 23 modules to strictly follow the **Exclusive Config** pattern.
+  - All "standard" identifiers are now top-level outputs: `release_name`, `namespace`, `service_name`, `service_port`, and `ingress_host`.
+  - All module-specific attributes (e.g., `root_user`, `jdbc_url`, `connection_string`) have been **MOVED** into the new `config` output object and **REMOVED** from the top level to prevent duplication.
+  - Renamed legacy variable-specific outputs (e.g., `minio_service_dns`, `postgres_rw_dns`) to the standardized names.
+
+### Added
+- **Config Output**: Introduced a consistent `config` output object in every module.
+  - Contains `internal_url` (standardized connection string).
+  - Contains `attributes` map for all module-specific data (credentials, keys, detailed configuration).
+- **New Outputs**: Created `outputs.tf` for modules that previously lacked them: `airbyte`, `airflow`, `dockge`, `kestra`, `metabase`, `superset`, `kafka/ui`, and `kafka/node`.
+
 ## [v0.2.4] - 2026-01-03
 
 ### Changed

@@ -34,5 +34,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_kafka_connect_endpoints"></a> [kafka\_connect\_endpoints](#output\_kafka\_connect\_endpoints) | Kafka Connect DNS + Port per instance |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Kafka Connect is deployed |
 <!-- END_TF_DOCS -->

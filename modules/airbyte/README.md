@@ -37,5 +37,11 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Airbyte is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | The name of the Helm release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the Airbyte server service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Airbyte server service |
 <!-- END_TF_DOCS -->

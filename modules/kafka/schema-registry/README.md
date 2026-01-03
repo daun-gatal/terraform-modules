@@ -39,6 +39,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_schema_registry_internal_dns"></a> [schema\_registry\_internal\_dns](#output\_schema\_registry\_internal\_dns) | Schema Registry internal DNS |
-| <a name="output_schema_registry_port"></a> [schema\_registry\_port](#output\_schema\_registry\_port) | Schema Registry service port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where Schema Registry is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Name of the Schema Registry deployment |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | Schema Registry service name |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | Schema Registry service port |
 <!-- END_TF_DOCS -->

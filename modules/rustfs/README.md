@@ -54,8 +54,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_rustfs_access_key"></a> [rustfs\_access\_key](#output\_rustfs\_access\_key) | The RustFS access key |
-| <a name="output_rustfs_secret_key"></a> [rustfs\_secret\_key](#output\_rustfs\_secret\_key) | The RustFS secret key |
-| <a name="output_rustfs_service_dns"></a> [rustfs\_service\_dns](#output\_rustfs\_service\_dns) | The RustFS API service DNS name |
-| <a name="output_rustfs_service_port"></a> [rustfs\_service\_port](#output\_rustfs\_service\_port) | The RustFS API service port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where RustFS is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Name of the RustFS release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The RustFS service name |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The RustFS service port |
 <!-- END_TF_DOCS -->

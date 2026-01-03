@@ -53,9 +53,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_nessie_default_warehouse"></a> [nessie\_default\_warehouse](#output\_nessie\_default\_warehouse) | The default warehouse location in S3 for Nessie |
-| <a name="output_nessie_s3_endpoint"></a> [nessie\_s3\_endpoint](#output\_nessie\_s3\_endpoint) | The S3 endpoint for Nessie |
-| <a name="output_nessie_s3_region"></a> [nessie\_s3\_region](#output\_nessie\_s3\_region) | The S3 region for Nessie |
-| <a name="output_nessie_service_dns"></a> [nessie\_service\_dns](#output\_nessie\_service\_dns) | The Nessie service DNS name |
-| <a name="output_nessie_service_port"></a> [nessie\_service\_port](#output\_nessie\_service\_port) | The Nessie service port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Nessie is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | The name of the Helm release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the Nessie service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Nessie service |
 <!-- END_TF_DOCS -->

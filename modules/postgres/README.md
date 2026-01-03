@@ -50,10 +50,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_postgres_database_name"></a> [postgres\_database\_name](#output\_postgres\_database\_name) | The name of the default database |
-| <a name="output_postgres_password"></a> [postgres\_password](#output\_postgres\_password) | The password for the Postgres database |
-| <a name="output_postgres_port"></a> [postgres\_port](#output\_postgres\_port) | The port of the Postgres service |
-| <a name="output_postgres_ro_dns"></a> [postgres\_ro\_dns](#output\_postgres\_ro\_dns) | PostgreSQL read-only DNS (replicas only) |
-| <a name="output_postgres_rw_dns"></a> [postgres\_rw\_dns](#output\_postgres\_rw\_dns) | PostgreSQL read-write DNS (primary instance) |
-| <a name="output_postgres_username"></a> [postgres\_username](#output\_postgres\_username) | The username for the Postgres database |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Postgres is deployed |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | PostgreSQL read-write service name (primary) |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Postgres service |
 <!-- END_TF_DOCS -->

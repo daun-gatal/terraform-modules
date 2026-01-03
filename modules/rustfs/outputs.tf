@@ -1,21 +1,41 @@
-output "rustfs_service_dns" {
-  value       = "${var.release_name}.${var.namespace}.svc.cluster.local"
-  description = "The RustFS API service DNS name"
+locals {
+  release_name = var.release_name
+  namespace    = var.namespace
+  service_name = var.release_name
+  service_port = var.service_port
+  internal_url = "http://${var.release_name}.${var.namespace}.svc.cluster.local:${var.service_port}"
+  access_key   = var.auth_access_key
+  secret_key   = var.auth_secret_key
 }
 
-output "rustfs_service_port" {
-  value       = var.service_port
-  description = "The RustFS API service port"
+output "release_name" {
+  description = "Name of the RustFS release"
+  value       = local.release_name
 }
 
-output "rustfs_access_key" {
-  value       = var.auth_access_key
-  description = "The RustFS access key"
-  sensitive   = true
+output "namespace" {
+  description = "Namespace where RustFS is deployed"
+  value       = local.namespace
 }
 
-output "rustfs_secret_key" {
-  value       = var.auth_secret_key
-  description = "The RustFS secret key"
-  sensitive   = true
+output "service_name" {
+  value       = local.service_name
+  description = "The RustFS service name"
+}
+
+output "service_port" {
+  value       = local.service_port
+  description = "The RustFS service port"
+}
+
+output "config" {
+  description = "Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs."
+  value = {
+    internal_url = local.internal_url
+    attributes = {
+      access_key = local.access_key
+      secret_key = local.secret_key
+    }
+  }
+  sensitive = true
 }
