@@ -41,6 +41,9 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/rizal-mahifa
 
+extra_css:
+  - stylesheets/extra.css
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true

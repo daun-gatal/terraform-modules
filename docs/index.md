@@ -6,11 +6,9 @@ hide:
 
 # Production-Grade Terraform Modules
 
-# Production-Grade Terraform Modules
+# <span class="text-gradient">Production-Grade Terraform Modules</span>
 
 :material-terraform: **Standardized. Secure. Scalable.**
-
----
 
 ---
 
@@ -22,19 +20,19 @@ Explore running instances deployed using these modules.
 
 <div class="grid cards" markdown>
 
--   :material-airflow: **Apache Airflow**
+-   :simple-apacheairflow: **Apache Airflow**
     ---
     Production-ready orchestration with CeleryExecutor and git-sync.
     
     [:octicons-link-external-16: Launch Demo](https://airflow-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
 
--   :material-chart-bar: **Apache Superset**
+-   :simple-apachesuperset: **Apache Superset**
     ---
     Full BI platform connected to Trino and Postgres.
     
     [:octicons-link-external-16: Launch Demo](https://superset-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
 
--   :material-console: **Kafka UI**
+-   :simple-apachekafka: **Kafka UI**
     ---
     Management interface for Kafka clusters and Schema Registry.
     

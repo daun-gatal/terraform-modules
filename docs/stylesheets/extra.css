@@ -1,0 +1,44 @@
+/* Gradient Text for Hero Headers */
+.text-gradient {
+    background: linear-gradient(to right, #00B4DB, #0083B0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+[data-md-color-scheme="slate"] .text-gradient {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Card Hover Effects - Lift and Glow */
+.md-typeset .grid.cards > ul > li {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid transparent;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: var(--md-primary-fg-color);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+/* Button Animations */
+.md-button {
+    transition: all 0.2s ease;
+}
+
+.md-button:hover {
+    transform: scale(1.05);
+}
+
+.md-button--primary {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
