@@ -54,19 +54,27 @@ These deployments are running live on my personal Kubernetes cluster, managed en
 <div class="grid cards" markdown>
 
 -   :material-puzzle-outline: **Composition Pattern**
+
     ---
+
     Implemented the "Exclusive Config" pattern to separate configuration data from resource instantiation, allowing modules to be wired together like building blocks.
 
 -   :material-cube-outline: **Standardized Interfaces**
+
     ---
+
     All 20+ modules adhere to a strict input/output contract (`service_name`, `service_port`, `internal_url`), simplifying cross-module dependencies.
 
 -   :material-security: **Security Engineering**
+
     ---
+
     Zero-trust principles applied: explicit identity management, secrets injected via Kubernetes Secrets (never plain text), and network policies.
 
 -   :material-chart-tree: **Full Stack Data Ops**
+
     ---
+
     A complete reference architecture covering Ingestion (Airbyte), Storage (MinIO, Postgres), Compute (Spark, Trino), and Viz (Superset).
 
 </div>
