@@ -1,28 +1,3 @@
-# Nessie Terraform Module
-
-## Description
-Deploys Nessie, a Git-like data version control system for Iceberg tables, on Kubernetes.
-
-## Usage
-
-```hcl
-module "nessie" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/nessie?ref=v0.1.0"
-
-  namespace             = "catalog"
-  nessie_jdbc_username  = "nessie"
-  nessie_jdbc_password  = "password"
-  nessie_jdbc_url       = "postgres-rw.database.svc"
-  nessie_jdbc_port      = "5432"
-  nessie_database_name  = "nessie"
-  
-  nessie_s3_bucket            = "nessie-bucket"
-  nessie_s3_endpoint          = "http://minio:9000"
-  nessie_s3_access_key_name   = "minio"
-  nessie_s3_access_key_secret = "minio123"
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

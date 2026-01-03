@@ -1,22 +1,3 @@
-# Lakekeeper Terraform Module
-
-## Description
-Deploys Lakekeeper, a Rust-native Iceberg REST Catalog server.
-
-## Usage
-
-```hcl
-module "lakekeeper" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/lakekeeper?ref=v0.1.0"
-
-  namespace           = "catalog"
-  database_host_read  = "postgres-ro.database.svc"
-  database_host_write = "postgres-rw.database.svc"
-  database_user       = "lakekeeper"
-  database_password   = "password"
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

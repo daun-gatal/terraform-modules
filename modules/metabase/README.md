@@ -1,20 +1,3 @@
-# Metabase Terraform Module
-
-## Description
-Deploys Metabase, a business intelligence tool.
-
-## Usage
-
-```hcl
-module "metabase" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/metabase?ref=v0.1.0"
-
-  namespace          = "analytics"
-  metabase_db_host   = "postgres-rw"
-  metabase_db_password = "password"
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

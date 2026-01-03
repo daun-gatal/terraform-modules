@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.2.1] - 2026-01-03
+
+### Added
+- **CI/CD**: Added `docs.yaml` workflow to validate module documentation using `terraform-docs` v0.21.0.
+- **Documentation**: Standardized all module READMEs using `terraform-docs` and `markdown table` format. Added `terraform-docs` configuration file `.terraform-docs.yml`.
+
+### Changed
+- **Documentation**: Updated `gravitino` and `kafka` parent READMEs to include navigation to sub-modules.
+- **Documentation**: Added workflow status badges to root `README.md`.
+
 ## [v0.2.0] - 2026-01-03
 
 ### Added

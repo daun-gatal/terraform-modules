@@ -1,6 +1,7 @@
 # Terraform Modules for Data Platform
 
 ![Lint & Validate](https://github.com/daun-gatal/terraform-modules/actions/workflows/lint.yaml/badge.svg)
+![Validate Documentation](https://github.com/daun-gatal/terraform-modules/actions/workflows/docs.yaml/badge.svg)
 ![Security Scan](https://github.com/daun-gatal/terraform-modules/actions/workflows/security.yaml/badge.svg)
 ![Scripts Check](https://github.com/daun-gatal/terraform-modules/actions/workflows/scripts.yaml/badge.svg)
 

@@ -1,28 +1,3 @@
-# Postgres Terraform Module
-
-## Description
-Deploys a CloudNativePG (CNPG) Cluster on Kubernetes. This module handles:
-- CNPG Cluster deployment (HA or Single node)
-- Credential management (creates a Kubernetes Secret)
-- Database initialization
-- Extra database creation
-- Custom PostgreSQL parameters
-
-## Usage
-
-```hcl
-module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.1.0"
-
-  namespace         = "database"
-  db_password       = "secure-password"
-  postgres_replicas = 3
-  storage_size      = "10Gi"
-  
-  extra_db_names    = ["metabase", "airflow"]
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,20 +1,3 @@
-# OpenBao Terraform Module
-
-## Description
-Deploys OpenBao (a Vault fork) on Kubernetes.
-
-## Usage
-
-```hcl
-module "openbao" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/openbao?ref=v0.1.0"
-
-  openbao_namespace = "vault"
-  server_ha_replicas = 3
-  ui_enabled         = true
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

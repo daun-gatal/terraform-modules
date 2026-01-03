@@ -1,23 +1,3 @@
-# Kafka Cluster Terraform Module
-
-## Description
-Deploys a Kafka Cluster using the Strimzi Operator. This module deploys a KRaft-based (Zookeeper-less) Kafka cluster.
-
-## Usage
-
-```hcl
-module "kafka_cluster" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/kafka/cluster?ref=v0.1.0"
-
-  namespace   = "kafka"
-  kafka_version = "3.7.0"
-  kafka_cluster_name = "production-cluster"
-  
-  default_replication_factor = 3
-  min_insync_replicas        = 2
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

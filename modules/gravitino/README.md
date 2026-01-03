@@ -1,25 +1,8 @@
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+# Gravitino Terraform Modules
 
-No requirements.
+This directory contains Terraform modules for deploying Gravitino components.
 
-## Providers
+## Submodules
 
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
-<!-- END_TF_DOCS -->
+- [server](./server): Deploys the Gravitino server.
+- [iceberg-rest](./iceberg-rest): Deploys the Gravitino Iceberg REST service.

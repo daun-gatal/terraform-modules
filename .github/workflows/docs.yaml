@@ -1,0 +1,34 @@
+name: Validate Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate-docs:
+    name: Validate Usage in README.md
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install terraform-docs
+        run: |
+          TF_DOCS_VERSION="v0.21.0"
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          ARCH=$(uname -m)
+          if [ "$ARCH" == "x86_64" ]; then ARCH="amd64"; fi
+          if [ "$ARCH" == "aarch64" ]; then ARCH="arm64"; fi
+          
+          echo "Installing terraform-docs $TF_DOCS_VERSION for $OS-$ARCH"
+          curl -Lo ./terraform-docs.tar.gz "https://github.com/terraform-docs/terraform-docs/releases/download/$TF_DOCS_VERSION/terraform-docs-$TF_DOCS_VERSION-$OS-$ARCH.tar.gz"
+          tar -xzf terraform-docs.tar.gz terraform-docs
+          chmod +x terraform-docs
+          mkdir -p $HOME/.local/bin
+          mv terraform-docs $HOME/.local/bin/terraform-docs
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Validate Documentation
+        run: |
+          find modules -name "*.tf" -exec dirname {} \; | sort -u | xargs -I {} terraform-docs markdown table --output-file README.md --output-mode replace --output-check {}

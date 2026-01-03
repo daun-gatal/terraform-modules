@@ -1,25 +1,3 @@
-# Gravitino Iceberg REST Terraform Module
-
-## Description
-Deploys the Iceberg REST Service (part of Gravitino ecosystem) on Kubernetes.
-
-## Usage
-
-```hcl
-module "iceberg_rest" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/gravitino/iceberg-rest?ref=v0.1.0"
-
-  namespace       = "ingestion"
-  catalog_backend = "jdbc"
-  
-  jdbc_config = {
-    url      = "jdbc:postgresql://db:5432/iceberg"
-    user     = "iceberg"
-    password = "password"
-  }
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

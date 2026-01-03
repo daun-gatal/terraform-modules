@@ -1,22 +1,3 @@
-# Gravitino Server Terraform Module
-
-## Description
-Deploys the Gravitino Metalake Server on Kubernetes.
-
-## Usage
-
-```hcl
-module "gravitino_server" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/gravitino/server?ref=v0.1.0"
-
-  namespace = "gravitino"
-  replicas  = 1
-  
-  # Enable built-in databases if needed
-  postgresql_enabled = true
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
