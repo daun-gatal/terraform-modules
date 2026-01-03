@@ -12,7 +12,7 @@ echo "Syncing module documentation..."
 
 # Index page for modules
 cat > "$DOCS_MODULES_DIR/index.md" <<EOF
-# Module Reference
+
 
 This section contains detailed documentation for all available Terraform modules. Each page is automatically generated from the module's source code using \`terraform-docs\`.
 
