@@ -4,93 +4,69 @@ hide:
   - toc
 ---
 
-# Production-Grade Terraform Modules
+# Data Infrastructure Portfolio
 
-# <span class="text-gradient">Production-Grade Terraform Modules</span>
+> **Engineering scalable, modular data platforms on Kubernetes.**
+>
+> This project demonstrates my approach to building production-grade infrastructure using Terraform. It showcases advanced composition patterns, secure secret management, and a standardized module interface.
 
-:material-terraform: **Standardized. Secure. Scalable.**
+[Explore Modules](modules/){ .md-button .md-button--primary }
+[Design Philosophy](architecture.md){ .md-button }
 
 ---
 
-Welcome to the **Data Platform Terraform Modules** library. This collection provides a set of highly opinionated, production-ready modules for building modern data infrastructure on Kubernetes.
+## Lab Environment
 
-## Live Demos
-
-Explore running instances deployed using these modules.
+These deployments are running live on my personal Kubernetes cluster, managed entirely by the modules in this repository.
 
 <div class="grid cards" markdown>
 
--   :simple-apacheairflow: **Apache Airflow**
-    ---
-    Production-ready orchestration with CeleryExecutor and git-sync.
-    
-    [:octicons-link-external-16: Launch Demo](https://airflow-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
+-   :simple-apacheairflow: **Orchestration Layer**
 
--   :simple-apachesuperset: **Apache Superset**
     ---
-    Full BI platform connected to Trino and Postgres.
-    
-    [:octicons-link-external-16: Launch Demo](https://superset-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
 
--   :simple-apachekafka: **Kafka UI**
+    **Apache Airflow** configured with CeleryExecutor, git-sync for DAGs, and OIDC authentication.
+
+    [:octicons-link-external-16: View Deployment](https://airflow-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
+
+-   :simple-apachesuperset: **Analytics Layer**
+
     ---
-    Management interface for Kafka clusters and Schema Registry.
-    
-    [:octicons-link-external-16: Launch Demo](https://kafka-ui-ext.kitty-barb.ts.net/){ .md-button .md-button--primary }
+
+    **Apache Superset** connected to Trino and Postgres, demonstrating the full BI stack integration.
+
+    [:octicons-link-external-16: View Deployment](https://superset-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
+
+-   :simple-apachekafka: **Streaming Layer**
+
+    ---
+
+    **Kafka Ecosystem** including Schema Registry and ksqlDB, managed via Kafka UI.
+
+    [:octicons-link-external-16: View Deployment](https://kafka-ui-ext.kitty-barb.ts.net/){ .md-button .md-button--primary }
 
 </div>
+
+---
+
+## Technical Highlights
 
 <div class="grid cards" markdown>
 
--   :material-cube-outline: **Standardized Outputs**
+-   :material-puzzle-outline: **Composition Pattern**
     ---
-    Every module exposes a consistent set of outputs (`service_name`, `service_port`, `release_name`) for predictable composability.
+    Implemented the "Exclusive Config" pattern to separate configuration data from resource instantiation, allowing modules to be wired together like building blocks.
 
--   :material-puzzle-outline: **Exclusive Config Pattern**
+-   :material-cube-outline: **Standardized Interfaces**
     ---
-    Configuration inputs are strictly separated from resource identification, preventing data duplication and circular dependencies. [Learn more](user-guide.md).
+    All 20+ modules adhere to a strict input/output contract (`service_name`, `service_port`, `internal_url`), simplifying cross-module dependencies.
 
--   :material-security: **Secure by Default**
+-   :material-security: **Security Engineering**
     ---
-    Sensitive values are marked as `sensitive` in Terraform. Secrets are managed via Kubernetes Secrets, not plaintext environment variables.
+    Zero-trust principles applied: explicit identity management, secrets injected via Kubernetes Secrets (never plain text), and network policies.
 
--   :material-server-network: **Full Stack Support**
+-   :material-chart-tree: **Full Stack Data Ops**
     ---
-    Modules for everything from storage (MinIO, Postgres) to compute (Airflow, Spark/Kestra) and governance (Gravitino, Ranger).
+    A complete reference architecture covering Ingestion (Airbyte), Storage (MinIO, Postgres), Compute (Spark, Trino), and Viz (Superset).
 
 </div>
-
-## Quick Start
-
-### 1. Install Dependencies
-Ensure you have Terraform 1.14+ and kubectl installed.
-
-```bash
-brew tap hashicorp/tap
-brew install hashicorp/tap/terraform
-```
-
-### 2. Use a Module
-
-```hcl
-module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.3.0"
-
-  namespace   = "database"
-  db_password = var.postgres_password
-}
-```
-
-### 3. Connect Modules
-
-```hcl
-module "airflow" {
-  source = "..."
-  
-  # Predictable outputs make wiring easy
-  airflow_metadata_db_conn = "postgresql://user:pass@${module.postgres.service_name}.${module.postgres.namespace}:5432/airflow"
-}
-```
-
-[Browse Modules](modules/){ .md-button .md-button--primary }
-[View Architecture](user-guide.md){ .md-button }
