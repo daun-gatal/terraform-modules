@@ -19,5 +19,5 @@ jobs:
           find-dir: .
           output-file: README.md
           output-method: inject
-          git-push: "false"
+          git-push: "true"
           fail-on-diff: "true"

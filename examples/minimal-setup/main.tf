@@ -29,7 +29,7 @@ module "minio" {
 
 # 3. Airflow - Workflow orchestration with CeleryExecutor
 module "airflow" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airflow?ref=main"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airflow?ref=v0.2.0"
 
   namespace = "airflow"
   prefix    = "airflow"
