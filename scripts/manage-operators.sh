@@ -191,7 +191,7 @@ if [[ "$ACTION" == "install" ]]; then
   helm repo add cnpg https://cloudnative-pg.github.io/charts
   helm repo add minio-operator https://operator.min.io
   helm repo add strimzi https://strimzi.io/charts/
-  helm repo add flink-operator https://downloads.apache.org/flink/flink-kubernetes-operator-$FLINK_OPERATOR_VERSION
+  helm repo add flink-operator "https://downloads.apache.org/flink/flink-kubernetes-operator-$FLINK_OPERATOR_VERSION"
 
   # Update repos once
   helm repo update
