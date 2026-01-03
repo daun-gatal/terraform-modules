@@ -1,9 +1,9 @@
 locals {
-  output_release_name = helm_release.lakekeeper.name
-  output_namespace    = helm_release.lakekeeper.namespace
-  output_service_name = helm_release.lakekeeper.name
-  output_service_port = 8181
-  output_internal_url = "http://${helm_release.lakekeeper.name}.${helm_release.lakekeeper.namespace}.svc.cluster.local:8181"
+  output_release_name = helm_release.kestra.name
+  output_namespace    = helm_release.kestra.namespace
+  output_service_name = helm_release.kestra.name
+  output_service_port = 8080
+  output_internal_url = "http://${helm_release.kestra.name}.${helm_release.kestra.namespace}.svc.cluster.local:8080"
 }
 
 output "release_name" {
@@ -12,18 +12,23 @@ output "release_name" {
 }
 
 output "namespace" {
-  description = "The namespace where Lakekeeper is deployed"
+  description = "The namespace where Kestra is deployed"
   value       = local.output_namespace
 }
 
 output "service_name" {
-  description = "The name of the Lakekeeper service"
+  description = "The name of the Kestra service"
   value       = local.output_service_name
 }
 
 output "service_port" {
-  description = "The port of the Lakekeeper service"
+  description = "The port of the Kestra service"
   value       = local.output_service_port
+}
+
+output "ingress_host" {
+  description = "The external hostname of Kestra (if Ingress is enabled)"
+  value       = ""
 }
 
 output "config" {

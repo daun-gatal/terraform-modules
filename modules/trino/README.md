@@ -51,6 +51,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_trino_service_dns"></a> [trino\_service\_dns](#output\_trino\_service\_dns) | The DNS name of the Trino service |
-| <a name="output_trino_service_port"></a> [trino\_service\_port](#output\_trino\_service\_port) | The port of the Trino service |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where Trino is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Helm release name |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the Trino service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Trino service |
 <!-- END_TF_DOCS -->

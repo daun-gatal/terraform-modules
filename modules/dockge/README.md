@@ -54,5 +54,12 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_app_name"></a> [app\_name](#output\_app\_name) | The name of the Dockge deployment |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_ingress_host"></a> [ingress\_host](#output\_ingress\_host) | The external hostname of Dockge (if Ingress is enabled) |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Dockge is deployed |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the Dockge service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Dockge service |
 <!-- END_TF_DOCS -->

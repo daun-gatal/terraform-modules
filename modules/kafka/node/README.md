@@ -42,5 +42,9 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where the Kafka Node Pool is deployed |
+| <a name="output_node_pool_name"></a> [node\_pool\_name](#output\_node\_pool\_name) | The name of the Kafka Node Pool |
 <!-- END_TF_DOCS -->

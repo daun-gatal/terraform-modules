@@ -4,9 +4,9 @@
 output "postgres_connection" {
   description = "PostgreSQL connection details"
   value = {
-    rw_dns   = module.postgres.postgres_rw_dns
-    port     = module.postgres.postgres_port
-    database = module.postgres.postgres_database_name
+    rw_dns   = "${module.postgres.service_name}.${module.postgres.namespace}.svc.cluster.local"
+    port     = module.postgres.service_port
+    database = module.postgres.config.attributes.database_name
   }
 }
 
@@ -14,8 +14,8 @@ output "postgres_connection" {
 output "minio_connection" {
   description = "MinIO connection details"
   value = {
-    api_dns  = module.minio.minio_service_dns
-    api_port = module.minio.minio_service_port
+    api_dns  = "${module.minio.service_name}.${module.minio.namespace}.svc.cluster.local"
+    api_port = module.minio.service_port
   }
 }
 

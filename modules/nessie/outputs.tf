@@ -1,24 +1,42 @@
-output "nessie_service_dns" {
-  value       = "${local.release_name}.${var.namespace}.svc.cluster.local"
-  description = "The Nessie service DNS name"
+locals {
+  output_release_name      = local.release_name
+  output_namespace         = var.namespace
+  output_service_name      = local.output_release_name
+  output_service_port      = 19120
+  output_internal_url      = "http://${local.output_release_name}.${var.namespace}.svc.cluster.local:19120"
+  output_default_warehouse = local.s3_warehouse_location
+  output_s3_endpoint       = var.nessie_s3_endpoint
+  output_s3_region         = var.nessie_s3_region
 }
 
-output "nessie_service_port" {
-  value       = 19120
-  description = "The Nessie service port"
+output "release_name" {
+  description = "The name of the Helm release"
+  value       = local.output_release_name
 }
 
-output "nessie_default_warehouse" {
-  value       = local.s3_warehouse_location
-  description = "The default warehouse location in S3 for Nessie"
+output "namespace" {
+  description = "The namespace where Nessie is deployed"
+  value       = local.output_namespace
 }
 
-output "nessie_s3_endpoint" {
-  value       = var.nessie_s3_endpoint
-  description = "The S3 endpoint for Nessie"
+output "service_name" {
+  description = "The name of the Nessie service"
+  value       = local.output_service_name
 }
 
-output "nessie_s3_region" {
-  value       = var.nessie_s3_region
-  description = "The S3 region for Nessie"
+output "service_port" {
+  description = "The port of the Nessie service"
+  value       = local.output_service_port
+}
+
+output "config" {
+  description = "Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs."
+  value = {
+    internal_url = local.output_internal_url
+    attributes = {
+      default_warehouse = local.output_default_warehouse
+      s3_endpoint       = local.output_s3_endpoint
+      s3_region         = local.output_s3_region
+    }
+  }
 }

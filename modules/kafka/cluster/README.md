@@ -43,5 +43,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_kafka_int_bootstrap_servers"></a> [kafka\_int\_bootstrap\_servers](#output\_kafka\_int\_bootstrap\_servers) | Kafka bootstrap servers connection string for client applications |
+| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | The name of the Kafka cluster |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where the Kafka cluster is deployed |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The Kafka bootstrap service name |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The Kafka bootstrap service port |
 <!-- END_TF_DOCS -->

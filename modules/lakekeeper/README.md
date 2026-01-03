@@ -52,6 +52,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_internal_dns"></a> [internal\_dns](#output\_internal\_dns) | Internal DNS of the Lakekeeper service |
-| <a name="output_port"></a> [port](#output\_port) | Port of the Lakekeeper service |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where Lakekeeper is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | The name of the Helm release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the Lakekeeper service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the Lakekeeper service |
 <!-- END_TF_DOCS -->

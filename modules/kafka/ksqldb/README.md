@@ -41,6 +41,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_ksqldb_internal_dns"></a> [ksqldb\_internal\_dns](#output\_ksqldb\_internal\_dns) | KSQLDB service URL |
-| <a name="output_ksqldb_port"></a> [ksqldb\_port](#output\_ksqldb\_port) | KSQLDB service port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where KSQLDB is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Name of the KSQLDB deployment |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | KSQLDB service name |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | KSQLDB service port |
 <!-- END_TF_DOCS -->

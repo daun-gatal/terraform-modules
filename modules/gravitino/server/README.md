@@ -47,9 +47,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_iceberg_rest_port"></a> [iceberg\_rest\_port](#output\_iceberg\_rest\_port) | Iceberg REST service port (if enabled) |
-| <a name="output_namespace"></a> [namespace](#output\_namespace) | Namespace where Gravitino is deployed |
-| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | Helm release name |
-| <a name="output_service_dns"></a> [service\_dns](#output\_service\_dns) | DNS name of the Gravitino service |
-| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | Gravitino service port |
+| <a name="output_config"></a> [config](#output\_config) | Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs. |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The namespace where the service is deployed |
+| <a name="output_release_name"></a> [release\_name](#output\_release\_name) | The name of the Helm release |
+| <a name="output_service_name"></a> [service\_name](#output\_service\_name) | The name of the service |
+| <a name="output_service_port"></a> [service\_port](#output\_service\_port) | The port of the service |
 <!-- END_TF_DOCS -->
