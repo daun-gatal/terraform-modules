@@ -6,11 +6,11 @@ hide:
 
 # Production-Grade Terraform Modules
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/hashicorp/terraform/main/website/public/img/logo.svg" alt="Terraform Logo" width="120" style="margin-bottom: 20px;">
-  <br>
-  <strong>Standardized. Secure. Scalable.</strong>
-</div>
+# Production-Grade Terraform Modules
+
+:material-terraform: **Standardized. Secure. Scalable.**
+
+---
 
 ---
 
@@ -50,7 +50,7 @@ Explore running instances deployed using these modules.
 
 -   :material-puzzle-outline: **Exclusive Config Pattern**
     ---
-    Configuration inputs are strictly separated from resource identification, preventing data duplication and circular dependencies. [Learn more](architecture.md).
+    Configuration inputs are strictly separated from resource identification, preventing data duplication and circular dependencies. [Learn more](user-guide.md).
 
 -   :material-security: **Secure by Default**
     ---
@@ -95,4 +95,4 @@ module "airflow" {
 ```
 
 [Browse Modules](modules/){ .md-button .md-button--primary }
-[View Architecture](architecture.md){ .md-button }
+[View Architecture](user-guide.md){ .md-button }
