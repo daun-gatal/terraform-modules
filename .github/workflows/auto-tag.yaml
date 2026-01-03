@@ -44,12 +44,14 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Check and Push Tag
+        id: check_push
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if git rev-parse "$VERSION" >/dev/null 2>&1; then
             echo "Tag $VERSION already exists. Skipping."
+            echo "new_tag=false" >> $GITHUB_OUTPUT
             exit 0
           else
             echo "Tag $VERSION does not exist. Creating..."
@@ -59,4 +61,25 @@ jobs:
             git tag -a "$VERSION" -m "Release $VERSION"
             git push origin "$VERSION"
             echo "Successfully pushed tag $VERSION"
+            echo "new_tag=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Extract Release Notes
+        if: steps.check_push.outputs.new_tag == 'true'
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+        run: |
+          # Extract the section for this tag from CHANGELOG.md
+          awk -v tag="[$VERSION]" '/^## / { if ($2 == tag) { flag=1; next } else { flag=0 } } flag' CHANGELOG.md > RELEASE_NOTES.md
+          
+          echo "Extracted Notes:"
+          cat RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        if: steps.check_push.outputs.new_tag == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.extract_version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
