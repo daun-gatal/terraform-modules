@@ -12,9 +12,9 @@ terraform {
       version = "~> 3.1.1"
     }
     external = {
-      source = "hashicorp/external"
+      source  = "hashicorp/external"
+      version = "~> 2.0"
 
     }
   }
 }
-
