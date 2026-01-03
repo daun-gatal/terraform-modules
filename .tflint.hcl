@@ -23,3 +23,7 @@ rule "terraform_typed_variables" {
 rule "terraform_documented_variables" {
   enabled = true
 }
+
+rule "terraform_module_pinned_source" {
+  enabled = true
+}
