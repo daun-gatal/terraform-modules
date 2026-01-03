@@ -11,7 +11,6 @@ hide:
 > This project demonstrates my approach to building production-grade infrastructure using Terraform. It showcases advanced composition patterns, secure secret management, and a standardized module interface.
 
 [Explore Modules](modules/){ .md-button .md-button--primary }
-[Design Philosophy](architecture.md){ .md-button }
 
 ---
 
@@ -53,28 +52,28 @@ These deployments are running live on my personal Kubernetes cluster, managed en
 
 <div class="grid cards" markdown>
 
--   :material-puzzle-outline: **Composition Pattern**
+-   :material-puzzle-outline: **Modular Architecture**
 
     ---
 
-    Implemented the "Exclusive Config" pattern to separate configuration data from resource instantiation, allowing modules to be wired together like building blocks.
+    Designed with the **Exclusive Config Pattern**, strictly separating configuration inputs from resource instantiation. This allows modules (e.g., Postgres, MinIO) to be wired together cleanly without hardcoded dependencies, treating infrastructure as composable building blocks.
 
--   :material-cube-outline: **Standardized Interfaces**
-
-    ---
-
-    All 20+ modules adhere to a strict input/output contract (`service_name`, `service_port`, `internal_url`), simplifying cross-module dependencies.
-
--   :material-security: **Security Engineering**
+-   :material-cube-outline: **Standardized API Contract**
 
     ---
 
-    Zero-trust principles applied: explicit identity management, secrets injected via Kubernetes Secrets (never plain text), and network policies.
+    Every module implements a consistent interface, exposing a uniform `config` object with `service_name`, `service_port`, and `internal_url`. This predictability simplifies consumption and reduces the cognitive load when collecting new components.
 
--   :material-chart-tree: **Full Stack Data Ops**
+-   :material-security: **Zero-Trust Security**
 
     ---
 
-    A complete reference architecture covering Ingestion (Airbyte), Storage (MinIO, Postgres), Compute (Spark, Trino), and Viz (Superset).
+    Security is engineered by default, not an afterthought. All sensitive credentials are managed via native Kubernetes Secrets and mapped directly to application environment variables. No secrets are ever exposed in plain text or Terraform state outputs.
+
+-   :material-git: **GitOps Ready**
+
+    ---
+
+    The entire platform is designed for GitOps. Applications like Airflow and Superset are configured to sync DAGs and Dashboards directly from Git repositories, ensuring that the infrastructure state always matches the version-controlled definition.
 
 </div>

@@ -36,7 +36,6 @@ theme:
 
 nav:
   - Overview: index.md
-  - Module Architecture: architecture.md
   - Module Details: modules/index.md
   - Example of Usage: examples.md
 
