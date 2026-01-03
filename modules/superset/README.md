@@ -1,23 +1,3 @@
-# Superset Terraform Module
-
-## Description
-Deploys Apache Superset, a modern data exploration and visualization platform.
-
-## Usage
-
-```hcl
-module "superset" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/superset?ref=v0.1.0"
-
-  namespace      = "analytics"
-  admin_password = "secure-password"
-  superset_secret_name = "my-superset-secret"
-  
-  use_external_database = true
-  use_external_redis    = true
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

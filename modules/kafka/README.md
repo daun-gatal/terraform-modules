@@ -1,25 +1,12 @@
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+# Kafka Terraform Modules
 
-No requirements.
+This directory contains Terraform modules for deploying Kafka components.
 
-## Providers
+## Submodules
 
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
-<!-- END_TF_DOCS -->
+- [cluster](./cluster): Deploys a Kafka cluster.
+- [connect](./connect): Deploys Kafka Connect.
+- [ksqldb](./ksqldb): Deploys KSQLDB.
+- [node](./node): Deploys a Kafka node.
+- [schema-registry](./schema-registry): Deploys the Schema Registry.
+- [ui](./ui): Deploys the Kafka UI.

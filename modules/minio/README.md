@@ -1,37 +1,3 @@
-# MinIO Terraform Module
-
-## Description
-Deploys a MinIO Object Storage Tenant on Kubernetes using the MinIO Operator. This module handles:
-- MinIO Tenant deployment (Development optimized but scalable)
-- Credential management
-- Bucket creation and lifecycle policies
-- TLS configuration
-- Tailscale exposure (optional)
-
-## Usage
-
-```hcl
-module "minio" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/minio?ref=v0.1.0"
-
-  namespace           = "storage"
-  tenant_name         = "datalake"
-  minio_root_user     = "admin"
-  minio_root_password = "secure-password"
-  storage_size        = "50Gi"
-  
-  buckets = [
-    {
-      name        = "bronze"
-      expire_days = 30
-    },
-    {
-      name = "silver"
-    }
-  ]
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

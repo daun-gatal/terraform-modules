@@ -1,22 +1,3 @@
-# Kestra Terraform Module
-
-## Description
-Deploys Kestra, an orchestration and scheduling platform, on Kubernetes.
-
-## Usage
-
-```hcl
-module "kestra" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/kestra?ref=v0.1.0"
-
-  namespace = "orchestration"
-  release_name = "kestra"
-  
-  deployment_mode = "standalone"
-  auth_enabled    = true 
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,21 +1,3 @@
-# Dockge Terraform Module
-
-## Description
-Deploys Dockge (a reactive Docker Compose helper) with a Docker-in-Docker (DinD) sidecar on Kubernetes.
-
-## Usage
-
-```hcl
-module "dockge" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/dockge?ref=v0.1.0"
-
-  namespace          = "dockge"
-  dockge_data_size   = "10Gi"
-  dind_storage_size  = "50Gi"
-  tailscale_expose   = true
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

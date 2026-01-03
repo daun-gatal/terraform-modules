@@ -1,29 +1,3 @@
-# Keycloak Terraform Module
-
-## Description
-Deploys Keycloak, an open-source identity and access management solution.
-
-## Usage
-
-```hcl
-module "keycloak" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/keycloak?ref=v0.1.0"
-
-  namespace = "auth"
-  db_host   = "postgres-rw"
-  
-  db_username_secret = {
-    name = "db-creds"
-    key  = "username"
-  }
-  
-  db_password_secret = {
-    name = "db-creds"
-    key  = "password"
-  }
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

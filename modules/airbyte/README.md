@@ -1,21 +1,3 @@
-# Airbyte Terraform Module
-
-## Description
-Deploys Airbyte, an open-source ELT platform, on Kubernetes using the official v2 Helm Chart.
-
-## Usage
-
-```hcl
-module "airbyte" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airbyte?ref=v0.1.0"
-
-  namespace          = "ingestion"
-  release_name       = "airbyte-prod"
-  postgresql_enabled = true # Use internal DB
-  minio_enabled      = true # Use internal storage
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

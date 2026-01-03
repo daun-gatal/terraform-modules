@@ -1,34 +1,3 @@
-# Trino Terraform Module
-
-## Description
-Deploys Trino, a fast distributed SQL query engine for big data analytics, on Kubernetes. This module supports:
-- Coordinator and Worker deployment
-- Autoscaling (HPA)
-- Catalog configuration (Hive, Iceberg, memory, etc.)
-- Security (Secret management)
-
-## Usage
-
-```hcl
-module "trino" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/trino?ref=v0.1.0"
-
-  namespace     = "analytics"
-  worker_count  = 3
-  
-  enabled_catalogs = [
-    {
-      name = "iceberg"
-      params = {
-        "connector.name" = "iceberg"
-        "iceberg.catalog.type" = "jdbc"
-        # ...
-      }
-    }
-  ]
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,31 +1,3 @@
-# Airflow Terraform Module
-
-## Description
-Deploys Apache Airflow on Kubernetes using the official Helm Chart. This module handles:
-- Airflow components (Scheduler, Webserver, Triggerer, Workers)
-- Database connection configuration (External Postgres)
-- Git-Sync for DAGs
-- Celery or Kubernetes Executor
-- KEDA Autoscaling logic
-- Remote logging to S3/MinIO
-
-## Usage
-
-```hcl
-module "airflow" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airflow?ref=v0.1.0"
-
-  namespace                  = "airflow"
-  airflow_metadata_db_conn   = "postgresql://user:pass@postgres:5432/airflow"
-  airflow_fernet_key         = "..."
-  airflow_api_secret_key     = "..."
-  airflow_default_password   = "admin"
-  
-  airflow_dags_git_sync_repo = "https://github.com/my-org/dags.git"
-  airflow_executor           = "pKubernetesExecutor"
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

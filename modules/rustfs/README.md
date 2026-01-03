@@ -1,21 +1,3 @@
-# RustFS Terraform Module
-
-## Description
-Deploys RustFS, a lightweight, high-performance distributed file system (S3 compatible) on Kubernetes.
-
-## Usage
-
-```hcl
-module "rustfs" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/rustfs?ref=v0.1.0"
-
-  namespace     = "storage"
-  replica_count = 3
-  auth_access_key = "admin"
-  auth_secret_key = "secure-password"
-}
-```
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -23,14 +5,14 @@ module "rustfs" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.16 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.30.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 2.16 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | ~> 2.30.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | ~> 2.0 |
 
 ## Modules
 
