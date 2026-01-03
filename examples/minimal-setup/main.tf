@@ -3,7 +3,9 @@
 
 # 1. PostgreSQL - Database backend for Airflow metadata
 module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.2.0"
+  # You can also use the git source with the latest version tag:
+  # source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.2.4"
+  source = "../../modules/postgres"
 
   namespace   = "database"
   prefix      = "postgres"
@@ -13,7 +15,9 @@ module "postgres" {
 
 # 2. MinIO - Object storage for Airflow logs
 module "minio" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/minio?ref=v0.2.0"
+  # You can also use the git source with the latest version tag:
+  # source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/minio?ref=v0.2.4"
+  source = "../../modules/minio"
 
   namespace           = "storage"
   minio_root_password = var.minio_password
@@ -29,7 +33,9 @@ module "minio" {
 
 # 3. Airflow - Workflow orchestration with CeleryExecutor
 module "airflow" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airflow?ref=v0.2.0"
+  # You can also use the git source with the latest version tag:
+  # source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/airflow?ref=v0.2.4"
+  source = "../../modules/airflow"
 
   namespace = "airflow"
   prefix    = "airflow"
