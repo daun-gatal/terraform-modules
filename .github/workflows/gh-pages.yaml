@@ -1,0 +1,40 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "modules/**/README.md"
+      - ".github/workflows/gh-pages.yaml"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Install MkDocs and Material Theme
+        run: |
+          pip install mkdocs-material mkdocs-awesome-pages-plugin
+
+      - name: Sync Module Documentation
+        run: |
+          chmod +x scripts/sync-docs.sh
+          ./scripts/sync-docs.sh
+
+      - name: Build and Deploy
+        run: |
+          mkdocs gh-deploy --force
