@@ -23,7 +23,7 @@ EOF
 # Loop through all modules and copy READMEs
 find modules -mindepth 2 -maxdepth 3 -name "README.md" | grep -vE "/scripts|/templates" | sort | while read -r readme; do
     module_path=$(dirname "$readme")
-    module_name=$(basename "$module_path")
+
     
     # Handle nested modules (e.g., gravitino/server, kafka/cluster)
     # We replace slashes with hyphens for the filename
