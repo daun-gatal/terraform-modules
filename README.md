@@ -95,7 +95,7 @@ graph LR
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Terraform** ≥ 1.0
+- **Terraform** ≥ 1.14.3
 - **Kubernetes** 1.25+ (Minikube/K3s/Docker Desktop)
 - **Helm** 3.x
 - **kubectl**
@@ -127,7 +127,7 @@ To use a specific module in your own project:
 
 ```hcl
 module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.2.4"
   
   namespace   = "database"
   db_password = var.db_password # Mark as sensitive!

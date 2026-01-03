@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.2.4] - 2026-01-03
+
+### Changed
+- **Helm Provider**: Bumped `hashicorp/helm` provider version to `~> 3.1.1` across all modules.
+- **Kubernetes Provider**: Bumped `hashicorp/kubernetes` provider version to `~> 3.0.1` across all modules.
+- **Terraform Core**: Bumped required Terraform version to `>= 1.14.3` across all modules.
+
 ## [v0.2.3] - 2026-01-03
 
 ### Fixed
