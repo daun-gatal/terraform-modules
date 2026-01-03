@@ -31,4 +31,4 @@ jobs:
 
       - name: Validate Documentation
         run: |
-          find modules -name "*.tf" -exec dirname {} \; | sort -u | xargs -I {} terraform-docs markdown table --output-file README.md --output-mode replace --output-check {}
+          find modules -name "*.tf" -exec dirname {} \; | sort -u | xargs -I {} terraform-docs markdown table --output-file README.md --output-mode replace --output-check -c .terraform-docs.yml {}
