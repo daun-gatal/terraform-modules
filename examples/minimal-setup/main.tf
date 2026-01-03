@@ -44,7 +44,7 @@ module "airflow" {
   airflow_executor = "CeleryExecutor"
 
   # Connect to PostgreSQL for metadata
-  airflow_metadata_db_conn = "postgresql://dev:${var.postgres_password}@${module.postgres.postgres_rw_dns}:5432/airflow"
+  airflow_metadata_db_conn = "postgresql://dev:${var.postgres_password}@${module.postgres.service_name}.${module.postgres.namespace}.svc.cluster.local:5432/airflow"
 
   # Required secrets
   airflow_fernet_key       = var.airflow_fernet_key
@@ -61,9 +61,9 @@ module "airflow" {
   # Connect to MinIO for remote logging
   enable_remote_logging    = true
   airflow_logs_bucket_name = "airflow-logs"
-  aws_access_key_id        = module.minio.minio_root_user
-  aws_secret_access_key    = module.minio.minio_root_password
-  aws_endpoint_url         = "http://${module.minio.minio_service_dns}:${module.minio.minio_service_port}"
+  aws_access_key_id        = module.minio.config.attributes.root_user
+  aws_secret_access_key    = module.minio.config.attributes.root_pass
+  aws_endpoint_url         = module.minio.config.internal_url
 
   # Ensure PostgreSQL and MinIO are ready first
   depends_on = [
