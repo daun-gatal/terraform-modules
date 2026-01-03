@@ -3,7 +3,7 @@
 
 # 1. PostgreSQL - Database backend for Airflow metadata
 module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.2.0"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=main"
 
   namespace   = "database"
   prefix      = "postgres"
@@ -13,7 +13,7 @@ module "postgres" {
 
 # 2. MinIO - Object storage for Airflow logs
 module "minio" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/minio?ref=v0.2.0"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/minio?ref=main"
 
   namespace           = "storage"
   minio_root_password = var.minio_password
