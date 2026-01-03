@@ -4,7 +4,7 @@ hide:
   - toc
 ---
 
-# Data Infrastructure Portfolio
+
 
 > **Engineering scalable, modular data platforms on Kubernetes.**
 >
@@ -48,32 +48,26 @@ These deployments are running live on my personal Kubernetes cluster, managed en
 
 ---
 
-## Technical Highlights
+## Core Competencies
 
 <div class="grid cards" markdown>
 
--   :material-puzzle-outline: **Modular Architecture**
+-   :material-server-network: **Platform Engineering**
 
     ---
 
-    Designed with the **Exclusive Config Pattern**, strictly separating configuration inputs from resource instantiation. This allows modules (e.g., Postgres, MinIO) to be wired together cleanly without hardcoded dependencies, treating infrastructure as composable building blocks.
+    Abstracts complex Helm charts into standardized Terraform modules. This enables resource provisioning (Airflow, Trino) through simple, consistent interfaces without requiring deep Kubernetes expertise.
 
--   :material-cube-outline: **Standardized API Contract**
-
-    ---
-
-    Every module implements a consistent interface, exposing a uniform `config` object with `service_name`, `service_port`, and `internal_url`. This predictability simplifies consumption and reduces the cognitive load when collecting new components.
-
--   :material-security: **Zero-Trust Security**
+-   :material-kubernetes: **Kubernetes Operations**
 
     ---
 
-    Security is engineered by default, not an afterthought. All sensitive credentials are managed via native Kubernetes Secrets and mapped directly to application environment variables. No secrets are ever exposed in plain text or Terraform state outputs.
+    Demonstrates management of stateful workloads on K8s, handling persistent storage (PVCs), High Availability (StatefulSets), and secure ingress networking for sensitive data services.
 
--   :material-git: **GitOps Ready**
+-   :material-layers-triple: **Modern Data Stack**
 
     ---
 
-    The entire platform is designed for GitOps. Applications like Airflow and Superset are configured to sync DAGs and Dashboards directly from Git repositories, ensuring that the infrastructure state always matches the version-controlled definition.
+    Integrates open-source tools into a cohesive platform. The "Lab Environment" connects orchestration (Airflow) directly with analytics (Superset).
 
 </div>
