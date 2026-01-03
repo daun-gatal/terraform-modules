@@ -1,9 +1,9 @@
 locals {
-  cluster_name      = var.kafka_cluster_name
-  namespace         = var.namespace
-  service_name      = "${var.kafka_cluster_name}-kafka-bootstrap"
-  service_port      = 9092
-  internal_url      = "http://${var.kafka_cluster_name}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
+  cluster_name = var.kafka_cluster_name
+  namespace    = var.namespace
+  service_name = "${var.kafka_cluster_name}-kafka-bootstrap"
+  service_port = 9092
+
   bootstrap_servers = "${var.kafka_cluster_name}-kafka-bootstrap.${var.namespace}.svc.cluster.local:9092"
 }
 
