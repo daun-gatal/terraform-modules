@@ -1,0 +1,23 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  docs:
+    name: Check READMEs
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Render terraform-docs
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: modules/,examples/
+          output-file: README.md
+          output-method: inject
+          git-push: "false"
+          fail-on-diff: "true"

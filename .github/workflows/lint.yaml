@@ -1,0 +1,46 @@
+name: Lint & Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  terraform:
+    name: Terraform Checks
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.0
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.50.3
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run TFLint
+        run: tflint -f compact --recursive
+
+      - name: Terraform Init & Validate
+        run: |
+          find modules examples -name "versions.tf" -exec dirname {} \; | sort -u | while read dir; do
+            echo "Validating $dir..."
+            cd "$dir"
+            terraform init -backend=false
+            terraform validate
+            cd - > /dev/null
+          done
