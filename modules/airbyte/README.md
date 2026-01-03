@@ -3,7 +3,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.14.3 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 3.1.1 |
 
 ## Providers

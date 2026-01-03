@@ -95,7 +95,7 @@ graph LR
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Terraform** ≥ 1.0
+- **Terraform** ≥ 1.14.3
 - **Kubernetes** 1.25+ (Minikube/K3s/Docker Desktop)
 - **Helm** 3.x
 - **kubectl**

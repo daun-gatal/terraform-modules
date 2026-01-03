@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Helm Provider**: Bumped `hashicorp/helm` provider version to `~> 3.1.1` across all modules.
+- **Kubernetes Provider**: Bumped `hashicorp/kubernetes` provider version to `~> 3.0.1` across all modules.
+- **Terraform Core**: Bumped required Terraform version to `>= 1.14.3` across all modules.
 
 ## [v0.2.3] - 2026-01-03
 
