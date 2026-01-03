@@ -94,5 +94,5 @@ module "airflow" {
 }
 ```
 
-[Browse Modules](modules/README.md){ .md-button .md-button--primary }
+[Browse Modules](modules/){ .md-button .md-button--primary }
 [View Architecture](architecture.md){ .md-button }
