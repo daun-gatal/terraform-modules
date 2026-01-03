@@ -73,12 +73,6 @@ graph LR
 
 ## 📦 Modules
 
-All modules are production-hardened with:
-- ✅ **Semantic Versioning**: Pinned provider versions
-- ✅ **Security**: Sensitive variable protection
-- ✅ **Documentation**: Auto-generated READMEs
-- ✅ **Linting**: TFLint & `terraform validate` checked
-
 | Category | Module | Description | Key Features |
 |----------|--------|-------------|--------------|
 | **Core** | [**Postgres**](modules/postgres/) | CloudNativePG Cluster | HA, Auto-failover, RW/RO separation |
@@ -175,32 +169,3 @@ Contributions are welcome! Please follow these steps:
 2.  Create a feature branch.
 3.  Commit your changes (signed commits preferred).
 4.  Open a Pull Request.
-
-## 📄 License
-
-MIT License. See [LICENSE](LICENSE) for details.
-<!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
-<!-- END_TF_DOCS -->
