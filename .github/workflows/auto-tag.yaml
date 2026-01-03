@@ -1,0 +1,62 @@
+name: Auto Tag Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'CHANGELOG.md'
+
+jobs:
+  tag-release:
+    name: Tag Release from Changelog
+    runs-on: self-hosted
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Latest Version
+        id: extract_version
+        run: |
+          # Extract the top-most version header (e.g., "## [v0.2.1]")
+          # Usage of grep and head gets the first match. output matches "[v0.2.1]"
+          VERSION_HEADER=$(grep -m 1 "^## \[" CHANGELOG.md)
+          
+          if [ -z "$VERSION_HEADER" ]; then
+            echo "No version header found in CHANGELOG.md"
+            exit 1
+          fi
+
+          # Extract "v0.2.1" from "## [v0.2.1] - 2026-01-03"
+          # sed regex: matches '## [' then captures the version inside ']'
+          VERSION=$(echo "$VERSION_HEADER" | sed -n 's/^## \[\(.*\)\] .*/\1/p')
+
+          if [ -z "$VERSION" ]; then
+            echo "Could not parse version from header: $VERSION_HEADER"
+            exit 1
+          fi
+
+          echo "Detected version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check and Push Tag
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Tag $VERSION already exists. Skipping."
+            exit 0
+          else
+            echo "Tag $VERSION does not exist. Creating..."
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            git tag -a "$VERSION" -m "Release $VERSION"
+            git push origin "$VERSION"
+            echo "Successfully pushed tag $VERSION"
+          fi
