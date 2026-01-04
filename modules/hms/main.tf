@@ -68,6 +68,19 @@ resource "kubernetes_deployment" "metastore" {
       }
 
       spec {
+        init_container {
+          name              = "download-driver"
+          image             = "curlimages/curl:8.5.0"
+          image_pull_policy = "IfNotPresent"
+          command           = ["/bin/sh", "-c"]
+          args              = ["if [ ! -f /driver-libs/postgresql-42.7.3.jar ]; then curl -o /driver-libs/postgresql-42.7.3.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar; else echo 'Driver already exists'; fi"]
+
+          volume_mount {
+            name       = "driver-libs"
+            mount_path = "/driver-libs"
+          }
+        }
+
         container {
           name              = "metastore"
           image             = "${var.image_repository}:${var.image_tag}"
@@ -81,6 +94,12 @@ resource "kubernetes_deployment" "metastore" {
           env {
             name  = "DB_DRIVER"
             value = "postgres"
+          }
+
+          # Add HADOOP_CLASSPATH to include the driver
+          env {
+            name  = "HADOOP_CLASSPATH"
+            value = "/opt/hive/lib/postgres/*"
           }
 
           env {
@@ -107,6 +126,11 @@ resource "kubernetes_deployment" "metastore" {
             container_port = 9083
           }
 
+          volume_mount {
+            name       = "driver-libs"
+            mount_path = "/opt/hive/lib/postgres"
+          }
+
           resources {
             limits = {
               cpu    = try(var.resources_config.metastore.limits.cpu, null)
@@ -117,6 +141,10 @@ resource "kubernetes_deployment" "metastore" {
               memory = try(var.resources_config.metastore.requests.memory, null)
             }
           }
+        }
+        volume {
+          name = "driver-libs"
+          empty_dir {}
         }
       }
     }

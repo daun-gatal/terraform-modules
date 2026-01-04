@@ -37,7 +37,7 @@ No modules.
 | <a name="input_hive_metastore_warehouse_dir"></a> [hive\_metastore\_warehouse\_dir](#input\_hive\_metastore\_warehouse\_dir) | Hive Metastore warehouse directory (e.g. s3a://bucket/warehouse) | `string` | `"s3a://datalake/warehouse"` | no |
 | <a name="input_image_pull_policy"></a> [image\_pull\_policy](#input\_image\_pull\_policy) | Image pull policy | `string` | `"IfNotPresent"` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Container image repository | `string` | `"apache/hive"` | no |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Container image tag | `string` | `"4.0.0"` | no |
+| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Container image tag | `string` | `"standalone-metastore-4.2.0"` | no |
 | <a name="input_metastore_replicas"></a> [metastore\_replicas](#input\_metastore\_replicas) | Number of Metastore replicas | `number` | `1` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for HMS deployment | `string` | `"hms"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for resource names | `string` | `"hms"` | no |
