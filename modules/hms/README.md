@@ -28,7 +28,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_jars"></a> [additional\_jars](#input\_additional\_jars) | Map of filename to URL for additional JARs to download in the init container. Defaults include AWS SDK and Hadoop AWS. | `map(string)` | `{}` | no |
+| <a name="input_additional_jars"></a> [additional\_jars](#input\_additional\_jars) | Map of filename to URL for additional JARs to download in the init container. Defaults include AWS SDK and Hadoop AWS. | `map(string)` | <pre>{<br/>  "aws-java-sdk-bundle-2.31.69.jar": "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/2.31.69/aws-java-sdk-bundle-2.31.69.jar",<br/>  "hadoop-aws-3.4.1.jar": "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.4.1/hadoop-aws-3.4.1.jar",<br/>  "postgresql-42.7.3.jar": "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"<br/>}</pre> | no |
 | <a name="input_database_host"></a> [database\_host](#input\_database\_host) | PostgreSQL host | `string` | n/a | yes |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | PostgreSQL database name | `string` | `"metastore"` | no |
 | <a name="input_database_password"></a> [database\_password](#input\_database\_password) | PostgreSQL password | `string` | n/a | yes |
