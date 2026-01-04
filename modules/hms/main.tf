@@ -65,7 +65,7 @@ resource "kubernetes_config_map" "hms_config" {
   </property>
   <property>
     <name>fs.s3a.aws.credentials.provider</name>
-    <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider,org.apache.hadoop.fs.s3a.auth.EnvironmentVariableCredentialsProvider</value>
+    <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider</value>
   </property>
   <property>
     <name>fs.s3a.connection.ssl.enabled</name>
