@@ -336,16 +336,108 @@ variable "tailscale_expose" {
 
 variable "airflow_resources_config" {
   description = "Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s."
-  type = map(object({
-    requests = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+  type = object({
+    scheduler = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-    limits = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+    apiServer = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-  }))
+    triggerer = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    dagProcessor = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    workers = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    flower = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    cleanup = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    gitSync = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    redis = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    statsd = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+  })
 
   default = {}
 }

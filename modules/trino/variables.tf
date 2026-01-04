@@ -138,16 +138,28 @@ variable "additional_config_properties" {
 
 variable "trino_resources_config" {
   description = "Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s."
-  type = map(object({
-    requests = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+  type = object({
+    coordinator = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-    limits = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+    worker = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-  }))
+  })
 
   default = {}
 }
