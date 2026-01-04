@@ -73,7 +73,9 @@ resource "kubernetes_deployment" "metastore" {
           image             = "curlimages/curl:8.5.0"
           image_pull_policy = "IfNotPresent"
           command           = ["/bin/sh", "-c"]
-          args              = ["if [ ! -f /driver-libs/postgresql-42.7.3.jar ]; then curl -o /driver-libs/postgresql-42.7.3.jar https://jdbc.postgresql.org/download/postgresql-42.7.3.jar; else echo 'Driver already exists'; fi"]
+          args = [
+            join("; ", [for filename, url in var.additional_jars : "if [ ! -f /driver-libs/${filename} ]; then echo 'Downloading ${filename}...'; curl -L -o /driver-libs/${filename} \"${url}\"; else echo '${filename} already exists'; fi"])
+          ]
 
           volume_mount {
             name       = "driver-libs"
