@@ -37,7 +37,7 @@ output "config" {
   value = {
     internal_url = local.output_internal_url
     attributes = {
-      secret_name = kubernetes_secret.hms_config.metadata[0].name
+      config_map_name = kubernetes_config_map.hms_config.metadata[0].name
     }
   }
 }
