@@ -160,15 +160,13 @@ variable "hive_site_config" {
   description = "Additional configuration properties for hive-site.xml"
   type        = map(string)
   default = {
-    "javax.jdo.option.ConnectionDriverName"         = "org.postgresql.Driver"
-    "datanucleus.schema.autoCreateAll"              = "true"
-    "fs.s3a.path.style.access"                      = "true"
-    "hive.warehouse.subdir.inherit.perms"           = "true"
-    "hive.metastore.pre.event.listeners"            = "org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener"
-    "hive.security.metastore.authorization.manager" = "org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider"
-    "fs.s3a.aws.credentials.provider"               = "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
-    "fs.s3a.connection.ssl.enabled"                 = "false"
-    "fs.s3a.impl"                                   = "org.apache.hadoop.fs.s3a.S3AFileSystem"
-    "fs.s3a.endpoint.region"                        = "us-east-1"
+    "javax.jdo.option.ConnectionDriverName" = "org.postgresql.Driver"
+    "datanucleus.schema.autoCreateAll"      = "true"
+    "fs.s3a.path.style.access"              = "true"
+    "hive.warehouse.subdir.inherit.perms"   = "true"
+    "fs.s3a.aws.credentials.provider"       = "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
+    "fs.s3a.connection.ssl.enabled"         = "false"
+    "fs.s3a.impl"                           = "org.apache.hadoop.fs.s3a.S3AFileSystem"
+    "fs.s3a.endpoint.region"                = "us-east-1"
   }
 }

@@ -92,7 +92,7 @@ resource "kubernetes_deployment" "metastore" {
           # Add HADOOP_CLASSPATH to include the driver
           env {
             name  = "HADOOP_CLASSPATH"
-            value = "/opt/hive/lib/postgres/*"
+            value = "/opt/hive/lib/*"
           }
 
           env {
@@ -121,7 +121,7 @@ resource "kubernetes_deployment" "metastore" {
 
           volume_mount {
             name       = "driver-libs"
-            mount_path = "/opt/hive/lib/postgres"
+            mount_path = "/opt/hive/lib"
           }
 
           volume_mount {
