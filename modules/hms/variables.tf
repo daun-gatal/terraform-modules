@@ -139,8 +139,19 @@ variable "resources_config" {
   default = {}
 }
 
+
 variable "extra_env_vars" {
   description = "Map of extra environment variables"
   type        = map(string)
   default     = {}
+}
+
+variable "additional_jars" {
+  description = "Map of filename to URL for additional JARs to download in the init container."
+  type        = map(string)
+  default = {
+    "postgresql-42.7.3.jar"           = "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"
+    "hadoop-aws-3.4.1.jar"            = "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.4.1/hadoop-aws-3.4.1.jar"
+    "aws-java-sdk-bundle-2.31.69.jar" = "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/2.31.69/aws-java-sdk-bundle-2.31.69.jar"
+  }
 }
