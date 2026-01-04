@@ -1,5 +1,15 @@
 locals {
   name_metastore = "${var.prefix}-metastore"
+
+  default_hive_config = {
+    "javax.jdo.option.ConnectionURL"      = "jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}"
+    "javax.jdo.option.ConnectionUserName" = var.database_user
+    "javax.jdo.option.ConnectionPassword" = var.database_password
+    "fs.s3a.access.key"                   = var.s3_access_key
+    "fs.s3a.secret.key"                   = var.s3_secret_key
+    "fs.s3a.endpoint"                     = var.s3_endpoint
+    "hive.metastore.warehouse.dir"        = var.hive_metastore_warehouse_dir
+  }
 }
 
 resource "kubernetes_config_map" "hms_config" {
@@ -9,78 +19,9 @@ resource "kubernetes_config_map" "hms_config" {
   }
 
   data = {
-    "hive-site.xml" = <<EOF
-<configuration>
-  <property>
-    <name>javax.jdo.option.ConnectionDriverName</name>
-    <value>org.postgresql.Driver</value>
-  </property>
-  <property>
-    <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}</value>
-  </property>
-  <property>
-    <name>javax.jdo.option.ConnectionUserName</name>
-    <value>${var.database_user}</value>
-  </property>
-  <property>
-    <name>javax.jdo.option.ConnectionPassword</name>
-    <value>${var.database_password}</value>
-  </property>
-  <property>
-    <name>datanucleus.schema.autoCreateAll</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>fs.s3a.access.key</name>
-    <value>${var.s3_access_key}</value>
-  </property>
-  <property>
-    <name>fs.s3a.secret.key</name>
-    <value>${var.s3_secret_key}</value>
-  </property>
-  <property>
-    <name>fs.s3a.endpoint</name>
-    <value>${var.s3_endpoint}</value>
-  </property>
-  <property>
-    <name>fs.s3a.path.style.access</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hive.metastore.warehouse.dir</name>
-    <value>${var.hive_metastore_warehouse_dir}</value>
-  </property>
-  <property>
-    <name>hive.warehouse.subdir.inherit.perms</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hive.metastore.pre.event.listeners</name>
-    <value>org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener</value>
-  </property>
-  <property>
-    <name>hive.security.metastore.authorization.manager</name>
-    <value>org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider</value>
-  </property>
-  <property>
-    <name>fs.s3a.aws.credentials.provider</name>
-    <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider</value>
-  </property>
-  <property>
-    <name>fs.s3a.connection.ssl.enabled</name>
-    <value>false</value>
-  </property>
-  <property>
-    <name>fs.s3a.impl</name>
-    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
-  </property>
-  <property>
-    <name>fs.s3a.endpoint.region</name>
-    <value>us-east-1</value>
-  </property>
-</configuration>
-EOF
+    "hive-site.xml" = templatefile("${path.module}/templates/hive-site.xml.tpl", {
+      config = merge(local.default_hive_config, var.hive_site_config)
+    })
   }
 }
 
