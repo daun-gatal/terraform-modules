@@ -20,7 +20,9 @@ locals {
     "-Dhive.warehouse.subdir.inherit.perms=true",
     "-Dhive.metastore.pre.event.listeners=org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener",
     "-Dhive.security.metastore.authorization.manager=org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider",
-    "-Dfs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
+    "-Dfs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",
+    "-Dfs.s3a.connection.ssl.enabled=false",
+    "-Dfs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem"
   ]) : ""
 
   service_opts = "${local.postgres_opts} ${local.s3_opts}"
