@@ -128,7 +128,7 @@ To use a specific module in your own project:
 
 ```hcl
 module "postgres" {
-  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.2.4"
+  source = "git::https://github.com/daun-gatal/terraform-modules.git//modules/postgres?ref=v0.4.2"
   
   namespace   = "database"
   db_password = var.db_password # Mark as sensitive!
