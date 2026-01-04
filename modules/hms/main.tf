@@ -1,42 +1,86 @@
 locals {
   name_metastore = "${var.prefix}-metastore"
-
-  # Construct SERVICE_OPTS for PostgreSQL connection
-  # S3 configuration can also be added here if needed
-  postgres_opts = join(" ", [
-    "-Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver",
-    "-Djavax.jdo.option.ConnectionURL=jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}",
-    "-Djavax.jdo.option.ConnectionUserName=${var.database_user}",
-    "-Djavax.jdo.option.ConnectionPassword=${var.database_password}",
-    "-Ddatanucleus.schema.autoCreateAll=true" # Ensure schema is created
-  ])
-
-  s3_opts = var.s3_endpoint != "" ? join(" ", [
-    "-Dfs.s3a.access.key=${var.s3_access_key}",
-    "-Dfs.s3a.secret.key=${var.s3_secret_key}",
-    "-Dfs.s3a.endpoint=${var.s3_endpoint}",
-    "-Dfs.s3a.path.style.access=true",
-    "-Dhive.metastore.warehouse.dir=${var.hive_metastore_warehouse_dir}",
-    "-Dhive.warehouse.subdir.inherit.perms=true",
-    "-Dhive.metastore.pre.event.listeners=org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener",
-    "-Dhive.security.metastore.authorization.manager=org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider",
-    "-Dfs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider,org.apache.hadoop.fs.s3a.auth.EnvironmentVariableCredentialsProvider",
-    "-Dfs.s3a.connection.ssl.enabled=false",
-    "-Dfs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem",
-    "-Dfs.s3a.endpoint.region=us-east-1"
-  ]) : ""
-
-  service_opts = "${local.postgres_opts} ${local.s3_opts}"
 }
 
-resource "kubernetes_secret" "hms_config" {
+resource "kubernetes_config_map" "hms_config" {
   metadata {
     name      = "${var.prefix}-config"
     namespace = var.namespace
   }
 
   data = {
-    "SERVICE_OPTS" = local.service_opts
+    "hive-site.xml" = <<EOF
+<configuration>
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.postgresql.Driver</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>${var.database_user}</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>${var.database_password}</value>
+  </property>
+  <property>
+    <name>datanucleus.schema.autoCreateAll</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>fs.s3a.access.key</name>
+    <value>${var.s3_access_key}</value>
+  </property>
+  <property>
+    <name>fs.s3a.secret.key</name>
+    <value>${var.s3_secret_key}</value>
+  </property>
+  <property>
+    <name>fs.s3a.endpoint</name>
+    <value>${var.s3_endpoint}</value>
+  </property>
+  <property>
+    <name>fs.s3a.path.style.access</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>${var.hive_metastore_warehouse_dir}</value>
+  </property>
+  <property>
+    <name>hive.warehouse.subdir.inherit.perms</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.metastore.pre.event.listeners</name>
+    <value>org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener</value>
+  </property>
+  <property>
+    <name>hive.security.metastore.authorization.manager</name>
+    <value>org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider</value>
+  </property>
+  <property>
+    <name>fs.s3a.aws.credentials.provider</name>
+    <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider,org.apache.hadoop.fs.s3a.auth.EnvironmentVariableCredentialsProvider</value>
+  </property>
+  <property>
+    <name>fs.s3a.connection.ssl.enabled</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>fs.s3a.impl</name>
+    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+  </property>
+  <property>
+    <name>fs.s3a.endpoint.region</name>
+    <value>us-east-1</value>
+  </property>
+</configuration>
+EOF
   }
 }
 
@@ -111,16 +155,6 @@ resource "kubernetes_deployment" "metastore" {
           }
 
           env {
-            name = "SERVICE_OPTS"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.hms_config.metadata[0].name
-                key  = "SERVICE_OPTS"
-              }
-            }
-          }
-
-          env {
             name  = "AWS_ACCESS_KEY_ID"
             value = var.s3_access_key
           }
@@ -149,6 +183,12 @@ resource "kubernetes_deployment" "metastore" {
             mount_path = "/opt/hive/lib/postgres"
           }
 
+          volume_mount {
+            name       = "hive-config"
+            mount_path = "/opt/hive/conf/hive-site.xml"
+            sub_path   = "hive-site.xml"
+          }
+
           resources {
             limits = {
               cpu    = try(var.resources_config.metastore.limits.cpu, null)
@@ -163,6 +203,12 @@ resource "kubernetes_deployment" "metastore" {
         volume {
           name = "driver-libs"
           empty_dir {}
+        }
+        volume {
+          name = "hive-config"
+          config_map {
+            name = kubernetes_config_map.hms_config.metadata[0].name
+          }
         }
       }
     }
