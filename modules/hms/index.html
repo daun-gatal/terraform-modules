@@ -12,7 +12,7 @@
         <meta name="author" content="Rizal M.">
       
       
-        <link rel="canonical" href="https://daun-gatal.github.io/terraform-modules/modules/superset/">
+        <link rel="canonical" href="https://daun-gatal.github.io/terraform-modules/modules/hms/">
       
       
       
@@ -25,7 +25,7 @@
     
     
       
-        <title>Superset - Data Platform Engineering</title>
+        <title>Hms - Data Platform Engineering</title>
       
     
     
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Superset
+              Hms
             
           </span>
         </div>
@@ -510,7 +510,7 @@
   
 
 
-  <h1>Superset</h1>
+  <h1>Hms</h1>
 
 <!-- BEGIN_TF_DOCS -->
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
@@ -527,10 +527,6 @@
 <td>&gt;= 1.14.3</td>
 </tr>
 <tr>
-<td><a name="requirement_helm"></a> <a href="#requirement_helm">helm</a></td>
-<td>~&gt; 3.1.1</td>
-</tr>
-<tr>
 <td><a name="requirement_kubernetes"></a> <a href="#requirement_kubernetes">kubernetes</a></td>
 <td>~&gt; 3.0.1</td>
 </tr>
@@ -545,10 +541,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><a name="provider_helm"></a> <a href="#provider_helm">helm</a></td>
-<td>~&gt; 3.1.1</td>
-</tr>
 <tr>
 <td><a name="provider_kubernetes"></a> <a href="#provider_kubernetes">kubernetes</a></td>
 <td>~&gt; 3.0.1</td>
@@ -567,11 +559,15 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release">helm_release.superset</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment">kubernetes_deployment.metastore</a></td>
 <td>resource</td>
 </tr>
 <tr>
-<td><a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1">kubernetes_ingress_v1.superset_ingress</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret">kubernetes_secret.hms_config</a></td>
+<td>resource</td>
+</tr>
+<tr>
+<td><a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service">kubernetes_service.metastore</a></td>
 <td>resource</td>
 </tr>
 </tbody>
@@ -589,106 +585,57 @@
 </thead>
 <tbody>
 <tr>
-<td><a name="input_admin_email"></a> <a href="#input_admin_email">admin_email</a></td>
-<td>Admin email address</td>
-<td><code>string</code></td>
-<td><code>"admin@superset.com"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_admin_firstname"></a> <a href="#input_admin_firstname">admin_firstname</a></td>
-<td>Admin first name</td>
-<td><code>string</code></td>
-<td><code>"Admin"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_admin_lastname"></a> <a href="#input_admin_lastname">admin_lastname</a></td>
-<td>Admin last name</td>
-<td><code>string</code></td>
-<td><code>"User"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_admin_password"></a> <a href="#input_admin_password">admin_password</a></td>
-<td>Admin password</td>
+<td><a name="input_database_host"></a> <a href="#input_database_host">database_host</a></td>
+<td>PostgreSQL host</td>
 <td><code>string</code></td>
 <td>n/a</td>
 <td style="text-align: center;">yes</td>
 </tr>
 <tr>
-<td><a name="input_admin_username"></a> <a href="#input_admin_username">admin_username</a></td>
-<td>Admin username</td>
+<td><a name="input_database_name"></a> <a href="#input_database_name">database_name</a></td>
+<td>PostgreSQL database name</td>
 <td><code>string</code></td>
-<td><code>"admin"</code></td>
+<td><code>"metastore"</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
-<td><a name="input_bootstrap_pip_packages"></a> <a href="#input_bootstrap_pip_packages">bootstrap_pip_packages</a></td>
-<td>List of pip packages to install during bootstrap (e.g., database drivers, connectors)</td>
-<td><code>list(string)</code></td>
-<td><code>[]</code></td>
-<td style="text-align: center;">no</td>
+<td><a name="input_database_password"></a> <a href="#input_database_password">database_password</a></td>
+<td>PostgreSQL password</td>
+<td><code>string</code></td>
+<td>n/a</td>
+<td style="text-align: center;">yes</td>
 </tr>
 <tr>
-<td><a name="input_celery_worker_replicas"></a> <a href="#input_celery_worker_replicas">celery_worker_replicas</a></td>
-<td>Number of Celery worker replicas</td>
+<td><a name="input_database_port"></a> <a href="#input_database_port">database_port</a></td>
+<td>PostgreSQL port</td>
 <td><code>number</code></td>
-<td><code>1</code></td>
+<td><code>5432</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
-<td><a name="input_chart_name"></a> <a href="#input_chart_name">chart_name</a></td>
-<td>Helm chart name</td>
+<td><a name="input_database_user"></a> <a href="#input_database_user">database_user</a></td>
+<td>PostgreSQL user</td>
 <td><code>string</code></td>
-<td><code>"superset"</code></td>
+<td>n/a</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><a name="input_extra_env_vars"></a> <a href="#input_extra_env_vars">extra_env_vars</a></td>
+<td>Map of extra environment variables</td>
+<td><code>map(string)</code></td>
+<td><code>{}</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
-<td><a name="input_chart_version"></a> <a href="#input_chart_version">chart_version</a></td>
-<td>Helm chart version</td>
+<td><a name="input_hive_metastore_warehouse_dir"></a> <a href="#input_hive_metastore_warehouse_dir">hive_metastore_warehouse_dir</a></td>
+<td>Hive Metastore warehouse directory (e.g. s3a://bucket/warehouse)</td>
 <td><code>string</code></td>
-<td><code>"0.14.1"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_enable_celery_beat"></a> <a href="#input_enable_celery_beat">enable_celery_beat</a></td>
-<td>Enable Celery beat scheduler</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_enable_celery_flower"></a> <a href="#input_enable_celery_flower">enable_celery_flower</a></td>
-<td>Enable Celery Flower monitoring UI</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_enable_celery_worker"></a> <a href="#input_enable_celery_worker">enable_celery_worker</a></td>
-<td>Enable Celery worker for async queries</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_enable_superset_autoscaling"></a> <a href="#input_enable_superset_autoscaling">enable_superset_autoscaling</a></td>
-<td>Enable autoscaling for Superset web server and Celery worker</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_enable_websockets"></a> <a href="#input_enable_websockets">enable_websockets</a></td>
-<td>Enable websocket server for real-time features</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
+<td><code>"s3a://datalake/warehouse"</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
 <td><a name="input_image_pull_policy"></a> <a href="#input_image_pull_policy">image_pull_policy</a></td>
-<td>Container image pull policy</td>
+<td>Image pull policy</td>
 <td><code>string</code></td>
 <td><code>"IfNotPresent"</code></td>
 <td style="text-align: center;">no</td>
@@ -697,98 +644,63 @@
 <td><a name="input_image_repository"></a> <a href="#input_image_repository">image_repository</a></td>
 <td>Container image repository</td>
 <td><code>string</code></td>
-<td><code>"apachesuperset.docker.scarf.sh/apache/superset"</code></td>
+<td><code>"apache/hive"</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
 <td><a name="input_image_tag"></a> <a href="#input_image_tag">image_tag</a></td>
 <td>Container image tag</td>
 <td><code>string</code></td>
-<td><code>"5.0.0"</code></td>
+<td><code>"4.0.0"</code></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td><a name="input_metastore_replicas"></a> <a href="#input_metastore_replicas">metastore_replicas</a></td>
+<td>Number of Metastore replicas</td>
+<td><code>number</code></td>
+<td><code>1</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
 <td><a name="input_namespace"></a> <a href="#input_namespace">namespace</a></td>
-<td>Namespace for Superset deployment</td>
+<td>Namespace for HMS deployment</td>
 <td><code>string</code></td>
-<td><code>"superset"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_oauth_config"></a> <a href="#input_oauth_config">oauth_config</a></td>
-<td>OAuth configuration for Superset authentication</td>
-<td><code>string</code></td>
-<td><code>""</code></td>
+<td><code>"hms"</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
 <td><a name="input_prefix"></a> <a href="#input_prefix">prefix</a></td>
 <td>Prefix for resource names</td>
 <td><code>string</code></td>
-<td><code>"superset"</code></td>
+<td><code>"hms"</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
-<td><a name="input_service_type"></a> <a href="#input_service_type">service_type</a></td>
-<td>Kubernetes service type</td>
-<td><code>string</code></td>
-<td><code>"ClusterIP"</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_autoscaling_max_replicas"></a> <a href="#input_superset_autoscaling_max_replicas">superset_autoscaling_max_replicas</a></td>
-<td>Maximum number of replicas for autoscaling</td>
-<td><code>number</code></td>
-<td><code>2</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_autoscaling_min_replicas"></a> <a href="#input_superset_autoscaling_min_replicas">superset_autoscaling_min_replicas</a></td>
-<td>Minimum number of replicas for autoscaling</td>
-<td><code>number</code></td>
-<td><code>1</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_autoscaling_target_cpu_utilization_percentage"></a> <a href="#input_superset_autoscaling_target_cpu_utilization_percentage">superset_autoscaling_target_cpu_utilization_percentage</a></td>
-<td>Target CPU utilization percentage for autoscaling</td>
-<td><code>number</code></td>
-<td><code>90</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_autoscaling_target_memory_utilization_percentage"></a> <a href="#input_superset_autoscaling_target_memory_utilization_percentage">superset_autoscaling_target_memory_utilization_percentage</a></td>
-<td>Target Memory utilization percentage for autoscaling</td>
-<td><code>number</code></td>
-<td><code>90</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_node_replicas"></a> <a href="#input_superset_node_replicas">superset_node_replicas</a></td>
-<td>Number of Superset web server replicas</td>
-<td><code>number</code></td>
-<td><code>1</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_port"></a> <a href="#input_superset_port">superset_port</a></td>
-<td>Port for Superset service</td>
-<td><code>number</code></td>
-<td><code>8088</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_superset_resources_config"></a> <a href="#input_superset_resources_config">superset_resources_config</a></td>
-<td>Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s.</td>
-<td><pre>object({<br/>    supersetNode = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    supersetWorker = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    supersetCeleryBeat = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    supersetCeleryFlower = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    supersetWebsockets = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    initJob = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>  })</pre></td>
+<td><a name="input_resources_config"></a> <a href="#input_resources_config">resources_config</a></td>
+<td>Resource requests/limits per component</td>
+<td><pre>object({<br/>    metastore = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>  })</pre></td>
 <td><code>{}</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
-<td><a name="input_superset_secret_name"></a> <a href="#input_superset_secret_name">superset_secret_name</a></td>
-<td>Name of an existing Kubernetes Secret for Superset. The secret must contain the following env vars: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS, REDIS_HOST, REDIS_PORT, REDIS_PROTO, SUPERSET_SECRET_KEY.</td>
+<td><a name="input_s3_access_key"></a> <a href="#input_s3_access_key">s3_access_key</a></td>
+<td>S3 access key</td>
 <td><code>string</code></td>
-<td><code>"superset-custom-secret"</code></td>
+<td><code>""</code></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td><a name="input_s3_endpoint"></a> <a href="#input_s3_endpoint">s3_endpoint</a></td>
+<td>S3 endpoint URL</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td><a name="input_s3_secret_key"></a> <a href="#input_s3_secret_key">s3_secret_key</a></td>
+<td>S3 secret key</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 <tr>
@@ -796,34 +708,6 @@
 <td>Expose service via Tailscale</td>
 <td><code>bool</code></td>
 <td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_tailscale_funnel"></a> <a href="#input_tailscale_funnel">tailscale_funnel</a></td>
-<td>Enable Tailscale Funnel for the Superset service</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_use_external_database"></a> <a href="#input_use_external_database">use_external_database</a></td>
-<td>Use external PostgreSQL instead of built-in</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_use_external_redis"></a> <a href="#input_use_external_redis">use_external_redis</a></td>
-<td>Use external Redis instead of built-in</td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td style="text-align: center;">no</td>
-</tr>
-<tr>
-<td><a name="input_values"></a> <a href="#input_values">values</a></td>
-<td>Additional Helm values to merge (supports all chart values). These values will override any defaults.</td>
-<td><code>any</code></td>
-<td><code>{}</code></td>
 <td style="text-align: center;">no</td>
 </tr>
 </tbody>
@@ -839,27 +723,27 @@
 <tbody>
 <tr>
 <td><a name="output_config"></a> <a href="#output_config">config</a></td>
-<td>Complementary configuration object containing the internal URL and module-specific attributes (e.g., credentials, connection details) not present in top-level outputs.</td>
+<td>Complementary configuration object containing the internal URL and module-specific attributes.</td>
 </tr>
 <tr>
 <td><a name="output_ingress_host"></a> <a href="#output_ingress_host">ingress_host</a></td>
-<td>The external hostname of Superset (if Ingress is enabled)</td>
+<td>The external hostname of HMS (if Ingress is enabled)</td>
 </tr>
 <tr>
 <td><a name="output_namespace"></a> <a href="#output_namespace">namespace</a></td>
-<td>The namespace where Superset is deployed</td>
+<td>The namespace where HMS is deployed</td>
 </tr>
 <tr>
-<td><a name="output_release_name"></a> <a href="#output_release_name">release_name</a></td>
-<td>The name of the Helm release</td>
+<td><a name="output_resource_name"></a> <a href="#output_resource_name">resource_name</a></td>
+<td>The name of the main resource (Metastore)</td>
 </tr>
 <tr>
 <td><a name="output_service_name"></a> <a href="#output_service_name">service_name</a></td>
-<td>The name of the Superset service</td>
+<td>The name of the HMS service</td>
 </tr>
 <tr>
 <td><a name="output_service_port"></a> <a href="#output_service_port">service_port</a></td>
-<td>The port of the Superset service</td>
+<td>The port of the HMS service</td>
 </tr>
 </tbody>
 </table>

@@ -671,7 +671,7 @@
 <tr>
 <td><a name="input_trino_resources_config"></a> <a href="#input_trino_resources_config">trino_resources_config</a></td>
 <td>Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s.</td>
-<td><pre>map(object({<br/>    requests = optional(object({<br/>      cpu    = optional(string)<br/>      memory = optional(string)<br/>    }))<br/>    limits = optional(object({<br/>      cpu    = optional(string)<br/>      memory = optional(string)<br/>    }))<br/>  }))</pre></td>
+<td><pre>object({<br/>    coordinator = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    worker = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>  })</pre></td>
 <td><code>{}</code></td>
 <td style="text-align: center;">no</td>
 </tr>

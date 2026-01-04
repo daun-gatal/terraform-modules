@@ -679,7 +679,7 @@
 <tr>
 <td><a name="input_resources"></a> <a href="#input_resources">resources</a></td>
 <td>Resource requests and limits for the containers.</td>
-<td><pre>map(object({<br/>    requests = optional(map(string))<br/>    limits   = optional(map(string))<br/>  }))</pre></td>
+<td><pre>object({<br/>    dockge = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    dind = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>  })</pre></td>
 <td><code>{}</code></td>
 <td style="text-align: center;">no</td>
 </tr>
