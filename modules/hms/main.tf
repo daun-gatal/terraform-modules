@@ -92,17 +92,7 @@ resource "kubernetes_deployment" "metastore" {
           # Add HADOOP_CLASSPATH to include the driver
           env {
             name  = "HADOOP_CLASSPATH"
-            value = "/opt/hive/lib/*"
-          }
-
-          env {
-            name  = "AWS_ACCESS_KEY_ID"
-            value = var.s3_access_key
-          }
-
-          env {
-            name  = "AWS_SECRET_ACCESS_KEY"
-            value = var.s3_secret_key
+            value = "/opt/hive/lib/*:/opt/hive/lib/ext/*"
           }
 
           # Add extra env vars
@@ -121,7 +111,7 @@ resource "kubernetes_deployment" "metastore" {
 
           volume_mount {
             name       = "driver-libs"
-            mount_path = "/opt/hive/lib"
+            mount_path = "/opt/hive/lib/ext"
           }
 
           volume_mount {
