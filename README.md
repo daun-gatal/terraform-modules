@@ -36,7 +36,7 @@ graph LR
     subgraph Data_Group [Data Lake & Metadata]
         direction TB
         Lake[(MinIO / RustFS)]:::storage
-        Catalog[Gravitino / Nessie]:::storage
+        Catalog[Gravitino / Nessie / HMS]:::storage
         MetaDB[(PostgreSQL)]:::storage
     end
 
@@ -88,6 +88,7 @@ graph LR
 | **Catalog** | [**Gravitino**](modules/gravitino/) | Metadata Lake | Multi-cloud, Auto-schema discovery |
 | | [**Nessie**](modules/nessie/) | Data Git | Git-like versioning for Iceberg tables |
 | | [**Lakekeeper**](modules/lakekeeper/) | Iceberg REST Catalog | Rust-native, S3/GCS/Azure support |
+| | [**HMS**](modules/hms/) | Hive Metastore | Standalone, PostgreSQL/S3-backed |
 | **Analytics** | [**Trino**](modules/trino/) | Distributed SQL | Federated queries, Iceberg connector |
 | | [**Metabase**](modules/metabase/) | BI Tool | No-code dashboards, Embeddable |
 | | [**Superset**](modules/superset/) | Data Exploration | SQL Lab, Rich visualizations |
