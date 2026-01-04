@@ -19,7 +19,8 @@ locals {
     "-Dhive.metastore.warehouse.dir=${var.hive_metastore_warehouse_dir}",
     "-Dhive.warehouse.subdir.inherit.perms=true",
     "-Dhive.metastore.pre.event.listeners=org.apache.hadoop.hive.ql.security.authorization.AuthorizationPreEventListener",
-    "-Dhive.security.metastore.authorization.manager=org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider"
+    "-Dhive.security.metastore.authorization.manager=org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider",
+    "-Dfs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
   ]) : ""
 
   service_opts = "${local.postgres_opts} ${local.s3_opts}"
