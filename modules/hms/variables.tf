@@ -147,7 +147,7 @@ variable "extra_env_vars" {
 }
 
 variable "additional_jars" {
-  description = "Map of filename to URL for additional JARs to download in the init container."
+  description = "Map of filename to URL for additional JARs to download in the init container. Defaults include AWS SDK and Hadoop AWS."
   type        = map(string)
   default = {
     "postgresql-42.7.3.jar"           = "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"
