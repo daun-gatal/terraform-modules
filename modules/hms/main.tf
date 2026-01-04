@@ -117,6 +117,16 @@ resource "kubernetes_deployment" "metastore" {
             }
           }
 
+          env {
+            name  = "AWS_ACCESS_KEY_ID"
+            value = var.s3_access_key
+          }
+
+          env {
+            name  = "AWS_SECRET_ACCESS_KEY"
+            value = var.s3_secret_key
+          }
+
           # Add extra env vars
           dynamic "env" {
             for_each = var.extra_env_vars
