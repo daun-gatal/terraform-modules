@@ -66,15 +66,15 @@ locals {
           targetMemoryUtilizationPercentage = var.superset_autoscaling_target_memory_utilization_percentage
         }
       },
-      lookup(var.superset_resources_config, "supersetNode", null) != null ? {
+      var.superset_resources_config.supersetNode != null ? {
         resources = {
           requests = {
-            cpu    = try(var.superset_resources_config["supersetNode"].requests.cpu, null)
-            memory = try(var.superset_resources_config["supersetNode"].requests.memory, null)
+            cpu    = try(var.superset_resources_config.supersetNode.requests.cpu, null)
+            memory = try(var.superset_resources_config.supersetNode.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.superset_resources_config["supersetNode"].limits.cpu, null)
-            memory = try(var.superset_resources_config["supersetNode"].limits.memory, null)
+            cpu    = try(var.superset_resources_config.supersetNode.limits.cpu, null)
+            memory = try(var.superset_resources_config.supersetNode.limits.memory, null)
           }
         }
       } : {}
@@ -93,15 +93,15 @@ locals {
           targetMemoryUtilizationPercentage = var.superset_autoscaling_target_memory_utilization_percentage
         }
       },
-      lookup(var.superset_resources_config, "supersetWorker", null) != null ? {
+      var.superset_resources_config.supersetWorker != null ? {
         resources = {
           requests = {
-            cpu    = try(var.superset_resources_config["supersetWorker"].requests.cpu, null)
-            memory = try(var.superset_resources_config["supersetWorker"].requests.memory, null)
+            cpu    = try(var.superset_resources_config.supersetWorker.requests.cpu, null)
+            memory = try(var.superset_resources_config.supersetWorker.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.superset_resources_config["supersetWorker"].limits.cpu, null)
-            memory = try(var.superset_resources_config["supersetWorker"].limits.memory, null)
+            cpu    = try(var.superset_resources_config.supersetWorker.limits.cpu, null)
+            memory = try(var.superset_resources_config.supersetWorker.limits.memory, null)
           }
         }
       } : {}
@@ -112,15 +112,15 @@ locals {
       {
         enabled = var.enable_celery_beat
       },
-      lookup(var.superset_resources_config, "supersetCeleryBeat", null) != null ? {
+      var.superset_resources_config.supersetCeleryBeat != null ? {
         resources = {
           requests = {
-            cpu    = try(var.superset_resources_config["supersetCeleryBeat"].requests.cpu, null)
-            memory = try(var.superset_resources_config["supersetCeleryBeat"].requests.memory, null)
+            cpu    = try(var.superset_resources_config.supersetCeleryBeat.requests.cpu, null)
+            memory = try(var.superset_resources_config.supersetCeleryBeat.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.superset_resources_config["supersetCeleryBeat"].limits.cpu, null)
-            memory = try(var.superset_resources_config["supersetCeleryBeat"].limits.memory, null)
+            cpu    = try(var.superset_resources_config.supersetCeleryBeat.limits.cpu, null)
+            memory = try(var.superset_resources_config.supersetCeleryBeat.limits.memory, null)
           }
         }
       } : {}
@@ -131,15 +131,15 @@ locals {
       {
         enabled = var.enable_celery_flower
       },
-      lookup(var.superset_resources_config, "supersetCeleryFlower", null) != null ? {
+      var.superset_resources_config.supersetCeleryFlower != null ? {
         resources = {
           requests = {
-            cpu    = try(var.superset_resources_config["supersetCeleryFlower"].requests.cpu, null)
-            memory = try(var.superset_resources_config["supersetCeleryFlower"].requests.memory, null)
+            cpu    = try(var.superset_resources_config.supersetCeleryFlower.requests.cpu, null)
+            memory = try(var.superset_resources_config.supersetCeleryFlower.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.superset_resources_config["supersetCeleryFlower"].limits.cpu, null)
-            memory = try(var.superset_resources_config["supersetCeleryFlower"].limits.memory, null)
+            cpu    = try(var.superset_resources_config.supersetCeleryFlower.limits.cpu, null)
+            memory = try(var.superset_resources_config.supersetCeleryFlower.limits.memory, null)
           }
         }
       } : {}
@@ -150,15 +150,15 @@ locals {
       {
         enabled = var.enable_websockets
       },
-      lookup(var.superset_resources_config, "supersetWebsockets", null) != null ? {
+      var.superset_resources_config.supersetWebsockets != null ? {
         resources = {
           requests = {
-            cpu    = try(var.superset_resources_config["supersetWebsockets"].requests.cpu, null)
-            memory = try(var.superset_resources_config["supersetWebsockets"].requests.memory, null)
+            cpu    = try(var.superset_resources_config.supersetWebsockets.requests.cpu, null)
+            memory = try(var.superset_resources_config.supersetWebsockets.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.superset_resources_config["supersetWebsockets"].limits.cpu, null)
-            memory = try(var.superset_resources_config["supersetWebsockets"].limits.memory, null)
+            cpu    = try(var.superset_resources_config.supersetWebsockets.limits.cpu, null)
+            memory = try(var.superset_resources_config.supersetWebsockets.limits.memory, null)
           }
         }
       } : {}
@@ -189,15 +189,15 @@ locals {
     }
 
     # Init job configuration
-    initJob = lookup(var.superset_resources_config, "initJob", null) != null ? {
+    initJob = var.superset_resources_config.initJob != null ? {
       resources = {
         requests = {
-          cpu    = try(var.superset_resources_config["initJob"].requests.cpu, null)
-          memory = try(var.superset_resources_config["initJob"].requests.memory, null)
+          cpu    = try(var.superset_resources_config.initJob.requests.cpu, null)
+          memory = try(var.superset_resources_config.initJob.requests.memory, null)
         }
         limits = {
-          cpu    = try(var.superset_resources_config["initJob"].limits.cpu, null)
-          memory = try(var.superset_resources_config["initJob"].limits.memory, null)
+          cpu    = try(var.superset_resources_config.initJob.limits.cpu, null)
+          memory = try(var.superset_resources_config.initJob.limits.memory, null)
         }
       }
     } : {}

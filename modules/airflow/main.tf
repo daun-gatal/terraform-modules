@@ -81,15 +81,15 @@ locals {
           enabled = true
         }
       },
-      lookup(var.airflow_resources_config, "scheduler", null) != null ? {
+      var.airflow_resources_config.scheduler != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["scheduler"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["scheduler"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.scheduler.requests.cpu, null)
+            memory = try(var.airflow_resources_config.scheduler.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["scheduler"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["scheduler"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.scheduler.limits.cpu, null)
+            memory = try(var.airflow_resources_config.scheduler.limits.memory, null)
           }
         }
       } : {}
@@ -109,15 +109,15 @@ locals {
           enabled = true
         }
       },
-      lookup(var.airflow_resources_config, "apiServer", null) != null ? {
+      var.airflow_resources_config.apiServer != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["apiServer"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["apiServer"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.apiServer.requests.cpu, null)
+            memory = try(var.airflow_resources_config.apiServer.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["apiServer"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["apiServer"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.apiServer.limits.cpu, null)
+            memory = try(var.airflow_resources_config.apiServer.limits.memory, null)
           }
         }
       } : {}
@@ -139,15 +139,15 @@ locals {
           enabled = true
         }
       },
-      lookup(var.airflow_resources_config, "triggerer", null) != null ? {
+      var.airflow_resources_config.triggerer != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["triggerer"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["triggerer"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.triggerer.requests.cpu, null)
+            memory = try(var.airflow_resources_config.triggerer.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["triggerer"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["triggerer"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.triggerer.limits.cpu, null)
+            memory = try(var.airflow_resources_config.triggerer.limits.memory, null)
           }
         }
       } : {}
@@ -166,15 +166,15 @@ locals {
           enabled = true
         }
       },
-      lookup(var.airflow_resources_config, "dagProcessor", null) != null ? {
+      var.airflow_resources_config.dagProcessor != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["dagProcessor"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["dagProcessor"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.dagProcessor.requests.cpu, null)
+            memory = try(var.airflow_resources_config.dagProcessor.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["dagProcessor"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["dagProcessor"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.dagProcessor.limits.cpu, null)
+            memory = try(var.airflow_resources_config.dagProcessor.limits.memory, null)
           }
         }
       } : {}
@@ -199,15 +199,15 @@ locals {
           maxReplicaCount = var.airflow_worker_keda_max_replicas
         }
       },
-      lookup(var.airflow_resources_config, "workers", null) != null ? {
+      var.airflow_resources_config.workers != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["workers"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["workers"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.workers.requests.cpu, null)
+            memory = try(var.airflow_resources_config.workers.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["workers"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["workers"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.workers.limits.cpu, null)
+            memory = try(var.airflow_resources_config.workers.limits.memory, null)
           }
         }
       } : {}
@@ -225,15 +225,15 @@ locals {
           }
         }
       },
-      lookup(var.airflow_resources_config, "flower", null) != null ? {
+      var.airflow_resources_config.flower != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["flower"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["flower"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.flower.requests.cpu, null)
+            memory = try(var.airflow_resources_config.flower.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["flower"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["flower"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.flower.limits.cpu, null)
+            memory = try(var.airflow_resources_config.flower.limits.memory, null)
           }
         }
       } : {}
@@ -252,15 +252,15 @@ locals {
           })
         ]
       },
-      lookup(var.airflow_resources_config, "cleanup", null) != null ? {
+      var.airflow_resources_config.cleanup != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["cleanup"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["cleanup"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.cleanup.requests.cpu, null)
+            memory = try(var.airflow_resources_config.cleanup.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["cleanup"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["cleanup"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.cleanup.limits.cpu, null)
+            memory = try(var.airflow_resources_config.cleanup.limits.memory, null)
           }
         }
       } : {}
@@ -286,15 +286,15 @@ locals {
           credentialsSecret = local.secret_name
         } : {},
         # Resources (only if configured)
-        lookup(var.airflow_resources_config, "gitSync", null) != null ? {
+        var.airflow_resources_config.gitSync != null ? {
           resources = {
             requests = {
-              cpu    = try(var.airflow_resources_config["gitSync"].requests.cpu, null)
-              memory = try(var.airflow_resources_config["gitSync"].requests.memory, null)
+              cpu    = try(var.airflow_resources_config.gitSync.requests.cpu, null)
+              memory = try(var.airflow_resources_config.gitSync.requests.memory, null)
             }
             limits = {
-              cpu    = try(var.airflow_resources_config["gitSync"].limits.cpu, null)
-              memory = try(var.airflow_resources_config["gitSync"].limits.memory, null)
+              cpu    = try(var.airflow_resources_config.gitSync.limits.cpu, null)
+              memory = try(var.airflow_resources_config.gitSync.limits.memory, null)
             }
           }
         } : {}
@@ -308,15 +308,15 @@ locals {
           enabled = false
         }
       },
-      lookup(var.airflow_resources_config, "redis", null) != null ? {
+      var.airflow_resources_config.redis != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["redis"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["redis"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.redis.requests.cpu, null)
+            memory = try(var.airflow_resources_config.redis.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["redis"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["redis"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.redis.limits.cpu, null)
+            memory = try(var.airflow_resources_config.redis.limits.memory, null)
           }
         }
       } : {}
@@ -327,15 +327,15 @@ locals {
       {
         enabled = var.enable_statsd
       },
-      lookup(var.airflow_resources_config, "statsd", null) != null ? {
+      var.airflow_resources_config.statsd != null ? {
         resources = {
           requests = {
-            cpu    = try(var.airflow_resources_config["statsd"].requests.cpu, null)
-            memory = try(var.airflow_resources_config["statsd"].requests.memory, null)
+            cpu    = try(var.airflow_resources_config.statsd.requests.cpu, null)
+            memory = try(var.airflow_resources_config.statsd.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.airflow_resources_config["statsd"].limits.cpu, null)
-            memory = try(var.airflow_resources_config["statsd"].limits.memory, null)
+            cpu    = try(var.airflow_resources_config.statsd.limits.cpu, null)
+            memory = try(var.airflow_resources_config.statsd.limits.memory, null)
           }
         }
       } : {}

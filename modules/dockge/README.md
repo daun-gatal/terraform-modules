@@ -10,7 +10,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | ~> 3.0.1 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 3.0.1 |
 
 ## Modules
 
@@ -42,7 +42,7 @@ No modules.
 | <a name="input_dockge_stacks_size"></a> [dockge\_stacks\_size](#input\_dockge\_stacks\_size) | Size of the volume for Dockge stacks. | `string` | `"5Gi"` | no |
 | <a name="input_ingress_host"></a> [ingress\_host](#input\_ingress\_host) | Hostname for the Ingress | `string` | `"dockge-web-ext"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The namespace to deploy Dockge into. | `string` | `"dind"` | no |
-| <a name="input_resources"></a> [resources](#input\_resources) | Resource requests and limits for the containers. | <pre>map(object({<br/>    requests = optional(map(string))<br/>    limits   = optional(map(string))<br/>  }))</pre> | `{}` | no |
+| <a name="input_resources"></a> [resources](#input\_resources) | Resource requests and limits for the containers. | <pre>object({<br/>    dockge = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>    dind = optional(object({<br/>      requests = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>      limits = optional(object({<br/>        cpu    = optional(string)<br/>        memory = optional(string)<br/>      }))<br/>    }))<br/>  })</pre> | `{}` | no |
 | <a name="input_service_port"></a> [service\_port](#input\_service\_port) | The port to expose the service on. | `number` | `5001` | no |
 | <a name="input_service_type"></a> [service\_type](#input\_service\_type) | The type of service to create. | `string` | `"ClusterIP"` | no |
 | <a name="input_storage_class_name"></a> [storage\_class\_name](#input\_storage\_class\_name) | Storage class for the PVCs. Leave null for default. | `string` | `"standard"` | no |

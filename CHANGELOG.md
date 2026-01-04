@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0] - 2026-01-04
+
+### Added
+- **New Module**: `hms` (Hive Metastore) - Standardized standalone Metastore deployment.
+
+### Changed
+- **BREAKING CHANGE**: Standardized `resources_config` variable structure across `airflow`, `hms`, `trino`, `superset`, and `dockge` modules.
+  - Converted loose `map(object)` types to strict `object({ ... })` with component-specific keys (e.g., `scheduler`, `worker`, `coordinator`).
+  - Updated internal resource access to use dot notation for better type safety and autocomplete.
+  - This aligns these modules with the strict typing pattern used in `kafka`, `minio`, `nessie`, and others.
+
+### Fixed
+- **Dockge**: Fixed a bug where the `resources` variable was defined as a `map` but accessed as an `object` with `dockge` and `dind` keys in `main.tf`.
+
 ## [v0.3.0] - 2026-01-03
 
 ### Changed

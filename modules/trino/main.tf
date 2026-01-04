@@ -55,15 +55,15 @@ locals {
           }
         }
       },
-      lookup(var.trino_resources_config, "coordinator", null) != null ? {
+      var.trino_resources_config.coordinator != null ? {
         resources = {
           requests = {
-            cpu    = try(var.trino_resources_config["coordinator"].requests.cpu, null)
-            memory = try(var.trino_resources_config["coordinator"].requests.memory, null)
+            cpu    = try(var.trino_resources_config.coordinator.requests.cpu, null)
+            memory = try(var.trino_resources_config.coordinator.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.trino_resources_config["coordinator"].limits.cpu, null)
-            memory = try(var.trino_resources_config["coordinator"].limits.memory, null)
+            cpu    = try(var.trino_resources_config.coordinator.limits.cpu, null)
+            memory = try(var.trino_resources_config.coordinator.limits.memory, null)
           }
         }
       } : {}
@@ -81,15 +81,15 @@ locals {
           }
         }
       },
-      lookup(var.trino_resources_config, "worker", null) != null ? {
+      var.trino_resources_config.worker != null ? {
         resources = {
           requests = {
-            cpu    = try(var.trino_resources_config["worker"].requests.cpu, null)
-            memory = try(var.trino_resources_config["worker"].requests.memory, null)
+            cpu    = try(var.trino_resources_config.worker.requests.cpu, null)
+            memory = try(var.trino_resources_config.worker.requests.memory, null)
           }
           limits = {
-            cpu    = try(var.trino_resources_config["worker"].limits.cpu, null)
-            memory = try(var.trino_resources_config["worker"].limits.memory, null)
+            cpu    = try(var.trino_resources_config.worker.limits.cpu, null)
+            memory = try(var.trino_resources_config.worker.limits.memory, null)
           }
         }
       } : {}

@@ -210,16 +210,68 @@ variable "tailscale_expose" {
 # ============================================
 variable "superset_resources_config" {
   description = "Resource requests/limits per component. Empty by default - no resources applied to avoid CPU issues on k3s."
-  type = map(object({
-    requests = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+  type = object({
+    supersetNode = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-    limits = optional(object({
-      cpu    = optional(string)
-      memory = optional(string)
+    supersetWorker = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
     }))
-  }))
+    supersetCeleryBeat = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    supersetCeleryFlower = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    supersetWebsockets = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    initJob = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+  })
 
   default = {}
 }

@@ -82,10 +82,28 @@ variable "dind_env" {
 
 variable "resources" {
   description = "Resource requests and limits for the containers."
-  type = map(object({
-    requests = optional(map(string))
-    limits   = optional(map(string))
-  }))
+  type = object({
+    dockge = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+    dind = optional(object({
+      requests = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+      limits = optional(object({
+        cpu    = optional(string)
+        memory = optional(string)
+      }))
+    }))
+  })
   default = {}
 }
 
