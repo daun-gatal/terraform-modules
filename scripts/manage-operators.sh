@@ -225,8 +225,8 @@ add_helm_repos() {
 }
 
 install_tailscale() {
-  local version=""
-  if [[ -n "$TAILSCALE_VERSION" ]]; then version="--version $TAILSCALE_VERSION"; fi
+  local version_args=()
+  if [[ -n "$TAILSCALE_VERSION" ]]; then version_args=("--version" "$TAILSCALE_VERSION"); fi
   
   log_info "Installing Tailscale Operator ${TAILSCALE_VERSION:-(Latest)}..."
   if [[ -z "${OAUTH_CLIENT_ID:-}" ]]; then
@@ -237,7 +237,7 @@ install_tailscale() {
     echo
   fi
   helm upgrade --install tailscale-operator tailscale/tailscale-operator \
-    $version \
+    "${version_args[@]}" \
     --namespace "$TAILSCALE_NAMESPACE" --create-namespace \
     --set-string oauth.clientId="$OAUTH_CLIENT_ID" \
     --set-string oauth.clientSecret="$OAUTH_CLIENT_SECRET" \
@@ -245,42 +245,42 @@ install_tailscale() {
 }
 
 install_spark() {
-  local version=""
-  if [[ -n "$SPARK_VERSION" ]]; then version="--version $SPARK_VERSION"; fi
+  local version_args=()
+  if [[ -n "$SPARK_VERSION" ]]; then version_args=("--version" "$SPARK_VERSION"); fi
 
   log_info "Installing Spark Operator ${SPARK_VERSION:-(Latest)}..."
   helm upgrade --install spark-operator spark/spark-kubernetes-operator \
-    $version \
+    "${version_args[@]}" \
     --namespace "$SPARK_NAMESPACE" --create-namespace
 }
 
 install_cnpg() {
-  local version=""
-  if [[ -n "$CNPG_VERSION" ]]; then version="--version $CNPG_VERSION"; fi
+  local version_args=()
+  if [[ -n "$CNPG_VERSION" ]]; then version_args=("--version" "$CNPG_VERSION"); fi
 
   log_info "Installing CloudNativePG Operator ${CNPG_VERSION:-(Latest)}..."
   helm upgrade --install cnpg-operator cnpg/cloudnative-pg \
-    $version \
+    "${version_args[@]}" \
     --namespace "$CNPG_NAMESPACE" --create-namespace
 }
 
 install_minio() {
-  local version=""
-  if [[ -n "$MINIO_OPERATOR_VERSION" ]]; then version="--version $MINIO_OPERATOR_VERSION"; fi
+  local version_args=()
+  if [[ -n "$MINIO_OPERATOR_VERSION" ]]; then version_args=("--version" "$MINIO_OPERATOR_VERSION"); fi
 
   log_info "Installing MinIO Operator ${MINIO_OPERATOR_VERSION:-(Latest)}..."
   helm upgrade --install minio-operator minio-operator/operator \
-    $version \
+    "${version_args[@]}" \
     --namespace "$MINIO_NAMESPACE" --create-namespace
 }
 
 install_strimzi() {
-  local version=""
-  if [[ -n "$STRIMZI_VERSION" ]]; then version="--version $STRIMZI_VERSION"; fi
+  local version_args=()
+  if [[ -n "$STRIMZI_VERSION" ]]; then version_args=("--version" "$STRIMZI_VERSION"); fi
 
   log_info "Installing Strimzi Kafka Operator ${STRIMZI_VERSION:-(Latest)}..."
   helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
-    $version \
+    "${version_args[@]}" \
     --namespace "$STRIMZI_NAMESPACE" --create-namespace
 }
 
@@ -293,12 +293,12 @@ install_flink() {
 }
 
 install_clickhouse() {
-  local version=""
-  if [[ -n "$CLICKHOUSE_OPERATOR_VERSION" ]]; then version="--version $CLICKHOUSE_OPERATOR_VERSION"; fi
+  local version_args=()
+  if [[ -n "$CLICKHOUSE_OPERATOR_VERSION" ]]; then version_args=("--version" "$CLICKHOUSE_OPERATOR_VERSION"); fi
 
   log_info "Installing ClickHouse Operator ${CLICKHOUSE_OPERATOR_VERSION:-(Latest)}..."
   helm upgrade --install clickhouse-operator altinity/altinity-clickhouse-operator \
-    $version \
+    "${version_args[@]}" \
     --namespace "$CLICKHOUSE_NAMESPACE" --create-namespace
 }
 
