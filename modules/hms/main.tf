@@ -92,7 +92,7 @@ resource "kubernetes_deployment" "metastore" {
           # Add HADOOP_CLASSPATH to include the driver
           env {
             name  = "HADOOP_CLASSPATH"
-            value = "/opt/hive/lib/*:/opt/hive/lib/ext/*"
+            value = "/opt/hive/lib/ext/*:/opt/hive/lib/*"
           }
 
           # Add extra env vars

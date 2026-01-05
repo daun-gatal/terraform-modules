@@ -23,7 +23,7 @@ variable "image_repository" {
 variable "image_tag" {
   description = "Container image tag"
   type        = string
-  default     = "standalone-metastore-4.2.0"
+  default     = "3.1.3"
 }
 
 variable "image_pull_policy" {
