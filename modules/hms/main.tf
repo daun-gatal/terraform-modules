@@ -2,7 +2,7 @@ locals {
   name_metastore = "${var.prefix}-metastore"
 
   default_hive_config = {
-    "javax.jdo.option.ConnectionURL"      = "jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}"
+    "javax.jdo.option.ConnectionURL"      = "jdbc:postgresql://${var.database_host}:${var.database_port}/${var.database_name}?sslmode=disable"
     "javax.jdo.option.ConnectionUserName" = var.database_user
     "javax.jdo.option.ConnectionPassword" = var.database_password
     "fs.s3a.access.key"                   = var.s3_access_key
