@@ -162,7 +162,7 @@ variable "hive_site_config" {
   type        = map(string)
   default = {
     "javax.jdo.option.ConnectionDriverName" = "org.postgresql.Driver"
-    "datanucleus.schema.autoCreateAll"      = "true"
+    "datanucleus.schema.autoCreateAll"      = "false"
     "fs.s3a.path.style.access"              = "true"
     "hive.warehouse.subdir.inherit.perms"   = "true"
     "fs.s3a.aws.credentials.provider"       = "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
