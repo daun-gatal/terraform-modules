@@ -2,114 +2,114 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/examples/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/airbyte/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/airflow/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/dockge/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/gravitino-iceberg-rest/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/gravitino-server/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/gravitino/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/hms/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-cluster/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-connect/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-ksqldb/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-node/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-schema-registry/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka-ui/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kafka/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/kestra/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/keycloak/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/lakekeeper/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/metabase/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/minio/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/nessie/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/openbao/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/postgres/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/rustfs/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/superset/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
     <url>
          <loc>https://daun-gatal.github.io/terraform-modules/modules/trino/</loc>
-         <lastmod>2026-01-04</lastmod>
+         <lastmod>2026-01-05</lastmod>
     </url>
 </urlset>
