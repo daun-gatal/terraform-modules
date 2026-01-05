@@ -32,7 +32,7 @@ No modules.
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Keeper image tag | `string` | `"25.11-alpine"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for ClickHouse Keeper | `string` | `"clickhouse"` | no |
 | <a name="input_pvc_size"></a> [pvc\_size](#input\_pvc\_size) | Size of Keeper PVC | `string` | `"10Gi"` | no |
-| <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of Keeper replicas | `number` | `3` | no |
+| <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of Keeper replicas | `number` | `1` | no |
 | <a name="input_resources"></a> [resources](#input\_resources) | Resource limits and requests for Keeper | <pre>object({<br/>    requests = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>    limits = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>  })</pre> | <pre>{<br/>  "limits": {<br/>    "cpu": "200m",<br/>    "memory": "512Mi"<br/>  },<br/>  "requests": {<br/>    "cpu": "10m",<br/>    "memory": "64Mi"<br/>  }<br/>}</pre> | no |
 | <a name="input_storage_class"></a> [storage\_class](#input\_storage\_class) | Storage Class for Keeper PVC | `string` | `"standard"` | no |
 

@@ -13,7 +13,7 @@ variable "cluster_name" {
 variable "replicas" {
   description = "Number of Keeper replicas"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "image_repository" {

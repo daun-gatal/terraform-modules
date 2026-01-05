@@ -18,19 +18,19 @@ variable "keeper_service_name" {
 variable "keeper_replicas" {
   description = "Number of Keeper replicas (to generate config)"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "shards_count" {
   description = "Number of shards"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "replicas_count" {
   description = "Number of replicas per shard"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "admin_password" {
