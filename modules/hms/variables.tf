@@ -153,6 +153,7 @@ variable "additional_jars" {
     "postgresql-42.7.3.jar"            = "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"
     "hadoop-aws-3.1.3.jar"             = "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.1.3/hadoop-aws-3.1.3.jar"
     "aws-java-sdk-bundle-1.11.271.jar" = "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.271/aws-java-sdk-bundle-1.11.271.jar"
+    "guava-27.0-jre.jar"               = "https://repo1.maven.org/maven2/com/google/guava/guava/27.0-jre/guava-27.0-jre.jar"
   }
 }
 
