@@ -63,9 +63,3 @@ variable "resources" {
     }
   }
 }
-
-variable "tailscale_expose" {
-  description = "Expose service via Tailscale"
-  type        = bool
-  default     = false
-}

@@ -35,7 +35,6 @@ No modules.
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of Keeper replicas | `number` | `3` | no |
 | <a name="input_resources"></a> [resources](#input\_resources) | Resource limits and requests for Keeper | <pre>object({<br/>    requests = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>    limits = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>  })</pre> | <pre>{<br/>  "limits": {<br/>    "cpu": "200m",<br/>    "memory": "512Mi"<br/>  },<br/>  "requests": {<br/>    "cpu": "10m",<br/>    "memory": "64Mi"<br/>  }<br/>}</pre> | no |
 | <a name="input_storage_class"></a> [storage\_class](#input\_storage\_class) | Storage Class for Keeper PVC | `string` | `"standard"` | no |
-| <a name="input_tailscale_expose"></a> [tailscale\_expose](#input\_tailscale\_expose) | Expose service via Tailscale | `bool` | `false` | no |
 
 ## Outputs
 
