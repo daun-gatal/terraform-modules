@@ -42,6 +42,7 @@ graph LR
 
     subgraph Compute_Group [Compute]
         Trino[Trino]:::compute
+        ClickHouse[ClickHouse]:::compute
     end
 
     subgraph BI_Group [Consumption]
@@ -67,6 +68,7 @@ graph LR
 
     Keycloak -.->|Auth| Orch
     Keycloak -.->|Auth| Trino
+    Keycloak -.->|Auth| ClickHouse
     Keycloak -.->|Auth| BI
 
     linkStyle default interpolate basis
@@ -89,7 +91,8 @@ graph LR
 | | [**Nessie**](modules/nessie/) | Data Git | Git-like versioning for Iceberg tables |
 | | [**Lakekeeper**](modules/lakekeeper/) | Iceberg REST Catalog | Rust-native, S3/GCS/Azure support |
 | | [**HMS**](modules/hms/) | Hive Metastore | Standalone, PostgreSQL/S3-backed |
-| **Analytics** | [**Trino**](modules/trino/) | Distributed SQL | Federated queries, Iceberg connector |
+| **Analytics** | [**ClickHouse**](modules/clickhouse/) | Real-time Analytics | Keeper, Server (Operator), UI |
+| | [**Trino**](modules/trino/) | Distributed SQL | Federated queries, Iceberg connector |
 | | [**Metabase**](modules/metabase/) | BI Tool | No-code dashboards, Embeddable |
 | | [**Superset**](modules/superset/) | Data Exploration | SQL Lab, Rich visualizations |
 

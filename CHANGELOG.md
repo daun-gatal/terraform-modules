@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.6.0] - 2026-01-06
+
+### Added
+- **New Module**: `clickhouse` - Added comprehensive ClickHouse module with `keeper`, `server`, and `ui` submodules.
+  - `keeper`: Deploys ClickHouse Keeper (ZooKeeper alternative) as a StatefulSet.
+  - `server`: Deploys ClickHouse Server using the `ClickHouseInstallation` CRD (Altinity Operator).
+  - `ui`: Deploys ClickHouse UI (via `ch-ui`) with optional Tailscale Funnel ingress support.
+- **Operator Support**: Added support for `clickhouse-operator` (Altinity) in installation scripts.
+- **Script Improvements**: Updates to `scripts/manage-operators.sh`:
+  - Enforced "**latest by default**" versioning policy for all operators (Helm charts now pull latest unless specified).
+  - Added modular flags (e.g., `--with-clickhouse`, `--with-strimzi`) and an `--all` flag for flexible installation.
+  - Refactored into a modular function-based architecture for better maintainability.
+
+### Changed
+- **Defaults**: Updated default `storage_class` to `standard` and resource requests/limits to "dev-friendly" (very low) values across `clickhouse` submodules to ensure generic compatibility.
+
 ## [v0.5.0] - 2026-01-05
 
 ### Changed
