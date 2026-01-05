@@ -74,50 +74,6 @@ resource "kubernetes_deployment" "metastore" {
           }
         }
 
-        init_container {
-          name              = "init-schema"
-          image             = "${var.image_repository}:${var.image_tag}"
-          image_pull_policy = var.image_pull_policy
-
-          command = ["/bin/sh", "-c"]
-          args    = ["/opt/hive/bin/schematool -dbType postgres -info; if [ $? -eq 0 ]; then echo 'Schema already exists. Skipping initialization.'; else echo 'Schema not found. Initializing...'; /opt/hive/bin/schematool -dbType postgres -initSchema; fi"]
-
-          env {
-            name  = "SERVICE_NAME"
-            value = "metastore"
-          }
-
-          env {
-            name  = "DB_DRIVER"
-            value = "postgres"
-          }
-
-          env {
-            name  = "HADOOP_CLASSPATH"
-            value = "/opt/hive/lib/ext/*:/opt/hive/lib/*"
-          }
-
-          # Add extra env vars
-          dynamic "env" {
-            for_each = var.extra_env_vars
-            content {
-              name  = env.key
-              value = env.value
-            }
-          }
-
-          volume_mount {
-            name       = "driver-libs"
-            mount_path = "/opt/hive/lib/ext"
-          }
-
-          volume_mount {
-            name       = "hive-config"
-            mount_path = "/opt/hive/conf/hive-site.xml"
-            sub_path   = "hive-site.xml"
-          }
-        }
-
         container {
           name              = "metastore"
           image             = "${var.image_repository}:${var.image_tag}"
