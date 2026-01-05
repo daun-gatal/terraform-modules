@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -38,10 +40,25 @@ jobs:
 
       - name: Terraform Init & Validate
         run: |
+          # Determine comparison base
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_sha="origin/${{ github.base_ref }}"
+          else
+            BASE_sha="HEAD~1"
+          fi
+          
+          echo "Determining changed modules against $BASE_sha..."
+          CHANGED_FILES=$(git diff --name-only "$BASE_sha")
+          
           find modules examples -name "versions.tf" -exec dirname {} \; | sort -u | while read dir; do
-            echo "Validating $dir..."
-            cd "$dir"
-            terraform init -backend=false
-            terraform validate
-            cd - > /dev/null
+            # Check if any changed file starts with the module directory path
+            if echo "$CHANGED_FILES" | grep -q "^$dir/"; then
+              echo "📝 Changes detected in '$dir'. Validating..."
+              cd "$dir"
+              terraform init -backend=false
+              terraform validate
+              cd - > /dev/null
+            else
+              echo "⏭️  No changes in '$dir'. Skipping."
+            fi
           done
