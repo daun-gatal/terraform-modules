@@ -20,15 +20,15 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [kubernetes_config_map.hms_config](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_deployment.metastore](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
-| [kubernetes_secret.hms_config](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_service.metastore](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_jars"></a> [additional\_jars](#input\_additional\_jars) | Map of filename to URL for additional JARs to download in the init container. Defaults include AWS SDK and Hadoop AWS. | `map(string)` | <pre>{<br/>  "aws-java-sdk-bundle-2.31.69.jar": "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/2.31.69/aws-java-sdk-bundle-2.31.69.jar",<br/>  "hadoop-aws-3.4.1.jar": "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.4.1/hadoop-aws-3.4.1.jar",<br/>  "postgresql-42.7.3.jar": "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"<br/>}</pre> | no |
+| <a name="input_additional_jars"></a> [additional\_jars](#input\_additional\_jars) | Map of filename to URL for additional JARs to download in the init container. Defaults include AWS SDK and Hadoop AWS. | `map(string)` | <pre>{<br/>  "aws-java-sdk-bundle-1.11.271.jar": "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.271/aws-java-sdk-bundle-1.11.271.jar",<br/>  "guava-27.0-jre.jar": "https://repo1.maven.org/maven2/com/google/guava/guava/27.0-jre/guava-27.0-jre.jar",<br/>  "hadoop-aws-3.1.3.jar": "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.1.3/hadoop-aws-3.1.3.jar",<br/>  "postgresql-42.7.3.jar": "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar"<br/>}</pre> | no |
 | <a name="input_database_host"></a> [database\_host](#input\_database\_host) | PostgreSQL host | `string` | n/a | yes |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | PostgreSQL database name | `string` | `"metastore"` | no |
 | <a name="input_database_password"></a> [database\_password](#input\_database\_password) | PostgreSQL password | `string` | n/a | yes |
@@ -36,9 +36,10 @@ No modules.
 | <a name="input_database_user"></a> [database\_user](#input\_database\_user) | PostgreSQL user | `string` | n/a | yes |
 | <a name="input_extra_env_vars"></a> [extra\_env\_vars](#input\_extra\_env\_vars) | Map of extra environment variables | `map(string)` | `{}` | no |
 | <a name="input_hive_metastore_warehouse_dir"></a> [hive\_metastore\_warehouse\_dir](#input\_hive\_metastore\_warehouse\_dir) | Hive Metastore warehouse directory (e.g. s3a://bucket/warehouse) | `string` | `"s3a://datalake/warehouse"` | no |
+| <a name="input_hive_site_config"></a> [hive\_site\_config](#input\_hive\_site\_config) | Additional configuration properties for hive-site.xml | `map(string)` | <pre>{<br/>  "datanucleus.schema.autoCreateAll": "true",<br/>  "fs.s3a.aws.credentials.provider": "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",<br/>  "fs.s3a.connection.ssl.enabled": "false",<br/>  "fs.s3a.endpoint.region": "us-east-1",<br/>  "fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",<br/>  "fs.s3a.path.style.access": "true",<br/>  "hive.warehouse.subdir.inherit.perms": "true",<br/>  "javax.jdo.option.ConnectionDriverName": "org.postgresql.Driver"<br/>}</pre> | no |
 | <a name="input_image_pull_policy"></a> [image\_pull\_policy](#input\_image\_pull\_policy) | Image pull policy | `string` | `"IfNotPresent"` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Container image repository | `string` | `"apache/hive"` | no |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Container image tag | `string` | `"standalone-metastore-4.2.0"` | no |
+| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Container image tag | `string` | `"3.1.3"` | no |
 | <a name="input_metastore_replicas"></a> [metastore\_replicas](#input\_metastore\_replicas) | Number of Metastore replicas | `number` | `1` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for HMS deployment | `string` | `"hms"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for resource names | `string` | `"hms"` | no |

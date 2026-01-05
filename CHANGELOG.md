@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.5.0] - 2026-01-05
+
+### Changed
+- **hms**: Refactored configuration management to use `hive-site.xml` ConfigMap via template.
+- **hms**: Switched to `apache/hive:3.1.3` and downgraded injected jars (`hadoop-aws-3.1.3`, `aws-java-sdk-bundle-1.11.271`, `guava-27.0-jre`) for compatibility.
+- **hms**: Fixed Schema initialization by mounting driver libs to `/opt/hive/lib/ext` and prioritizing them in `HADOOP_CLASSPATH`.
+- **hms**: Disabled SSL (`sslmode=disable`) for PostgreSQL connection to resolve protocol version mismatches.
+- **hms**: Removed `EnvironmentVariableCredentialsProvider` and authorization listeners to fix start-up crashes.
+
 ## [v0.4.0] - 2026-01-04
 
 ### Added
