@@ -86,9 +86,3 @@ variable "resources" {
     }
   }
 }
-
-variable "service_annotations" {
-  description = "Annotations to add to the ClickHouse service"
-  type        = map(string)
-  default     = {}
-}

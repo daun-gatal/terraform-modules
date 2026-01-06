@@ -106,9 +106,6 @@ resource "kubernetes_manifest" "chi" {
           {
             name         = "cluster-service"
             generateName = "clickhouse-{chi}"
-            metadata = {
-              annotations = var.service_annotations
-            }
             spec = {
               type = "ClusterIP"
               ports = [
