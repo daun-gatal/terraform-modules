@@ -29,10 +29,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name | `string` | `"ch-ui"` | no |
-| <a name="input_clickhouse_password_key"></a> [clickhouse\_password\_key](#input\_clickhouse\_password\_key) | Key in the secret containing the password | `string` | `"admin-password"` | no |
-| <a name="input_clickhouse_password_secret"></a> [clickhouse\_password\_secret](#input\_clickhouse\_password\_secret) | Name of the secret containing the password | `string` | n/a | yes |
-| <a name="input_clickhouse_url"></a> [clickhouse\_url](#input\_clickhouse\_url) | URL of the ClickHouse server (e.g. http://service:8123) | `string` | n/a | yes |
-| <a name="input_clickhouse_user"></a> [clickhouse\_user](#input\_clickhouse\_user) | ClickHouse username | `string` | `"admin"` | no |
+| <a name="input_clickhouse_urls"></a> [clickhouse\_urls](#input\_clickhouse\_urls) | URLs of the ClickHouse server (e.g. http://service:8123). Separate multiple URLs with commas. | `string` | n/a | yes |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | UI image repository | `string` | `"ghcr.io/caioricciuti/ch-ui"` | no |
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | UI image tag | `string` | `"latest"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for ClickHouse UI | `string` | `"clickhouse"` | no |

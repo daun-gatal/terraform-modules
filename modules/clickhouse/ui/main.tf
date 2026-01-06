@@ -24,25 +24,12 @@ resource "kubernetes_deployment" "ui" {
 
       spec {
         container {
-          name  = "ch-ui"
+          name  = "clickhouse-ui"
           image = "${var.image_repository}:${var.image_tag}"
 
           env {
-            name  = "VITE_CLICKHOUSE_URL"
-            value = var.clickhouse_url
-          }
-          env {
-            name  = "VITE_CLICKHOUSE_USER"
-            value = var.clickhouse_user
-          }
-          env {
-            name = "VITE_CLICKHOUSE_PASS"
-            value_from {
-              secret_key_ref {
-                name = var.clickhouse_password_secret
-                key  = var.clickhouse_password_key
-              }
-            }
+            name  = "VITE_CLICKHOUSE_URLS"
+            value = var.clickhouse_urls
           }
 
           port {
