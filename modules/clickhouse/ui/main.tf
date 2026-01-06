@@ -78,7 +78,7 @@ resource "kubernetes_service" "ui" {
   spec {
     type = "ClusterIP"
     port {
-      port        = 5521
+      port        = 80
       target_port = 5521
     }
     selector = {
