@@ -37,6 +37,7 @@ No modules.
 | <a name="input_pvc_size"></a> [pvc\_size](#input\_pvc\_size) | Size of Data PVC | `string` | `"25Gi"` | no |
 | <a name="input_replicas_count"></a> [replicas\_count](#input\_replicas\_count) | Number of replicas per shard | `number` | `1` | no |
 | <a name="input_resources"></a> [resources](#input\_resources) | Resource limits and requests for Server | <pre>object({<br/>    requests = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>    limits = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>  })</pre> | <pre>{<br/>  "limits": {<br/>    "cpu": "2",<br/>    "memory": "12Gi"<br/>  },<br/>  "requests": {<br/>    "cpu": "100m",<br/>    "memory": "256Mi"<br/>  }<br/>}</pre> | no |
+| <a name="input_service_annotations"></a> [service\_annotations](#input\_service\_annotations) | Annotations to add to the ClickHouse service | `map(string)` | `{}` | no |
 | <a name="input_shards_count"></a> [shards\_count](#input\_shards\_count) | Number of shards | `number` | `1` | no |
 | <a name="input_storage_class"></a> [storage\_class](#input\_storage\_class) | Storage Class for Data PVC | `string` | `"standard"` | no |
 
