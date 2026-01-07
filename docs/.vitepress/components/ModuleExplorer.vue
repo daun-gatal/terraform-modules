@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { withBase } from 'vitepress'
 import modules from '../data/modules.json'
 import inventory from '../data/inventory.json'
 
@@ -45,7 +46,7 @@ const filteredModules = computed(() => {
       <a 
         v-for="mod in filteredModules" 
         :key="mod.name" 
-        :href="mod.link"
+        :href="withBase(mod.link)"
         class="module-card"
       >
         <div class="icon">
