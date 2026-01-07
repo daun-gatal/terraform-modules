@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.6.1] - 2026-01-07
+
+### Documentation
+- **Migration**: Fully migrated documentation site from MkDocs to **VitePress** for better performance and customization.
+- **Dynamic Inventory**: Introduced `docs-inventory.json` as the single source of truth for module grouping, icons, and metadata.
+- **Improved UI**:
+  - Implemented a custom `ModuleExplorer` with glassmorphism design and category filtering.
+  - Replaced emoji icons with high-quality official SVGs/PNGs for all modules (Gravitino, ClickHouse, Kafka, etc.).
+- **Lab Environment**: Added "Lab Environment" links and credentials for live demos (Airflow, Superset, Kafka UI, ClickHouse UI) to the homepage.
+
+### Fixed
+- **Navigation**: Fixed `ModuleExplorer` links returning 404s on GitHub Pages by implementing `withBase` path resolution.
+- **Deployment**: Fixed GitHub Pages deployment by setting the correct `base` path (`/terraform-modules/`) in VitePress config.
+
+### Changed
+- **ClickHouse UI**: Updated `image_repository` default to `ghcr.io/daun-gatal/clickhouse-ui` to match the custom extension build.
+
 ## [v0.6.0] - 2026-01-06
 
 ### Added
