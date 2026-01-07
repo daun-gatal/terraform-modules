@@ -12,31 +12,27 @@
         <meta name="author" content="Rizal M.">
       
       
-        <link rel="canonical" href="https://daun-gatal.github.io/terraform-modules/modules/">
+        <link rel="canonical" href="https://daun-gatal.github.io/terraform-modules/modules/clickhouse/">
       
       
-        <link rel="prev" href="..">
-      
-      
-        <link rel="next" href="../examples/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>Module Details - Data Platform Engineering</title>
+        <title>ClickHouse Terraform Modules - Data Platform Engineering</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,9 +51,9 @@
       
     
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#available-modules" class="md-skip">
+        <a href="#clickhouse-terraform-modules" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Data Platform Engineering" class="md-header__button md-logo" aria-label="Data Platform Engineering" data-md-component="logo">
+    <a href="../.." title="Data Platform Engineering" class="md-header__button md-logo" aria-label="Data Platform Engineering" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 5.4v6.4L15.4 15V8.7zm-6.2 3.3V15l-5.6-3.2V5.4zm0 7v6.4l-5.6-3.2v-6.4zM8.6 5.1v6.4L3 8.3V1.9z"/></svg>
@@ -116,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Module Details
+              ClickHouse Terraform Modules
             
           </span>
         </div>
@@ -227,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -244,11 +240,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link">
         
   
   
@@ -267,7 +261,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../examples/" class="md-tabs__link">
+      <a href="../../examples/" class="md-tabs__link">
         
   
   
@@ -302,7 +296,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Data Platform Engineering" class="md-nav__button md-logo" aria-label="Data Platform Engineering" data-md-component="logo">
+    <a href="../.." title="Data Platform Engineering" class="md-nav__button md-logo" aria-label="Data Platform Engineering" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 5.4v6.4L15.4 15V8.7zm-6.2 3.3V15l-5.6-3.2V5.4zm0 7v6.4l-5.6-3.2v-6.4zM8.6 5.1v6.4L3 8.3V1.9z"/></svg>
@@ -332,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -356,35 +350,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Module Details
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -400,35 +369,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#available-modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Available Modules
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -440,7 +380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../../examples/" class="md-nav__link">
         
   
   
@@ -477,6 +417,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -485,10 +427,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#available-modules" class="md-nav__link">
+  <a href="#submodules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Modules
+        Submodules
       
     </span>
   </a>
@@ -515,40 +457,13 @@
   
 
 
-  <h1>Module Details</h1>
-
-<p>This section contains detailed documentation for all available Terraform modules. Each page is automatically generated from the module's source code using <code>terraform-docs</code>.</p>
-<h2 id="available-modules">Available Modules<a class="headerlink" href="#available-modules" title="Permanent link">&para;</a></h2>
+<h1 id="clickhouse-terraform-modules">ClickHouse Terraform Modules<a class="headerlink" href="#clickhouse-terraform-modules" title="Permanent link">&para;</a></h1>
+<p>This directory contains Terraform modules for deploying ClickHouse components.</p>
+<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="airbyte/">airbyte</a></li>
-<li><a href="airflow/">airflow</a></li>
-<li><a href="clickhouse/">clickhouse</a></li>
-<li><a href="clickhouse-keeper/">clickhouse-keeper</a></li>
-<li><a href="clickhouse-server/">clickhouse-server</a></li>
-<li><a href="clickhouse-ui/">clickhouse-ui</a></li>
-<li><a href="dockge/">dockge</a></li>
-<li><a href="gravitino/">gravitino</a></li>
-<li><a href="gravitino-iceberg-rest/">gravitino-iceberg-rest</a></li>
-<li><a href="gravitino-server/">gravitino-server</a></li>
-<li><a href="hms/">hms</a></li>
-<li><a href="kafka/">kafka</a></li>
-<li><a href="kafka-cluster/">kafka-cluster</a></li>
-<li><a href="kafka-connect/">kafka-connect</a></li>
-<li><a href="kafka-ksqldb/">kafka-ksqldb</a></li>
-<li><a href="kafka-node/">kafka-node</a></li>
-<li><a href="kafka-schema-registry/">kafka-schema-registry</a></li>
-<li><a href="kafka-ui/">kafka-ui</a></li>
-<li><a href="kestra/">kestra</a></li>
-<li><a href="keycloak/">keycloak</a></li>
-<li><a href="lakekeeper/">lakekeeper</a></li>
-<li><a href="metabase/">metabase</a></li>
-<li><a href="minio/">minio</a></li>
-<li><a href="nessie/">nessie</a></li>
-<li><a href="openbao/">openbao</a></li>
-<li><a href="postgres/">postgres</a></li>
-<li><a href="rustfs/">rustfs</a></li>
-<li><a href="superset/">superset</a></li>
-<li><a href="trino/">trino</a></li>
+<li><a href="./keeper">keeper</a>: Deploys ClickHouse Keeper (ZooKeeper alternative).</li>
+<li><a href="./server">server</a>: Deploys ClickHouse Server.</li>
+<li><a href="./ui">ui</a>: Deploys ClickHouse UI.</li>
 </ul>
 
 
@@ -632,10 +547,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "toc.follow", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
