@@ -1,0 +1,127 @@
+[
+  {
+    "text": "Metadata",
+    "items": [
+      {
+        "text": "Gravitino",
+        "link": "/modules/metadata/gravitino"
+      },
+      {
+        "text": "HMS",
+        "link": "/modules/metadata/hms"
+      },
+      {
+        "text": "Lakekeeper",
+        "link": "/modules/metadata/lakekeeper"
+      },
+      {
+        "text": "Nessie",
+        "link": "/modules/metadata/nessie"
+      }
+    ]
+  },
+  {
+    "text": "Storage",
+    "items": [
+      {
+        "text": "MinIO",
+        "link": "/modules/storage/minio"
+      },
+      {
+        "text": "RustFS",
+        "link": "/modules/storage/rustfs"
+      }
+    ]
+  },
+  {
+    "text": "Streaming",
+    "items": [
+      {
+        "text": "Kafka",
+        "link": "/modules/streaming/kafka"
+      },
+      {
+        "text": "Kafka Connect",
+        "link": "/modules/streaming/kafka"
+      },
+      {
+        "text": "Kafka UI",
+        "link": "/modules/streaming/kafka"
+      }
+    ]
+  },
+  {
+    "text": "Analytics",
+    "items": [
+      {
+        "text": "ClickHouse",
+        "link": "/modules/analytics/clickhouse"
+      },
+      {
+        "text": "Superset",
+        "link": "/modules/analytics/superset"
+      },
+      {
+        "text": "Metabase",
+        "link": "/modules/analytics/metabase"
+      }
+    ]
+  },
+  {
+    "text": "Orchestration",
+    "items": [
+      {
+        "text": "Airflow",
+        "link": "/modules/orchestration/airflow"
+      },
+      {
+        "text": "Kestra",
+        "link": "/modules/orchestration/kestra"
+      },
+      {
+        "text": "Dockge",
+        "link": "/modules/orchestration/dockge"
+      }
+    ]
+  },
+  {
+    "text": "Identity",
+    "items": [
+      {
+        "text": "Keycloak",
+        "link": "/modules/identity/keycloak"
+      },
+      {
+        "text": "OpenBao",
+        "link": "/modules/identity/openbao"
+      }
+    ]
+  },
+  {
+    "text": "Ingestion",
+    "items": [
+      {
+        "text": "Airbyte",
+        "link": "/modules/ingestion/airbyte"
+      }
+    ]
+  },
+  {
+    "text": "Query Engines",
+    "items": [
+      {
+        "text": "Trino",
+        "link": "/modules/query-engines/trino"
+      }
+    ]
+  },
+  {
+    "text": "Infrastructure",
+    "items": [
+      {
+        "text": "Postgres",
+        "link": "/modules/infrastructure/postgres"
+      }
+    ]
+  }
+]

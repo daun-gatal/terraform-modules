@@ -1,0 +1,140 @@
+{
+  "Metadata": [
+    {
+      "name": "Gravitino",
+      "source": "gravitino",
+      "desc": "Metadata catalog",
+      "icon": "https://gravitino.apache.org/img/logo.svg"
+    },
+    {
+      "name": "HMS",
+      "source": "hms",
+      "desc": "Hive Metastore",
+      "icon": "https://cdn.simpleicons.org/apachehive/white"
+    },
+    {
+      "name": "Lakekeeper",
+      "source": "lakekeeper",
+      "desc": "Iceberg Catalog",
+      "icon": "https://docs.lakekeeper.io/assets/bear.svg"
+    },
+    {
+      "name": "Nessie",
+      "source": "nessie",
+      "desc": "Git-like Data Catalog",
+      "icon": "https://github.com/projectnessie.png"
+    }
+  ],
+  "Storage": [
+    {
+      "name": "MinIO",
+      "source": "minio",
+      "desc": "S3 compatible storage",
+      "icon": "https://cdn.simpleicons.org/minio/white"
+    },
+    {
+      "name": "RustFS",
+      "source": "rustfs",
+      "desc": "Rust Filesystem Interface",
+      "icon": "https://avatars.githubusercontent.com/u/151849438?v=4"
+    }
+  ],
+  "Streaming": [
+    {
+      "name": "Kafka",
+      "source": "kafka",
+      "desc": "Event streaming platform",
+      "icon": "https://cdn.simpleicons.org/apachekafka/white"
+    },
+    {
+      "name": "Kafka Connect",
+      "source": "kafka",
+      "desc": "Data integration",
+      "icon": "https://cdn.simpleicons.org/apachekafka/white"
+    },
+    {
+      "name": "Kafka UI",
+      "source": "kafka",
+      "desc": "Web UI for Kafka",
+      "icon": "https://awsmp-logos.s3.amazonaws.com/8171e553-a714-427c-a0bf-4fc3a6cd34ac/259a7bd13ce7bc69d75f00def4099ebd.png"
+    }
+  ],
+  "Analytics": [
+    {
+      "name": "ClickHouse",
+      "source": "clickhouse",
+      "desc": "Real-time OLAP database",
+      "icon": "https://cdn.simpleicons.org/clickhouse/white"
+    },
+    {
+      "name": "Superset",
+      "source": "superset",
+      "desc": "Business intelligence",
+      "icon": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/1/apache-superset-icon-cyc19fiufldpekdt6c7jg.png/apache-superset-icon-80ygkwbe76iyhvftejjahm.png?_a=DATAg1AAZAA0"
+    },
+    {
+      "name": "Metabase",
+      "source": "metabase",
+      "desc": "Simple analytics",
+      "icon": "https://cdn.simpleicons.org/metabase/white"
+    }
+  ],
+  "Orchestration": [
+    {
+      "name": "Airflow",
+      "source": "airflow",
+      "desc": "Workflow orchestration",
+      "icon": "https://cdn.simpleicons.org/apacheairflow/white"
+    },
+    {
+      "name": "Kestra",
+      "source": "kestra",
+      "desc": "Event-driven orchestration",
+      "icon": "https://github.com/kestra-io.png"
+    },
+    {
+      "name": "Dockge",
+      "source": "dockge",
+      "desc": "Container management",
+      "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/dockge.svg"
+    }
+  ],
+  "Identity": [
+    {
+      "name": "Keycloak",
+      "source": "keycloak",
+      "desc": "Identity and access management",
+      "icon": "https://cdn.simpleicons.org/keycloak/white"
+    },
+    {
+      "name": "OpenBao",
+      "source": "openbao",
+      "desc": "Secret management",
+      "icon": "https://github.com/openbao.png"
+    }
+  ],
+  "Ingestion": [
+    {
+      "name": "Airbyte",
+      "source": "airbyte",
+      "desc": "Data integration",
+      "icon": "https://cdn.simpleicons.org/airbyte/white"
+    }
+  ],
+  "Query Engines": [
+    {
+      "name": "Trino",
+      "source": "trino",
+      "desc": "Distributed SQL query engine",
+      "icon": "https://cdn.simpleicons.org/trino/white"
+    }
+  ],
+  "Infrastructure": [
+    {
+      "name": "Postgres",
+      "source": "postgres",
+      "desc": "Relational database",
+      "icon": "https://cdn.simpleicons.org/postgresql/white"
+    }
+  ]
+}

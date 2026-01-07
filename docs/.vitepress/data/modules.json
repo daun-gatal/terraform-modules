@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Gravitino",
+    "category": "Metadata",
+    "icon": "https://gravitino.apache.org/img/logo.svg",
+    "desc": "Metadata catalog",
+    "link": "/modules/metadata/gravitino"
+  },
+  {
+    "name": "HMS",
+    "category": "Metadata",
+    "icon": "https://cdn.simpleicons.org/apachehive/white",
+    "desc": "Hive Metastore",
+    "link": "/modules/metadata/hms"
+  },
+  {
+    "name": "Lakekeeper",
+    "category": "Metadata",
+    "icon": "https://docs.lakekeeper.io/assets/bear.svg",
+    "desc": "Iceberg Catalog",
+    "link": "/modules/metadata/lakekeeper"
+  },
+  {
+    "name": "Nessie",
+    "category": "Metadata",
+    "icon": "https://github.com/projectnessie.png",
+    "desc": "Git-like Data Catalog",
+    "link": "/modules/metadata/nessie"
+  },
+  {
+    "name": "MinIO",
+    "category": "Storage",
+    "icon": "https://cdn.simpleicons.org/minio/white",
+    "desc": "S3 compatible storage",
+    "link": "/modules/storage/minio"
+  },
+  {
+    "name": "RustFS",
+    "category": "Storage",
+    "icon": "https://avatars.githubusercontent.com/u/151849438?v=4",
+    "desc": "Rust Filesystem Interface",
+    "link": "/modules/storage/rustfs"
+  },
+  {
+    "name": "Kafka",
+    "category": "Streaming",
+    "icon": "https://cdn.simpleicons.org/apachekafka/white",
+    "desc": "Event streaming platform",
+    "link": "/modules/streaming/kafka"
+  },
+  {
+    "name": "Kafka Connect",
+    "category": "Streaming",
+    "icon": "https://cdn.simpleicons.org/apachekafka/white",
+    "desc": "Data integration",
+    "link": "/modules/streaming/kafka"
+  },
+  {
+    "name": "Kafka UI",
+    "category": "Streaming",
+    "icon": "https://awsmp-logos.s3.amazonaws.com/8171e553-a714-427c-a0bf-4fc3a6cd34ac/259a7bd13ce7bc69d75f00def4099ebd.png",
+    "desc": "Web UI for Kafka",
+    "link": "/modules/streaming/kafka"
+  },
+  {
+    "name": "ClickHouse",
+    "category": "Analytics",
+    "icon": "https://cdn.simpleicons.org/clickhouse/white",
+    "desc": "Real-time OLAP database",
+    "link": "/modules/analytics/clickhouse"
+  },
+  {
+    "name": "Superset",
+    "category": "Analytics",
+    "icon": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/1/apache-superset-icon-cyc19fiufldpekdt6c7jg.png/apache-superset-icon-80ygkwbe76iyhvftejjahm.png?_a=DATAg1AAZAA0",
+    "desc": "Business intelligence",
+    "link": "/modules/analytics/superset"
+  },
+  {
+    "name": "Metabase",
+    "category": "Analytics",
+    "icon": "https://cdn.simpleicons.org/metabase/white",
+    "desc": "Simple analytics",
+    "link": "/modules/analytics/metabase"
+  },
+  {
+    "name": "Airflow",
+    "category": "Orchestration",
+    "icon": "https://cdn.simpleicons.org/apacheairflow/white",
+    "desc": "Workflow orchestration",
+    "link": "/modules/orchestration/airflow"
+  },
+  {
+    "name": "Kestra",
+    "category": "Orchestration",
+    "icon": "https://github.com/kestra-io.png",
+    "desc": "Event-driven orchestration",
+    "link": "/modules/orchestration/kestra"
+  },
+  {
+    "name": "Dockge",
+    "category": "Orchestration",
+    "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/dockge.svg",
+    "desc": "Container management",
+    "link": "/modules/orchestration/dockge"
+  },
+  {
+    "name": "Keycloak",
+    "category": "Identity",
+    "icon": "https://cdn.simpleicons.org/keycloak/white",
+    "desc": "Identity and access management",
+    "link": "/modules/identity/keycloak"
+  },
+  {
+    "name": "OpenBao",
+    "category": "Identity",
+    "icon": "https://github.com/openbao.png",
+    "desc": "Secret management",
+    "link": "/modules/identity/openbao"
+  },
+  {
+    "name": "Airbyte",
+    "category": "Ingestion",
+    "icon": "https://cdn.simpleicons.org/airbyte/white",
+    "desc": "Data integration",
+    "link": "/modules/ingestion/airbyte"
+  },
+  {
+    "name": "Trino",
+    "category": "Query Engines",
+    "icon": "https://cdn.simpleicons.org/trino/white",
+    "desc": "Distributed SQL query engine",
+    "link": "/modules/query-engines/trino"
+  },
+  {
+    "name": "Postgres",
+    "category": "Infrastructure",
+    "icon": "https://cdn.simpleicons.org/postgresql/white",
+    "desc": "Relational database",
+    "link": "/modules/infrastructure/postgres"
+  }
+]

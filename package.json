@@ -1,0 +1,17 @@
+{
+  "name": "terraform-modules-docs",
+  "version": "1.0.0",
+  "description": "Documentation for Terraform Modules",
+  "scripts": {
+    "docs:dev": "bun run .github/scripts/generate-docs.ts && vitepress dev docs",
+    "docs:build": "bun run .github/scripts/generate-docs.ts && vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vitepress": "^1.0.0",
+    "vue": "^3.0.0"
+  }
+}

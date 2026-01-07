@@ -27,7 +27,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name | `string` | `"airbyte"` | no |
-| <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm chart repository URL (equivalent to: helm repo add airbyte-v2 <url>) | `string` | `"https://airbytehq.github.io/charts"` | no |
+| <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm chart repository URL (equivalent to: helm repo add airbyte-v2 &lt;url&gt;) | `string` | `"https://airbytehq.github.io/charts"` | no |
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Helm chart version (v2 chart - versions 2.x.x) | `string` | `"2.0.8"` | no |
 | <a name="input_minio_enabled"></a> [minio\_enabled](#input\_minio\_enabled) | Enable internal MinIO | `bool` | `true` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Kubernetes namespace for Airbyte deployment | `string` | `"airbyte"` | no |
