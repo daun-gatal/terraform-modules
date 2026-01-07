@@ -1,3 +1,7 @@
+# Superset
+
+A modern, enterprise-ready business intelligence web application. It is fast, lightweight, intuitive, and loaded with options that make it easy for users of all skill sets to explore and visualize their data.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

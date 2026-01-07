@@ -1,3 +1,7 @@
+# MinIO
+
+A high-performance, S3-compatible object storage server. It is designed for large-scale data infrastructure and is compatible with Amazon S3 APIs.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

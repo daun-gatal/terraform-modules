@@ -1,3 +1,7 @@
+# Keycloak
+
+An open-source Identity and Access Management solution aimed at modern applications and services. It offers features such as Single-Sign-On (SSO), Identity Brokering and Social Login.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

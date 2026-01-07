@@ -1,3 +1,7 @@
+# Nessie
+
+A transaction-consistent data catalog for Data Lakes that brings Git-like semantics to your data. Nessie allows you to version your data, create branches, and merge changes atomically.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

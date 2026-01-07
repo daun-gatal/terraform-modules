@@ -1,3 +1,7 @@
+# Airflow
+
+A platform to programmatically author, schedule and monitor workflows. Airflow allows you to define pipelines as code, making them dynamic, extensible, and maintainable.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

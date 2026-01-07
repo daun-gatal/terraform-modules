@@ -1,4 +1,6 @@
-
+---
+sidebar: false
+---
 
 This guide demonstrates how to bootstrap a minimal data platform using these modules. We will deploy **PostgreSQL** (for metadata), **MinIO** (for storage), and **Apache Airflow** (for orchestration).
 

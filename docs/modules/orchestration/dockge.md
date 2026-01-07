@@ -1,3 +1,7 @@
+# Dockge
+
+A fancy, easy-to-use, reactive, self-hosted Docker Compose stack-oriented manager. It simplifies the process of managing Docker Compose stacks with a clean web interface.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

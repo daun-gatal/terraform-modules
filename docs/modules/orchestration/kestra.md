@@ -1,3 +1,7 @@
+# Kestra
+
+An infinitely scalable, event-driven, language-agnostic orchestration and scheduling platform. It allows you to build complex workflows with a simple YAML configuration.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

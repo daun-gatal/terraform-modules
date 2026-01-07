@@ -1,14 +1,6 @@
-# Kafka Ecosystem
+# Kafka
 
-Complete event streaming platform. This module deploys the Kafka ecosystem including Broker, Schema Registry, Connect, and UI.
-
-::: code-group
-
-## Overview
-
-A robust, scalable event streaming platform powered by [Strimzi](https://strimzi.io/).
-
-## Cluster
+An open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
 
 <!-- BEGIN_TF_DOCS -->
 ### Inputs

@@ -1,3 +1,7 @@
+# OpenBao
+
+An open-source secret management and encryption service. It allows you to secure, store, and tightly control access to tokens, passwords, certificates, and encryption keys.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

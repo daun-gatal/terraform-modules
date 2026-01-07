@@ -1,3 +1,7 @@
+# Trino
+
+A fast distributed SQL query engine for big data analytics that helps you explore your data universe. It allows you to query data where it lives, including Hive, Cassandra, relational databases, and proprietary data stores.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

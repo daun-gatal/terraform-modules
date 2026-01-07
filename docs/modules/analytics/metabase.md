@@ -1,3 +1,7 @@
+# Metabase
+
+The easy-to-use open source Business Intelligence tool. Metabase lets you ask questions about your data and displays answers in formats that make sense, whether that's a bar graph or a detailed table.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

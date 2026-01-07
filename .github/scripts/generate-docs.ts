@@ -82,6 +82,39 @@ for (const [group, modules] of Object.entries(inventory)) {
             }
         } else {
             console.log(`      ✅ Preserving existing doc: ${docFilePath}`);
+
+            // CHECK: Does it need an intro injection or UPDATE?
+            const fileContent = await file(docFilePath).text();
+
+            // 1. If it starts with TF DOCS, inject intro (Previous Logic)
+            if (fileContent.trim().startsWith('<!-- BEGIN_TF_DOCS -->')) {
+                console.log(`      ✨ Injecting missing intro for ${mod.name}...`);
+                const newContent = `# ${mod.name}\n\n${mod.desc}\n\n${fileContent}`;
+                await write(docFilePath, newContent);
+            }
+            // 2. If it starts with "# Name", we assume we generated it or it's a manual intro.
+            // We want to force-update the description if it matches our format.
+            // Heuristic: If line 1 is "# Name" and line 3 is non-empty, replace line 3 with new desc.
+            else if (fileContent.startsWith(`# ${mod.name}`)) {
+                console.log(`      🔄 Updating intro for ${mod.name}...`);
+                const lines = fileContent.split('\n');
+                // Assume format:
+                // # Name
+                // <blank>
+                // <Description> ...
+                // <blank>
+                // <!-- BEGIN_TF_DOCS --> or other content
+
+                // We will blindly replace the intro section up to the first TF_DOCS or just the part before the first double-newline?
+                // SAFEST APPROACH: Re-construct header + Rest of file (from TF_DOCS onwards)
+
+                const tfDocsIndex = fileContent.indexOf('<!-- BEGIN_TF_DOCS -->');
+                if (tfDocsIndex !== -1) {
+                    const tfDocsContent = fileContent.substring(tfDocsIndex);
+                    const newContent = `# ${mod.name}\n\n${mod.desc}\n\n${tfDocsContent}`;
+                    await write(docFilePath, newContent);
+                }
+            }
         }
     }
 

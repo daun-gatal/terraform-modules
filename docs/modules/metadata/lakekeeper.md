@@ -1,3 +1,7 @@
+# Lakekeeper
+
+A Rust-native, high-performance Iceberg REST Catalog. It is designed for speed and efficiency, providing a lightweight alternative to Java-based catalogs.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

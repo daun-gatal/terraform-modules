@@ -13,7 +13,7 @@ hero:
       link: https://github.com/daun-gatal/terraform-modules
 ---
 
-<ModuleExplorer />
+<ModuleExplorer view-mode="showcase" />
 
 ## Lab Environment
 

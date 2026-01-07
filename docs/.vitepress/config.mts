@@ -32,6 +32,11 @@ export default defineConfig({
 
         search: {
             provider: 'local'
+        },
+
+        docFooter: {
+            prev: false,
+            next: false
         }
     },
     appearance: 'dark',

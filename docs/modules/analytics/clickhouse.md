@@ -1,10 +1,6 @@
 # ClickHouse
 
-Fast open-source OLAP database management system. This module deploys ClickHouse Server, Keeper, and UI.
-
-::: code-group
-
-## Server
+A fast open-source column-oriented database management system (DBMS) for online analytical processing (OLAP). It allows generating analytical reports using SQL queries in real-time.
 
 <!-- BEGIN_TF_DOCS -->
 ### Inputs

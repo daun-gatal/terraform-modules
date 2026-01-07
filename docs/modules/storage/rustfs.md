@@ -1,3 +1,7 @@
+# RustFS
+
+A lightweight, Rust-based filesystem interface that acts as an S3-compatible layer. It is optimized for performance and low resource usage.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

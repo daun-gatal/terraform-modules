@@ -1,14 +1,6 @@
 # Gravitino
 
-Unified metadata catalog for data platforms. This module deploys Gravitino components.
-
-::: code-group
-
-## Overview
-
-Manage metadata across different storage and processing systems with a unified catalog.
-
-## Server
+A high-performance, geo-distributed metadata catalog for data lakes. It unifies metadata across multiple clouds and regions, providing a single source of truth for your data assets.
 
 <!-- BEGIN_TF_DOCS -->
 ### Requirements

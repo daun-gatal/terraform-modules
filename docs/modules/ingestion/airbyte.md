@@ -1,3 +1,7 @@
+# Airbyte
+
+An open-source data integration platform for ELT pipelines. It enables you to move data from various sources to your data warehouse or lake with ease.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

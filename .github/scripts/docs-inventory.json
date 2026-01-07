@@ -3,25 +3,25 @@
         {
             "name": "Gravitino",
             "source": "gravitino",
-            "desc": "Metadata catalog",
+            "desc": "A high-performance, geo-distributed metadata catalog for data lakes. It unifies metadata across multiple clouds and regions, providing a single source of truth for your data assets.",
             "icon": "https://gravitino.apache.org/img/logo.svg"
         },
         {
             "name": "HMS",
             "source": "hms",
-            "desc": "Hive Metastore",
+            "desc": "The Hive Metastore (HMS) is the central repository of metadata for Hive tables and partitions in a relational database. It provides client access to this information via the Metastore service API.",
             "icon": "https://cdn.simpleicons.org/apachehive/white"
         },
         {
             "name": "Lakekeeper",
             "source": "lakekeeper",
-            "desc": "Iceberg Catalog",
+            "desc": "A Rust-native, high-performance Iceberg REST Catalog. It is designed for speed and efficiency, providing a lightweight alternative to Java-based catalogs.",
             "icon": "https://docs.lakekeeper.io/assets/bear.svg"
         },
         {
             "name": "Nessie",
             "source": "nessie",
-            "desc": "Git-like Data Catalog",
+            "desc": "A transaction-consistent data catalog for Data Lakes that brings Git-like semantics to your data. Nessie allows you to version your data, create branches, and merge changes atomically.",
             "icon": "https://github.com/projectnessie.png"
         }
     ],
@@ -29,13 +29,13 @@
         {
             "name": "MinIO",
             "source": "minio",
-            "desc": "S3 compatible storage",
+            "desc": "A high-performance, S3-compatible object storage server. It is designed for large-scale data infrastructure and is compatible with Amazon S3 APIs.",
             "icon": "https://cdn.simpleicons.org/minio/white"
         },
         {
             "name": "RustFS",
             "source": "rustfs",
-            "desc": "Rust Filesystem Interface",
+            "desc": "A lightweight, Rust-based filesystem interface that acts as an S3-compatible layer. It is optimized for performance and low resource usage.",
             "icon": "https://avatars.githubusercontent.com/u/151849438?v=4"
         }
     ],
@@ -43,19 +43,19 @@
         {
             "name": "Kafka",
             "source": "kafka",
-            "desc": "Event streaming platform",
+            "desc": "An open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.",
             "icon": "https://cdn.simpleicons.org/apachekafka/white"
         },
         {
             "name": "Kafka Connect",
             "source": "kafka",
-            "desc": "Data integration",
+            "desc": "A tool for scalably and reliably streaming data between Apache Kafka and other data systems. It allows you to define connectors that move large collections of data into and out of Kafka.",
             "icon": "https://cdn.simpleicons.org/apachekafka/white"
         },
         {
             "name": "Kafka UI",
             "source": "kafka",
-            "desc": "Web UI for Kafka",
+            "desc": "A versatile, fast, and lightweight web UI for managing Apache Kafka clusters. It provides a user-friendly interface for monitoring brokers, topics, consumers, and data.",
             "icon": "https://awsmp-logos.s3.amazonaws.com/8171e553-a714-427c-a0bf-4fc3a6cd34ac/259a7bd13ce7bc69d75f00def4099ebd.png"
         }
     ],
@@ -63,19 +63,19 @@
         {
             "name": "ClickHouse",
             "source": "clickhouse",
-            "desc": "Real-time OLAP database",
+            "desc": "A fast open-source column-oriented database management system (DBMS) for online analytical processing (OLAP). It allows generating analytical reports using SQL queries in real-time.",
             "icon": "https://cdn.simpleicons.org/clickhouse/white"
         },
         {
             "name": "Superset",
             "source": "superset",
-            "desc": "Business intelligence",
+            "desc": "A modern, enterprise-ready business intelligence web application. It is fast, lightweight, intuitive, and loaded with options that make it easy for users of all skill sets to explore and visualize their data.",
             "icon": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/1/apache-superset-icon-cyc19fiufldpekdt6c7jg.png/apache-superset-icon-80ygkwbe76iyhvftejjahm.png?_a=DATAg1AAZAA0"
         },
         {
             "name": "Metabase",
             "source": "metabase",
-            "desc": "Simple analytics",
+            "desc": "The easy-to-use open source Business Intelligence tool. Metabase lets you ask questions about your data and displays answers in formats that make sense, whether that's a bar graph or a detailed table.",
             "icon": "https://cdn.simpleicons.org/metabase/white"
         }
     ],
@@ -83,19 +83,19 @@
         {
             "name": "Airflow",
             "source": "airflow",
-            "desc": "Workflow orchestration",
+            "desc": "A platform to programmatically author, schedule and monitor workflows. Airflow allows you to define pipelines as code, making them dynamic, extensible, and maintainable.",
             "icon": "https://cdn.simpleicons.org/apacheairflow/white"
         },
         {
             "name": "Kestra",
             "source": "kestra",
-            "desc": "Event-driven orchestration",
+            "desc": "An infinitely scalable, event-driven, language-agnostic orchestration and scheduling platform. It allows you to build complex workflows with a simple YAML configuration.",
             "icon": "https://github.com/kestra-io.png"
         },
         {
             "name": "Dockge",
             "source": "dockge",
-            "desc": "Container management",
+            "desc": "A fancy, easy-to-use, reactive, self-hosted Docker Compose stack-oriented manager. It simplifies the process of managing Docker Compose stacks with a clean web interface.",
             "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/dockge.svg"
         }
     ],
@@ -103,13 +103,13 @@
         {
             "name": "Keycloak",
             "source": "keycloak",
-            "desc": "Identity and access management",
+            "desc": "An open-source Identity and Access Management solution aimed at modern applications and services. It offers features such as Single-Sign-On (SSO), Identity Brokering and Social Login.",
             "icon": "https://cdn.simpleicons.org/keycloak/white"
         },
         {
             "name": "OpenBao",
             "source": "openbao",
-            "desc": "Secret management",
+            "desc": "An open-source secret management and encryption service. It allows you to secure, store, and tightly control access to tokens, passwords, certificates, and encryption keys.",
             "icon": "https://github.com/openbao.png"
         }
     ],
@@ -117,7 +117,7 @@
         {
             "name": "Airbyte",
             "source": "airbyte",
-            "desc": "Data integration",
+            "desc": "An open-source data integration platform for ELT pipelines. It enables you to move data from various sources to your data warehouse or lake with ease.",
             "icon": "https://cdn.simpleicons.org/airbyte/white"
         }
     ],
@@ -125,7 +125,7 @@
         {
             "name": "Trino",
             "source": "trino",
-            "desc": "Distributed SQL query engine",
+            "desc": "A fast distributed SQL query engine for big data analytics that helps you explore your data universe. It allows you to query data where it lives, including Hive, Cassandra, relational databases, and proprietary data stores.",
             "icon": "https://cdn.simpleicons.org/trino/white"
         }
     ],
@@ -133,7 +133,7 @@
         {
             "name": "Postgres",
             "source": "postgres",
-            "desc": "Relational database",
+            "desc": "A powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.",
             "icon": "https://cdn.simpleicons.org/postgresql/white"
         }
     ]

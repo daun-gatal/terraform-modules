@@ -2,4 +2,4 @@
 
 Use the explorer below to find the module you need.
 
-<ModuleExplorer />
+<ModuleExplorer view-mode="all" />
