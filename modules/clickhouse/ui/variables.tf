@@ -7,7 +7,7 @@ variable "namespace" {
 variable "app_name" {
   description = "Application name"
   type        = string
-  default     = "ch-ui"
+  default     = "clickhouse-ui"
 }
 
 variable "image_repository" {

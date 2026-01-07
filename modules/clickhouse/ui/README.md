@@ -28,7 +28,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name | `string` | `"ch-ui"` | no |
+| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name | `string` | `"clickhouse-ui"` | no |
 | <a name="input_clickhouse_urls"></a> [clickhouse\_urls](#input\_clickhouse\_urls) | URLs of the ClickHouse server (e.g. http://service:8123). Separate multiple URLs with commas. | `string` | n/a | yes |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | UI image repository | `string` | `"ghcr.io/caioricciuti/ch-ui"` | no |
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | UI image tag | `string` | `"latest"` | no |
