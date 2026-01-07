@@ -13,7 +13,7 @@ variable "app_name" {
 variable "image_repository" {
   description = "UI image repository"
   type        = string
-  default     = "ghcr.io/caioricciuti/ch-ui"
+  default     = "ghcr.io/daun-gatal/clickhouse-ui"
 }
 
 variable "image_tag" {
