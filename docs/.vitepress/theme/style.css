@@ -127,3 +127,13 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
+
+/* Hide Theme Toggle */
+.VPSwitchAppearance {
+    display: none !important;
+}
+
+/* Hide Global Search Button */
+.VPNavBarSearch {
+    display: none !important;
+}

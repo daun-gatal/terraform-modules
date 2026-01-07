@@ -1,15 +1,15 @@
 ---
 layout: home
 hero:
-  name: "Terraform Modules"
-  text: "Infrastructure as Code, Simplified."
-  tagline: "Production-grade, composable Terraform modules for building scalable data platforms on Kubernetes."
+  name: "Data Engineering"
+  text: "Infrastructure Showcase"
+  tagline: "A comprehensive showcase of production-grade, composable Terraform modules for building scalable data platforms on Kubernetes."
   actions:
     - theme: brand
-      text: Get Started
+      text: Explore Modules
       link: /modules/orchestration/airflow
     - theme: alt
-      text: View on GitHub
+      text: View Source
       link: https://github.com/daun-gatal/terraform-modules
 ---
 

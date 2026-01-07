@@ -33,13 +33,6 @@ const filteredModules = computed(() => {
           {{ cat }}
         </button>
       </div>
-      <div class="search-box">
-        <input 
-          v-model="searchQuery" 
-          type="text" 
-          placeholder="Search modules..."
-        >
-      </div>
     </div>
 
     <div class="grid">
@@ -99,20 +92,6 @@ button:hover, button.active {
   border-color: var(--vp-c-brand-1);
 }
 
-.search-box input {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  width: 300px;
-  color: white;
-  backdrop-filter: blur(10px);
-}
-
-.search-box input:focus {
-  outline: none;
-  border-color: var(--vp-c-brand-1);
-}
 
 .grid {
   display: grid;
