@@ -48,3 +48,19 @@ modules/gravitino/_charts/
 # Local History
 .history/
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# VitePress
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# macOS
+.DS_Store
+
+# Legacy MkDocs
+site/

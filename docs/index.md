@@ -1,73 +1,52 @@
 ---
-hide:
-  - navigation
-  - toc
+layout: home
+hero:
+  name: "Terraform Modules"
+  text: "Infrastructure as Code, Simplified."
+  tagline: "Production-grade, composable Terraform modules for building scalable data platforms on Kubernetes."
+  actions:
+    - theme: brand
+      text: Get Started
+      link: /modules/orchestration/airflow
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/daun-gatal/terraform-modules
 ---
 
-
-
-> **Engineering scalable, modular data platforms on Kubernetes.**
->
-> This project demonstrates my approach to building production-grade infrastructure using Terraform. It showcases advanced composition patterns, secure secret management, and a standardized module interface.
-
-[Explore Modules](modules/){ .md-button .md-button--primary }
-
----
+<ModuleExplorer />
 
 ## Lab Environment
 
-These deployments are running live on my personal Kubernetes cluster, managed entirely by the modules in this repository.
+Live deployments managed by these modules.
 
-<div class="grid cards" markdown>
-
--   :simple-apacheairflow: **Orchestration Layer**
-
-    ---
-
-    **Apache Airflow** configured with CeleryExecutor, git-sync for DAGs, and OIDC authentication.
-
-    [:octicons-link-external-16: View Deployment](https://airflow-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
-
--   :simple-apachesuperset: **Analytics Layer**
-
-    ---
-
-    **Apache Superset** connected to Trino and Postgres, demonstrating the full BI stack integration.
-
-    [:octicons-link-external-16: View Deployment](https://superset-web-ext.kitty-barb.ts.net){ .md-button .md-button--primary }
-
--   :simple-apachekafka: **Streaming Layer**
-
-    ---
-
-    **Kafka Ecosystem** including Schema Registry and ksqlDB, managed via Kafka UI.
-
-    [:octicons-link-external-16: View Deployment](https://kafka-ui-ext.kitty-barb.ts.net/){ .md-button .md-button--primary }
-
+<div class="project-grid">
+  <a href="https://airflow-web-ext.kitty-barb.ts.net/" target="_blank" class="project-card">
+    <h3>🌩️ Orchestration Layer</h3>
+    <p><strong>Apache Airflow</strong> configured with CeleryExecutor, git-sync for DAGs, and OIDC authentication.</p>
+  </a>
+  <a href="https://superset-web-ext.kitty-barb.ts.net/login/" target="_blank" class="project-card">
+    <h3>📊 Analytics Layer</h3>
+    <p><strong>Apache Superset</strong> connected to Trino and Postgres, demonstrating the full BI stack integration.</p>
+  </a>
+  <a href="https://kafka-ui-ext.kitty-barb.ts.net/" target="_blank" class="project-card">
+    <h3>🚀 Streaming Layer</h3>
+    <p><strong>Kafka Ecosystem</strong> including Schema Registry and ksqlDB, managed via Kafka UI.</p>
+  </a>
 </div>
-
----
 
 ## Core Competencies
 
-<div class="grid cards" markdown>
-
--   :material-server-network: **Platform Engineering**
-
-    ---
-
-    Abstracts complex Helm charts into standardized Terraform modules. This enables resource provisioning (Airflow, Trino) through simple, consistent interfaces without requiring deep Kubernetes expertise.
-
--   :material-kubernetes: **Kubernetes Operations**
-
-    ---
-
-    Demonstrates management of stateful workloads on K8s, handling persistent storage (PVCs), High Availability (StatefulSets), and secure ingress networking for sensitive data services.
-
--   :material-layers-triple: **Modern Data Stack**
-
-    ---
-
-    Integrates open-source tools into a cohesive platform. The "Lab Environment" connects orchestration (Airflow) directly with analytics (Superset).
-
+<div class="project-grid">
+  <div class="project-card">
+    <h3>🏗️ Platform Engineering</h3>
+    <p>Abstracts complex Helm charts into standardized Terraform modules. Enables resource provisioning through simple interfaces.</p>
+  </div>
+  <div class="project-card">
+    <h3>☸️ Kubernetes Operations</h3>
+    <p>Management of stateful workloads (PVCs, StatefulSets) and secure ingress networking.</p>
+  </div>
+  <div class="project-card">
+    <h3>🛠️ Modern Data Stack</h3>
+    <p>Integration of open-source tools into a cohesive platform, connecting orchestration directly with analytics.</p>
+  </div>
 </div>

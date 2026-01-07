@@ -1,0 +1,129 @@
+/* Import Outfit Font */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+:root {
+    --vp-c-brand-1: #FF813F;
+    --vp-c-brand-2: #E66620;
+    --vp-c-brand-3: #CC4E00;
+
+    --vp-font-family-base: 'Outfit', sans-serif;
+    --vp-home-hero-name-color: transparent;
+    --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #FF813F 30%, #ffd000);
+}
+
+/* Animated Gradient Background */
+body {
+    background-color: #0f1115;
+    background-image:
+        radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin: 0;
+}
+
+/* Glassmorphism for Navbar */
+.VPNav {
+    background-color: rgba(20, 20, 24, 0.4) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glassmorphism for Sidebar */
+.VPSidebar {
+    background-color: rgba(20, 20, 24, 0.4) !important;
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glassmorphism for Home Features (Cards) */
+.VPFeatures .VPFeature {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.VPFeatures .VPFeature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(255, 129, 63, 0.3);
+    border-color: var(--vp-c-brand-1) !important;
+}
+
+/* Typography Overrides */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.VPHero .name {
+    background: var(--vp-home-hero-name-background);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: var(--vp-home-hero-name-color);
+}
+
+/* Custom "Blob" animation behind hero (pseudo-element) */
+.VPHero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 129, 63, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    filter: blur(60px);
+    z-index: -1;
+    animation: pulse 10s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* Glassy Grid for Lab Environment */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.project-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    text-decoration: none !important;
+    display: block;
+    color: inherit !important;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--vp-c-brand-1);
+    background: rgba(255, 255, 255, 0.05);
+    text-decoration: none !important;
+}
+
+.project-card h3 {
+    margin-top: 0;
+    color: var(--vp-c-brand-1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
