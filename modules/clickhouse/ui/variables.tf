@@ -10,21 +10,16 @@ variable "app_name" {
   default     = "clickhouse-ui"
 }
 
-variable "image_repository" {
-  description = "UI image repository"
-  type        = string
-  default     = "ghcr.io/daun-gatal/clickhouse-ui"
-}
-
 variable "image_tag" {
   description = "UI image tag"
   type        = string
   default     = "latest"
 }
 
-variable "clickhouse_urls" {
-  description = "URLs of the ClickHouse server (e.g. http://service:8123). Separate multiple URLs with commas."
-  type        = string
+variable "env_vars" {
+  description = "Additional environment variables to pass to the container"
+  type        = map(string)
+  default     = {}
 }
 
 variable "tailscale_expose" {
