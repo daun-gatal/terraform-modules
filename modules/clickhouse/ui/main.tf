@@ -25,11 +25,14 @@ resource "kubernetes_deployment" "ui" {
       spec {
         container {
           name  = "clickhouse-ui"
-          image = "${var.image_repository}:${var.image_tag}"
+          image = "ghcr.io/daun-gatal/clickhouse-studio:${var.image_tag}"
 
-          env {
-            name  = "VITE_CLICKHOUSE_URLS"
-            value = var.clickhouse_urls
+          dynamic "env" {
+            for_each = var.env_vars
+            content {
+              name  = env.key
+              value = env.value
+            }
           }
 
           port {
