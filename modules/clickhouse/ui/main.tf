@@ -35,6 +35,15 @@ resource "kubernetes_deployment" "ui" {
             }
           }
 
+          dynamic "env_from" {
+            for_each = var.env_from_secrets
+            content {
+              secret_ref {
+                name = env_from.value
+              }
+            }
+          }
+
           port {
             container_port = 5521
           }
