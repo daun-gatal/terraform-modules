@@ -29,6 +29,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name | `string` | `"clickhouse-ui"` | no |
+| <a name="input_env_from_secrets"></a> [env\_from\_secrets](#input\_env\_from\_secrets) | List of secrets to source all environment variables from | `list(string)` | `[]` | no |
 | <a name="input_env_vars"></a> [env\_vars](#input\_env\_vars) | Additional environment variables to pass to the container | `map(string)` | `{}` | no |
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | UI image tag | `string` | `"latest"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for ClickHouse UI | `string` | `"clickhouse"` | no |

@@ -22,6 +22,12 @@ variable "env_vars" {
   default     = {}
 }
 
+variable "env_from_secrets" {
+  description = "List of secrets to source all environment variables from"
+  type        = list(string)
+  default     = []
+}
+
 variable "tailscale_expose" {
   description = "Expose service via Tailscale"
   type        = bool
