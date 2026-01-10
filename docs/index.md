@@ -35,7 +35,7 @@ Live deployments managed by these modules.
   <a href="https://clickhouse-studio-ext.kitty-barb.ts.net/" target="_blank" class="project-card">
     <h3>📉 OLAP Layer</h3>
     <p><strong>ClickHouse UI</strong> for real-time analytics.</p>
-    <p><small>User: <code>viewer</code> • Pass: <code>Test12345@#$</code></small></p>
+    <p><small>User: <code>guest</code> • Pass: <code>Guest123456!</code></small></p>
   </a>
 </div>
 
