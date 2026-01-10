@@ -32,7 +32,7 @@ Live deployments managed by these modules.
     <h3>🚀 Streaming Layer</h3>
     <p><strong>Kafka Ecosystem</strong> including Schema Registry and ksqlDB, managed via Kafka UI.</p>
   </a>
-  <a href="https://clickhouse-ui-ext.kitty-barb.ts.net/" target="_blank" class="project-card">
+  <a href="https://clickhouse-studio-ext.kitty-barb.ts.net/" target="_blank" class="project-card">
     <h3>📉 OLAP Layer</h3>
     <p><strong>ClickHouse UI</strong> for real-time analytics.</p>
     <p><small>User: <code>viewer</code> • Pass: <code>Test12345@#$</code></small></p>
