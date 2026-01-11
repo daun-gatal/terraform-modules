@@ -24,8 +24,8 @@ resource "kubernetes_deployment" "ui" {
 
       spec {
         container {
-          name  = "clickhouse-ui"
-          image = "ghcr.io/daun-gatal/clickhouse-studio:${var.image_tag}"
+          name  = "chouse-ui"
+          image = "ghcr.io/daun-gatal/chouse-ui:${var.image_tag}"
 
           dynamic "env" {
             for_each = var.env_vars
